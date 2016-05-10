@@ -1,4 +1,5 @@
-﻿using Common.Net.Utility;
+﻿using Common.Net.Helper;
+using Common.Net.Utility;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,11 +16,15 @@ namespace HeplerPatterns
             //Common.Net.Helper.LogHelper.GetLogByName().Error("2222222222");
             //Common.Net.Helper.LogHelper.GetLogByName().Info("33333333333");
 
+            for (int i = 0; i < 1000 ; i++)
+            {
+                Log.Error("测试");
+                Log.Debug("测试");
+            }
 
-            HttpHelper ht = new HttpHelper();
-            ht.GetHtml(new HttpItem() {
-                    
-            });
+            //HttpHelper ht = new HttpHelper();
+            //ht.GetHtml(new HttpItem() {                    
+            //});
 
             Console.ReadLine();
         }

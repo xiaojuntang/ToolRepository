@@ -127,15 +127,19 @@ namespace Common.Net.Helper
 
     public class Log
     {
-        public static readonly string logName = "";
         public static void Error(string message)
         {
-            LogHelper.GetLogByName(logName).Error(message);
+            LogHelper.GetLogByName("ErrorFileAppender").Error(message);
         }
 
         public static void Error(Exception message)
         {
-            LogHelper.GetLogByName(logName).Error(message.Message);
+            LogHelper.GetLogByName("ErrorFileAppender").Error(message.Message);
+        }
+
+        public static void Debug(string message)
+        {
+            LogHelper.GetLogByName("DebugFileAppender").Debug(message);
         }
     }
 }
