@@ -18,8 +18,8 @@ namespace HeplerPatterns
 
             for (int i = 0; i < 1000 ; i++)
             {
-                Log.Error("测试");
-                Log.Debug("测试");
+                LogHelper.Error("测试");
+                LogHelper.Debug("测试");
             }
 
             //HttpHelper ht = new HttpHelper();

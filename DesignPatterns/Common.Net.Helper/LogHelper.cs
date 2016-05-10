@@ -8,6 +8,48 @@ using System.Threading.Tasks;
 
 namespace Common.Net.Helper
 {
+    /// <summary>
+    /// 日志组件
+    /// </summary>
+    public class LogHelper
+    {
+        /// <summary>
+        /// 输出异常信息
+        /// </summary>
+        /// <param name="message">消息内容</param>
+        public static void Error(string message)
+        {
+            Logg.GetLogByName("ErrorFileAppender").Error(message);
+        }
+
+        /// <summary>
+        /// 输出异常信息
+        /// </summary>
+        /// <param name="message">异常类型</param>
+        public static void Error(Exception message)
+        {
+            Logg.GetLogByName("ErrorFileAppender").Error(message.Message);
+        }
+
+        /// <summary>
+        /// 输出调试信息
+        /// </summary>
+        /// <param name="message"></param>
+        public static void Debug(string message)
+        {
+            Logg.GetLogByName("DebugFileAppender").Debug(message);
+        }
+
+        /// <summary>
+        /// 输出说明
+        /// </summary>
+        /// <param name="message"></param>
+        public static void Info(string message)
+        {
+            Logg.GetLogByName("DebugFileAppender").Info(message);
+        }
+    }
+
     //处理每一条日志委托方法 
     public delegate void LogHandler(string msg);
 
@@ -15,7 +57,7 @@ namespace Common.Net.Helper
     /// 日志操作类
     /// 使用本类必须保证配置节上存在log4net的配置（web/app.config中）
     /// </summary>  
-    public class LogHelper
+    public class Logg
     {
         /// <summary>
         /// 日志实例字典
@@ -35,15 +77,15 @@ namespace Common.Net.Helper
         /// </summary>
         public static ILog Log
         {
-            get { return LogHelper.log; }
-            set { LogHelper.log = value; }
+            get { return Logg.log; }
+            set { Logg.log = value; }
         }
 
         /// <summary>
         /// 构造函数
         /// </summary>
         /// <param name="configPath"></param>
-        static LogHelper()
+        static Logg()
         {
             log = log4net.LogManager.GetLogger(System.Reflection.MethodBase.GetCurrentMethod().DeclaringType);
             log4net.Config.XmlConfigurator.Configure();
@@ -122,24 +164,6 @@ namespace Common.Net.Helper
                     sr.Dispose();
                 }
             }
-        }
-    }
-
-    public class Log
-    {
-        public static void Error(string message)
-        {
-            LogHelper.GetLogByName("ErrorFileAppender").Error(message);
-        }
-
-        public static void Error(Exception message)
-        {
-            LogHelper.GetLogByName("ErrorFileAppender").Error(message.Message);
-        }
-
-        public static void Debug(string message)
-        {
-            LogHelper.GetLogByName("DebugFileAppender").Debug(message);
         }
     }
 }
