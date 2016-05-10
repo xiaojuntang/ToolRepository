@@ -1,0 +1,69 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Climb.MySqlDbHelper</name>
+    </assembly>
+    <members>
+        <member name="T:Climb.MySqlDbHelper.MySqlDbHelper">
+            <summary>
+            MysqlDbhelper 访问类
+            </summary>
+        </member>
+        <member name="M:Climb.MySqlDbHelper.MySqlDbHelper.#ctor(System.String)">
+            <summary>
+            
+            </summary>
+            <param name="connectionstring"></param>
+        </member>
+        <member name="M:Climb.MySqlDbHelper.MySqlDbHelper.InsertTable(System.Data.DataTable,System.String,System.Int32)">
+            <summary>
+            
+            </summary>
+            <param name="dataTable"></param>
+            <param name="sourceTableName"></param>
+            <param name="batchSize"></param>
+        </member>
+        <member name="M:Climb.MySqlDbHelper.MySqlDbHelper.GetDbParameter">
+            <summary>
+            
+            </summary>
+            <returns></returns>
+        </member>
+        <member name="T:Climb.MySqlDbHelper.MySqlPageEntity">
+            <summary>
+            
+            </summary>
+        </member>
+        <member name="M:Climb.MySqlDbHelper.MySqlPageEntity.#ctor(System.String,System.String,System.String,System.Int32,System.Int32,System.Data.IDataParameter[])">
+            <summary>
+            
+            </summary>
+            <param name="selectFiled"></param>
+            <param name="orderbyFiled"></param>
+            <param name="tableNameWhere"></param>
+            <param name="pageSize"></param>
+            <param name="pageCount"></param>
+            <param name="dataParameters"></param>
+        </member>
+        <member name="M:Climb.MySqlDbHelper.MySqlPageEntity.GetPageParams(Climb.DbProvider.PageEnum)">
+            <summary>
+            
+            </summary>
+            <param name="sqlEnum"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Climb.MySqlDbHelper.MySqlPageEntity.GetComandSqlStr(Climb.DbProvider.PageEnum)">
+            <summary>
+            
+            </summary>
+            <param name="sqlEnum"></param>
+            <returns></returns>
+        </member>
+        <member name="M:Climb.MySqlDbHelper.MySqlPageEntity.GetComandCountSqlStr">
+            <summary>
+            
+            </summary>
+            <returns></returns>
+        </member>
+    </members>
+</doc>
