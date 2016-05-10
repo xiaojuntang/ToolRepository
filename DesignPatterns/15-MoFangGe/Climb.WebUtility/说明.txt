@@ -1,2 +1,0 @@
-﻿JavaScript   注册JS类
-Request      表单请求操作类
