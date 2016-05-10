@@ -1,0 +1,110 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{2553627E-B8D7-4DB7-BA77-053E793D8191}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Climb.Utilitys</RootNamespace>
+    <AssemblyName>Climb.Utilitys</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+    <DocumentationFile>bin\Debug\Climb.Utilitys.xml</DocumentationFile>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+    <DocumentationFile>bin\Release\Climb.Utilitys.xml</DocumentationFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Management" />
+    <Reference Include="System.Net" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Compression.cs" />
+    <Compile Include="IsBetween.cs" />
+    <Compile Include="ParamterCheckExt.cs" />
+    <Compile Include="Performance\CodeRamer.cs" />
+    <Compile Include="Performance\CodeTimer.cs" />
+    <Compile Include="Resources.Designer.cs" />
+    <Compile Include="SystemExt\ArraryExt.cs" />
+    <Compile Include="CollectionsExt\BloomFilter.cs" />
+    <Compile Include="SystemExt\ByteExt.cs" />
+    <Compile Include="CollectionsExt\ComparisonHelper.cs" />
+    <Compile Include="CollectionsExt\EqualityHelper.cs" />
+    <Compile Include="ConfigHelper.cs" />
+    <Compile Include="ConvertHelper.cs" />
+    <Compile Include="SystemExt\DateTimeExt.cs" />
+    <Compile Include="SystemExt\DictionaryExt.cs" />
+    <Compile Include="SystemExt\EnumExtension.cs" />
+    <Compile Include="SystemExt\EnumManager.cs" />
+    <Compile Include="IOExt\FileExt.cs" />
+    <Compile Include="IOExt\DirectoryExt.cs" />
+    <Compile Include="SystemExt\ExceptionExt.cs" />
+    <Compile Include="SystemExt\IntExt.cs" />
+    <Compile Include="SystemExt\MathExt.cs" />
+    <Compile Include="SystemExt\ObjectExt.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SystemExt\RandomExt.cs" />
+    <Compile Include="SystemExt\ReflectionExt.cs" />
+    <Compile Include="SystemExt\RegexExt.cs" />
+    <Compile Include="SystemExt\SerializeExt.cs" />
+    <Compile Include="Singleton.cs" />
+    <Compile Include="SystemExt\StringExt.cs" />
+    <Compile Include="CollectionsExt\SyncIList.cs" />
+    <Compile Include="SystemExt\TypeExt.cs" />
+    <Compile Include="Tools.cs" />
+    <Compile Include="TypeConvert.cs" />
+    <Compile Include="ValidatorHelper.cs" />
+    <Compile Include="WhereIfExtension.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="说明.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources.resx" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
