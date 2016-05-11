@@ -9,6 +9,11 @@ namespace HeplerPatterns
 {
     class Program
     {
+        public class TeachingMaterial
+        {
+
+        }
+
         static void Main(string[] args)
         {
             //Common.Net.Helper.LogHelper.GetLogByName("DebugFileAppender").Debug("1111111111");
@@ -53,4 +58,7 @@ namespace HeplerPatterns
 
         public int B { get; set; }
     }
+
+
+   
 }

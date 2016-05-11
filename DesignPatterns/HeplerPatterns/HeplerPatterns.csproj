@@ -50,12 +50,37 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ExeclHelper.cs" />
+    <Compile Include="HomeWrok_Offline.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>HomeWrok_Offline.xsd</DependentUpon>
+    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+      <DependentUpon>Settings.settings</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="HomeWrok_Offline.xsc">
+      <DependentUpon>HomeWrok_Offline.xsd</DependentUpon>
+    </None>
+    <None Include="HomeWrok_Offline.xsd">
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>HomeWrok_Offline.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="HomeWrok_Offline.xss">
+      <DependentUpon>HomeWrok_Offline.xsd</DependentUpon>
+    </None>
     <None Include="packages.config" />
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <Content Include="NPOI.xml" />

@@ -1302,7 +1302,7 @@ namespace Common.Net.DbProvider
         /// <summary>
         /// 数据库三
         /// </summary>
-        DB3,
+        ZYTConnString,
         /// <summary>
         /// 资源线下测试数据库 192.168.180.186
         /// </summary>
