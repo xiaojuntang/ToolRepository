@@ -1,1 +1,3 @@
 ´úÂëÎÄµµ£ºhttp://tool.sufeinet.com/CodePreview/CodeView.aspx
+
+nuget.org  https://api.nuget.org/v3/index.json
