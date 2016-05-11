@@ -75,7 +75,7 @@ namespace ZxxkConsole
                         model.NodeID = a.GetInt32(1);
                         model.NodeName = a.GetString(2);
                         model.ParentNodeID = a.GetInt32(3);
-                        model.OrderNumber = a.GetInt32(4);
+                        model.OrderNumber = a.IsDBNull(4) ? 0 : a.GetInt32(4);
                         models.Add(model);
                     }
                 }
@@ -101,40 +101,72 @@ namespace ZxxkConsole
         {
             En01 entity = new En01();
             #region 高中
-            List<HW_ZujuanNodes> D1 = T002(pId);
-            if (D1 != null)
+            List<HW_ZujuanNodes> GradeNodes = T002(pId);
+            if (GradeNodes != null)
             {
-                D1.ForEach(m =>
+                GradeNodes.ForEach(m =>
                 {
-                    string str = string.Format("{0}-{1}", m.NodeID, m.NodeName);
+                    string str = string.Format("1{0}-{1}", m.NodeID, m.NodeName);
                     Console.WriteLine(str);
+                    LogHelper.Debug(str);
                     #region 语文
-                    List<HW_ZujuanNodes> D2 = T002(m.NodeID);
-                    if (D2 != null)
+                    List<HW_ZujuanNodes> SubjectNodes = T002(m.NodeID);
+                    if (SubjectNodes != null)
                     {
-                        D2.ForEach(m1 =>
+                        SubjectNodes.ForEach(n =>
                         {
-                            string str1 = string.Format("----{0}-{1}", m1.NodeID, m1.NodeName);
-                            Console.WriteLine(str1);
+                            string str1 = string.Format("2----{0}-{1}", n.NodeID, n.NodeName);
+                            Console.WriteLine(str1); LogHelper.Debug(str1);
                             #region 人教版
-                            List<HW_ZujuanNodes> D3 = T002(m1.NodeID);
-                            if (D3 != null)
+                            List<HW_ZujuanNodes> VerNodes = T002(n.NodeID);
+                            if (VerNodes != null)
                             {
-                                D3.ForEach(m3 =>
+                                VerNodes.ForEach(x =>
                                 {
-                                    string str3 = string.Format("--------{0}-{1}", m3.NodeID, m3.NodeName);
-                                    Console.WriteLine(str3);
+                                    string str3 = string.Format("3--------{0}-{1}", x.NodeID, x.NodeName);
+                                    Console.WriteLine(str3); LogHelper.Debug(str3);
                                     #region 必修一
-                                    List<HW_ZujuanNodes> D4 = T002(m3.NodeID);
-                                    Dictionary<string, string[]> dic4 = new Dictionary<string, string[]>();
-                                    if (D4 != null)
+                                    List<HW_ZujuanNodes> MaterialNodes = T002(x.NodeID);
+                                    if (MaterialNodes != null)
                                     {
-                                        D4.ForEach(m4 =>
+                                        MaterialNodes.ForEach(y =>
                                         {
-                                            string str4 = string.Format("------------{0}-{1}", m4.NodeID, m4.NodeName);
-                                            Console.WriteLine(str4);
+                                            string str4 = string.Format("4------------{0}-{1}", y.NodeID, y.NodeName);
+                                            Console.WriteLine(str4); LogHelper.Debug(str4);
+                                            #region 知识点
+                                            List<HW_ZujuanNodes> KonlgNodes = T002(y.NodeID);
+                                            if (KonlgNodes != null)
+                                            {
+                                                KonlgNodes.ForEach(o =>
+                                                {
+                                                    string str5 = string.Format("5----------------{0}-{1}", o.NodeID, o.NodeName);
+                                                    Console.WriteLine(str5); LogHelper.Debug(str5);
+                                                    #region 66666666666666666666666666666666666666
+                                                    List<HW_ZujuanNodes> GGGGG = T002(o.NodeID);
+                                                    if (GGGGG != null)
+                                                    {
+                                                        GGGGG.ForEach(k =>
+                                                        {
+                                                            string str6 = string.Format("6---------------------{0}-{1}", k.NodeID, k.NodeName);
+                                                            Console.WriteLine(str6); LogHelper.Debug(str6);
+                                                            #region 7777777777777777777777777777777777
+                                                            List<HW_ZujuanNodes> TTTTTT = T002(k.NodeID);
+                                                            if (TTTTTT != null)
+                                                            {
+                                                                TTTTTT.ForEach(g =>
+                                                                {
+                                                                    string str7 = string.Format("7--------------------------{0}-{1}", g.NodeID, g.NodeName);
+                                                                    Console.WriteLine(str7); LogHelper.Debug(str7);
+                                                                });
+                                                            }
+                                                            #endregion
+                                                        });
+                                                    }
+                                                    #endregion
+                                                });
+                                            }
+                                            #endregion
                                         });
-                                        //dic4.Add("");
                                     }
                                     #endregion
                                 });
