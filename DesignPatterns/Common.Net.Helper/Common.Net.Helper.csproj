@@ -61,6 +61,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CacheHelper.cs" />
     <Compile Include="ExeclHelper.cs" />
     <Compile Include="GeneralHelper.cs" />
     <Compile Include="JsonHelper.cs" />
