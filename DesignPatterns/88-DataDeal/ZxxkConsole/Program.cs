@@ -6,6 +6,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Windows.Forms;
 
@@ -15,6 +16,46 @@ namespace ZxxkConsole
     {
         static void Main(string[] args)
         {
+            //86e5dbe2774411d434142357e2b1b507
+
+
+
+
+
+            Dictionary<string, string> papramters = new Dictionary<string, string>();
+            papramters.Add("appId", "1105306939");
+            papramters.Add("openId", "3CDAEFAFB4A904372BF85493354EF3B1");
+            papramters.Add("openKey", "0CBE297D89432333427DB64B5647CE04");
+            papramters.Add("stage", "1002_2002_3001_43321");
+            papramters.Add("examId", "");
+            papramters.Add("groupId", "");
+            papramters.Add("groupStage", "");
+            papramters.Add("courseName", "");
+            papramters.Add("ts", "1463049864");
+
+
+            IDictionary<string, string> sortedParams = new SortedDictionary<string, string>(papramters);
+            IEnumerator<KeyValuePair<string, string>> dem = sortedParams.GetEnumerator();
+            StringBuilder query = new StringBuilder();
+            while (dem.MoveNext())
+            {
+                string key = dem.Current.Key;
+                string value = dem.Current.Value;
+                if (!string.IsNullOrWhiteSpace(key))
+                {
+                    query.Append(key).Append("=").Append(value).Append("&");
+                }
+            }
+            string appKey = "sQvjcCFFIh1ZSBoV";
+            string ddddd = query.ToString().TrimEnd('&') + appKey;
+
+
+
+            string a1 = "appId=1105306939&openId=3CDAEFAFB4A904372BF85493354EF3B1&openKey=0CBE297D89432333427DB64B5647CE04&stage=1002_2002_3001_43321&examId=&groupId=&groupStage=&courseName=&ts=1461463049864&sig=86e5dbe2774411d434142357e2b1b507";
+
+            string a2 = "appId=1105306939&openId=3CDAEFAFB4A904372BF85493354EF3B1&openKey=0CBE297D89432333427DB64B5647CE04&stage=1002_2002_3001_43321&examId=&groupId=&groupStage=&courseName=&ts=1461463049864";
+
+            var gg = System.Web.Security.FormsAuthentication.HashPasswordForStoringInConfigFile(ddddd, "MD5");
             T004(0);
 
             Console.ReadLine();
@@ -222,5 +263,115 @@ namespace ZxxkConsole
     public class ConfigTree
     {
         public Dictionary<string, Dictionary<string, Dictionary<string, string[]>>> ML { get; set; }
+    }
+
+
+    static class Util
+    {
+        #region HttpGet
+        //public static string HttpGet(string url)
+        //{
+        //    HttpWebRequest request = (HttpWebRequest)HttpWebRequest.Create(url);
+        //    request.Method = "GET";
+        //    request.Accept = "*/*";
+        //    request.Timeout = 150000;
+        //    request.AllowAutoRedirect = false;
+
+        //    WebResponse response = null;
+        //    string responseStr = null;
+
+        //    try
+        //    {
+        //        response = request.GetResponse();
+
+        //        if (response != null)
+        //        {
+        //            StreamReader reader = new StreamReader(response.GetResponseStream(), Encoding.UTF8);
+        //            responseStr = reader.ReadToEnd();
+        //            reader.Close();
+        //        }
+        //    }
+        //    catch (WebException)
+        //    {
+        //        throw;
+        //    }
+        //    catch (Exception)
+        //    {
+        //        //其他错误，写入日志或者忽略
+        //    }
+        //    finally
+        //    {
+        //        request = null;
+        //        response = null;
+        //    }
+
+        //    return responseStr;
+        //}
+        #endregion
+
+        #region SignHelper
+        public static string CreateOauthSignature(Dictionary<string, string> dic, string url, string method, string consumer_secret, string oauth_token_secret)
+        {
+            string HashKey = consumer_secret + "&" + oauth_token_secret;
+            string OauthSignature = "";
+            string Paras = "";
+            string BaseString = method + "&" + RFC3986_UrlEncode(url) + "&";
+            Paras = RFC3986_UrlEncode(dic.OrderBy(x => x.Key).ToDictionary(x => x.Key, y => y.Value).ToQueryString());
+            BaseString += Paras;
+
+            using (HMACSHA1 crypto = new HMACSHA1())
+            {
+                crypto.Key = Encoding.ASCII.GetBytes(HashKey);
+                OauthSignature = Convert.ToBase64String(crypto.ComputeHash(Encoding.ASCII.GetBytes(BaseString)));
+            }
+
+            return OauthSignature;
+        }
+        public static string GetTimeStamp(bool isUtc)
+        {
+            DateTime NowTime = isUtc ? DateTime.UtcNow : DateTime.Now;
+            return ((NowTime.Ticks - (new DateTime(1970, 1, 1)).Ticks) / 10000000).ToString();
+        }
+        //public static string GetNonce()
+        //{
+        //    return System.Web.Security.FormsAuthentication.HashPasswordForStoringInConfigFile(new Random((int)DateTime.Now.ToBinary()).Next(0, int.MaxValue).ToString().Trim(), "md5").ToLower();
+        //}
+        public static string RFC3986_UrlEncode(string input)
+        {
+            string unreservedChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-_.~";
+            StringBuilder result = new StringBuilder();
+            byte[] byStr = System.Text.Encoding.UTF8.GetBytes(input);
+
+            foreach (byte symbol in byStr)
+            {
+                if (unreservedChars.IndexOf((char)symbol) != -1)
+                {
+                    result.Append((char)symbol);
+                }
+                else
+                {
+                    result.Append('%' + Convert.ToString((char)symbol, 16).ToUpper());
+                }
+            }
+
+            return result.ToString();
+        }
+        #endregion
+
+        #region Extends
+        public static string ToQueryString(this IDictionary<string, string> dictionary)
+        {
+            var sb = new StringBuilder();
+            foreach (var key in dictionary.Keys)
+            {
+                var value = dictionary[key];
+                if (value != null)
+                {
+                    sb.Append(key + "=" + value + "&");
+                }
+            }
+            return sb.ToString().TrimEnd('&');
+        }
+        #endregion
     }
 }

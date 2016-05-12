@@ -6,6 +6,50 @@ using System.Text;
 
 namespace Common.Net.Func
 {
+    public class TT
+    {
+        /// <summary>
+        /// 加密
+        /// </summary>
+        /// <param name="toEncrypt">要加密的字符串，即明文</param>
+        /// <param name="key">公共密钥</param>
+        /// <param name="useHashing">是否使用MD5生成机密秘钥</param>
+        /// <returns>加密后的字符串，即密文</returns>
+        public static string Encrypt(string toEncrypt, string key, bool useHashing)
+        {
+            try
+            {
+                byte[] keyArray;
+                byte[] toEncryptArray = UTF8Encoding.UTF8.GetBytes(toEncrypt);
+
+                if (useHashing)
+                {
+                    MD5CryptoServiceProvider hashmd5 = new MD5CryptoServiceProvider();
+                    keyArray = hashmd5.ComputeHash(UTF8Encoding.UTF8.GetBytes(key));
+                }
+                else
+                    keyArray = UTF8Encoding.UTF8.GetBytes(key);
+
+                TripleDESCryptoServiceProvider tdes = new TripleDESCryptoServiceProvider();
+
+                tdes.Key = keyArray;
+                tdes.Mode = CipherMode.ECB;
+                tdes.Padding = PaddingMode.PKCS7;
+
+                ICryptoTransform cTransform = tdes.CreateEncryptor();
+                byte[] resultArray = cTransform.TransformFinalBlock(toEncryptArray, 0, toEncryptArray.Length);
+
+                return Convert.ToBase64String(resultArray, 0, resultArray.Length);
+            }
+            catch
+            {
+
+            }
+            return string.Empty;
+        }
+
+    }
+
     /// <summary>
     /// 非对称RSA加密类 可以参考
     /// 若是私匙加密 则需公钥解密
