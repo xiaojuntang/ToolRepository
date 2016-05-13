@@ -3,6 +3,7 @@ using Common.Net.Func;
 using Common.Net.Helper;
 using System;
 using System.Collections;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Data;
 using System.Linq;
@@ -14,6 +15,36 @@ namespace ZxxkConsole
 {
     class Program
     {
+        private static readonly ConcurrentDictionary<string, object> LockDic = new ConcurrentDictionary<string, object>();
+        //public List<SecPoint> BookFrequency(string sub, string bookId)
+        //{
+        //    CacheHelper.Get
+
+        //    DCaheHelper caheHelper = new DCaheHelper();
+        //    string key = sub + bookId;
+        //    List<SecPoint> list = caheHelper.GetCacheObject(key) as List<SecPoint>;
+        //    if (list == null)
+        //    {
+        //        object lockObj;
+        //        if (!LockDic.TryGetValue(key, out lockObj))
+        //        {
+        //            lockObj = new object();
+        //            LockDic.TryAdd(key, lockObj);
+        //        }
+        //        lock (lockObj)
+        //        {
+        //            list = caheHelper.GetCacheObject(key) as List<SecPoint>;
+        //            if (list == null)
+        //            {
+        //                DalSecPoint dal = new DalSecPoint();
+        //                list = dal.BookFrequency(sub, bookId);
+        //                caheHelper.AddObjectToCahce(key, list, addCacheEnum.recover, timeExpirationEnum.absolute,
+        //                    60 * 60 * 24);
+        //            }
+        //        }
+        //    }
+        //    return list;
+        //}
         static void Main(string[] args)
         {
             //86e5dbe2774411d434142357e2b1b507
@@ -22,40 +53,40 @@ namespace ZxxkConsole
 
 
 
-            Dictionary<string, string> papramters = new Dictionary<string, string>();
-            papramters.Add("appId", "1105306939");
-            papramters.Add("openId", "3CDAEFAFB4A904372BF85493354EF3B1");
-            papramters.Add("openKey", "0CBE297D89432333427DB64B5647CE04");
-            papramters.Add("stage", "1002_2002_3001_43321");
-            papramters.Add("examId", "");
-            papramters.Add("groupId", "");
-            papramters.Add("groupStage", "");
-            papramters.Add("courseName", "");
-            papramters.Add("ts", "1463049864");
+            //Dictionary<string, string> papramters = new Dictionary<string, string>();
+            //papramters.Add("appId", "1105306939");
+            //papramters.Add("openId", "3CDAEFAFB4A904372BF85493354EF3B1");
+            //papramters.Add("openKey", "0CBE297D89432333427DB64B5647CE04");
+            //papramters.Add("stage", "1002_2002_3001_43321");
+            //papramters.Add("examId", "");
+            //papramters.Add("groupId", "");
+            //papramters.Add("groupStage", "");
+            //papramters.Add("courseName", "");
+            //papramters.Add("ts", "1463049864");
 
 
-            IDictionary<string, string> sortedParams = new SortedDictionary<string, string>(papramters);
-            IEnumerator<KeyValuePair<string, string>> dem = sortedParams.GetEnumerator();
-            StringBuilder query = new StringBuilder();
-            while (dem.MoveNext())
-            {
-                string key = dem.Current.Key;
-                string value = dem.Current.Value;
-                if (!string.IsNullOrWhiteSpace(key))
-                {
-                    query.Append(key).Append("=").Append(value).Append("&");
-                }
-            }
-            string appKey = "sQvjcCFFIh1ZSBoV";
-            string ddddd = query.ToString().TrimEnd('&') + appKey;
+            //IDictionary<string, string> sortedParams = new SortedDictionary<string, string>(papramters);
+            //IEnumerator<KeyValuePair<string, string>> dem = sortedParams.GetEnumerator();
+            //StringBuilder query = new StringBuilder();
+            //while (dem.MoveNext())
+            //{
+            //    string key = dem.Current.Key;
+            //    string value = dem.Current.Value;
+            //    if (!string.IsNullOrWhiteSpace(key))
+            //    {
+            //        query.Append(key).Append("=").Append(value).Append("&");
+            //    }
+            //}
+            //string appKey = "sQvjcCFFIh1ZSBoV";
+            //string ddddd = query.ToString().TrimEnd('&') + appKey;
 
 
 
-            string a1 = "appId=1105306939&openId=3CDAEFAFB4A904372BF85493354EF3B1&openKey=0CBE297D89432333427DB64B5647CE04&stage=1002_2002_3001_43321&examId=&groupId=&groupStage=&courseName=&ts=1461463049864&sig=86e5dbe2774411d434142357e2b1b507";
+            //string a1 = "appId=1105306939&openId=3CDAEFAFB4A904372BF85493354EF3B1&openKey=0CBE297D89432333427DB64B5647CE04&stage=1002_2002_3001_43321&examId=&groupId=&groupStage=&courseName=&ts=1461463049864&sig=86e5dbe2774411d434142357e2b1b507";
 
-            string a2 = "appId=1105306939&openId=3CDAEFAFB4A904372BF85493354EF3B1&openKey=0CBE297D89432333427DB64B5647CE04&stage=1002_2002_3001_43321&examId=&groupId=&groupStage=&courseName=&ts=1461463049864";
+            //string a2 = "appId=1105306939&openId=3CDAEFAFB4A904372BF85493354EF3B1&openKey=0CBE297D89432333427DB64B5647CE04&stage=1002_2002_3001_43321&examId=&groupId=&groupStage=&courseName=&ts=1461463049864";
 
-            var gg = System.Web.Security.FormsAuthentication.HashPasswordForStoringInConfigFile(ddddd, "MD5");
+            //var gg = System.Web.Security.FormsAuthentication.HashPasswordForStoringInConfigFile(ddddd, "MD5");
             T004(0);
 
             Console.ReadLine();
@@ -140,7 +171,7 @@ namespace ZxxkConsole
 
         private static void T004(int pId)
         {
-            En01 entity = new En01();
+            List<HW_ZujuanNodes> All = new List<HW_ZujuanNodes>();
             #region 高中
             List<HW_ZujuanNodes> GradeNodes = T002(pId);
             if (GradeNodes != null)
@@ -150,6 +181,7 @@ namespace ZxxkConsole
                     string str = string.Format("1{0}-{1}", m.NodeID, m.NodeName);
                     Console.WriteLine(str);
                     LogHelper.Debug(str);
+                    All.Add(m);
                     #region 语文
                     List<HW_ZujuanNodes> SubjectNodes = T002(m.NodeID);
                     if (SubjectNodes != null)
@@ -158,6 +190,7 @@ namespace ZxxkConsole
                         {
                             string str1 = string.Format("2----{0}-{1}", n.NodeID, n.NodeName);
                             Console.WriteLine(str1); LogHelper.Debug(str1);
+                            All.Add(n);
                             #region 人教版
                             List<HW_ZujuanNodes> VerNodes = T002(n.NodeID);
                             if (VerNodes != null)
@@ -166,6 +199,7 @@ namespace ZxxkConsole
                                 {
                                     string str3 = string.Format("3--------{0}-{1}", x.NodeID, x.NodeName);
                                     Console.WriteLine(str3); LogHelper.Debug(str3);
+                                    All.Add(x);
                                     #region 必修一
                                     List<HW_ZujuanNodes> MaterialNodes = T002(x.NodeID);
                                     if (MaterialNodes != null)
@@ -174,39 +208,40 @@ namespace ZxxkConsole
                                         {
                                             string str4 = string.Format("4------------{0}-{1}", y.NodeID, y.NodeName);
                                             Console.WriteLine(str4); LogHelper.Debug(str4);
-                                            #region 知识点
-                                            List<HW_ZujuanNodes> KonlgNodes = T002(y.NodeID);
-                                            if (KonlgNodes != null)
-                                            {
-                                                KonlgNodes.ForEach(o =>
-                                                {
-                                                    string str5 = string.Format("5----------------{0}-{1}", o.NodeID, o.NodeName);
-                                                    Console.WriteLine(str5); LogHelper.Debug(str5);
-                                                    #region 66666666666666666666666666666666666666
-                                                    List<HW_ZujuanNodes> GGGGG = T002(o.NodeID);
-                                                    if (GGGGG != null)
-                                                    {
-                                                        GGGGG.ForEach(k =>
-                                                        {
-                                                            string str6 = string.Format("6---------------------{0}-{1}", k.NodeID, k.NodeName);
-                                                            Console.WriteLine(str6); LogHelper.Debug(str6);
-                                                            #region 7777777777777777777777777777777777
-                                                            List<HW_ZujuanNodes> TTTTTT = T002(k.NodeID);
-                                                            if (TTTTTT != null)
-                                                            {
-                                                                TTTTTT.ForEach(g =>
-                                                                {
-                                                                    string str7 = string.Format("7--------------------------{0}-{1}", g.NodeID, g.NodeName);
-                                                                    Console.WriteLine(str7); LogHelper.Debug(str7);
-                                                                });
-                                                            }
-                                                            #endregion
-                                                        });
-                                                    }
-                                                    #endregion
-                                                });
-                                            }
-                                            #endregion
+                                            All.Add(y);
+                                            //#region 知识点
+                                            //List<HW_ZujuanNodes> KonlgNodes = T002(y.NodeID);
+                                            //if (KonlgNodes != null)
+                                            //{
+                                            //    KonlgNodes.ForEach(o =>
+                                            //    {
+                                            //        string str5 = string.Format("5----------------{0}-{1}", o.NodeID, o.NodeName);
+                                            //        Console.WriteLine(str5); LogHelper.Debug(str5);
+                                            //        #region 66666666666666666666666666666666666666
+                                            //        List<HW_ZujuanNodes> GGGGG = T002(o.NodeID);
+                                            //        if (GGGGG != null)
+                                            //        {
+                                            //            GGGGG.ForEach(k =>
+                                            //            {
+                                            //                string str6 = string.Format("6---------------------{0}-{1}", k.NodeID, k.NodeName);
+                                            //                Console.WriteLine(str6); LogHelper.Debug(str6);
+                                            //                #region 7777777777777777777777777777777777
+                                            //                List<HW_ZujuanNodes> TTTTTT = T002(k.NodeID);
+                                            //                if (TTTTTT != null)
+                                            //                {
+                                            //                    TTTTTT.ForEach(g =>
+                                            //                    {
+                                            //                        string str7 = string.Format("7--------------------------{0}-{1}", g.NodeID, g.NodeName);
+                                            //                        Console.WriteLine(str7); LogHelper.Debug(str7);
+                                            //                    });
+                                            //                }
+                                            //                #endregion
+                                            //            });
+                                            //        }
+                                            //        #endregion
+                                            //    });
+                                            //}
+                                            //#endregion
                                         });
                                     }
                                     #endregion
@@ -238,6 +273,8 @@ namespace ZxxkConsole
         public string NodeName { get; set; }
         public int ParentNodeID { get; set; }
         public int OrderNumber { get; set; }
+
+        public string TencentID { get; set; }
     }
 
     public class TA
