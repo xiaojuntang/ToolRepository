@@ -148,6 +148,7 @@ namespace ZxxkConsole
                         model.NodeName = a.GetString(2);
                         model.ParentNodeID = a.GetInt32(3);
                         model.OrderNumber = a.IsDBNull(4) ? 0 : a.GetInt32(4);
+                        model.TencentID = a.IsDBNull(5) ? "" : a.GetString(5);
                         models.Add(model);
                     }
                 }
@@ -263,6 +264,78 @@ namespace ZxxkConsole
             model.configTree = new ConfigTree();
             model.configTree.ML = new Dictionary<string, Dictionary<string, Dictionary<string, string[]>>>();
             model.configTree.ML.Add("1001", new Dictionary<string, Dictionary<string, string[]>>());
+        }
+
+        /// <summary>
+        /// 查询学段-科目-版本-课本 4级目录
+        /// </summary>
+        /// <param name="pId"></param>
+        /// <returns></returns>
+        private static List<HW_ZujuanNodes> T006(int pId)
+        {
+            List<HW_ZujuanNodes> allNode = new List<HW_ZujuanNodes>();
+            #region 高中
+            List<HW_ZujuanNodes> GradeNodes = T002(pId);
+            if (GradeNodes != null)
+            {
+                GradeNodes.ForEach(m =>
+                {
+                    allNode.Add(m);
+                    #region 语文
+                    List<HW_ZujuanNodes> SubjectNodes = T002(m.NodeID);
+                    if (SubjectNodes != null)
+                    {
+                        SubjectNodes.ForEach(n =>
+                        {
+                            allNode.Add(n);
+                            #region 人教版
+                            List<HW_ZujuanNodes> VerNodes = T002(n.NodeID);
+                            if (VerNodes != null)
+                            {
+                                VerNodes.ForEach(x =>
+                                {
+                                    allNode.Add(x);
+                                    #region 必修一
+                                    List<HW_ZujuanNodes> MaterialNodes = T002(x.NodeID);
+                                    if (MaterialNodes != null)
+                                    {
+                                        MaterialNodes.ForEach(y =>
+                                        {
+                                            allNode.Add(y);
+                                        });
+                                    }
+                                    #endregion
+                                });
+                            }
+                            #endregion
+                        });
+                    }
+                    #endregion
+                });
+            }
+            #endregion
+            return allNode;
+        }
+
+
+        private static List<HW_ZujuanNodes> GetT006()
+        {
+            string cacheKey = "C:J:G:001";
+            List<HW_ZujuanNodes> result = CacheHelper.Get<List<HW_ZujuanNodes>>(cacheKey);
+            if (result == null)
+            {
+                List<HW_ZujuanNodes> allNode = T006(0);
+                object lockObj;
+                if (!LockDic.TryGetValue(cacheKey, out lockObj)) {
+                    lockObj = new object();
+                    LockDic.TryAdd(cacheKey, lockObj);
+                }
+                lock (lockObj)
+                {
+                    CacheHelper.Add(cacheKey, allNode, 24 * 60 * 60 * 1000);
+                }
+            }
+            return result;
         }
     }
 
