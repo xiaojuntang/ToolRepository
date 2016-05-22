@@ -1195,6 +1195,95 @@ namespace Common.Net.DbProvider
             return FindDataSet(_sqlPage, _paras).Tables[0];//ExecuteDataTable(_sqlPage, conn, _paras);
         }
         #endregion
+
+
+        /// <summary> 
+        /// 大批量插入数据(2000每批次) 
+        /// 已采用整体事物控制 
+        /// </summary> 
+        /// <param name="connString">数据库链接字符串</param> 
+        /// <param name="tableName">数据库服务器上目标表名</param> 
+        /// <param name="dt">含有和目标数据库表结构完全一致(所包含的字段名完全一致即可)的DataTable</param> 
+        public static void BulkCopy(DataTable dt, DataBase db = DataBase.None)
+        {
+            if (string.IsNullOrEmpty(dt.TableName)) throw new Exception("请给DataTable的TableName属性附上表名称");
+            using (SqlConnection conn = (db == DataBase.None) ? new SqlConnection(connectionString) : MySelfSqlConnection(db))
+            {
+                conn.Open();
+                using (SqlTransaction transaction = conn.BeginTransaction())
+                {
+                    using (SqlBulkCopy bulkCopy = new SqlBulkCopy(conn, SqlBulkCopyOptions.Default, transaction))
+                    {
+                        bulkCopy.BatchSize = 2000;
+                        bulkCopy.BulkCopyTimeout = 120;
+                        bulkCopy.DestinationTableName = dt.TableName;
+                        try
+                        {
+                            foreach (DataColumn col in dt.Columns)
+                            {
+                                bulkCopy.ColumnMappings.Add(col.ColumnName, col.ColumnName);
+                            }
+                            bulkCopy.WriteToServer(dt);
+                            transaction.Commit();
+                        }
+                        catch (Exception ex)
+                        {
+                            transaction.Rollback();
+                            throw ex;
+                        }
+                        finally
+                        {
+                            conn.Close();
+                        }
+                    }
+                }
+            }
+        }
+
+
+        /// <summary> 
+        /// 批量更新数据(每批次5000) 
+        /// 若只是需要大批量插入数据使用bcp是最好的，若同时需要插入、删除、更新建议使用SqlDataAdapter我测试过有很高的效率，一般情况下这两种就满足需求了 
+        /// </summary> 
+        /// <param name="connString">数据库链接字符串</param> 
+        /// <param name="dt"></param> 
+        public static void BulkUpdate(DataTable dt, DataBase db = DataBase.None)
+        {
+            using (SqlConnection conn = (db == DataBase.None) ? new SqlConnection(connectionString) : MySelfSqlConnection(db)) {
+                SqlCommand comm = conn.CreateCommand();
+                comm.CommandTimeout = 120;
+                comm.CommandType = CommandType.Text;
+                SqlDataAdapter adapter = new SqlDataAdapter(comm);
+                SqlCommandBuilder commandBulider = new SqlCommandBuilder(adapter);
+                commandBulider.ConflictOption = ConflictOption.OverwriteChanges;
+                try
+                {
+                    conn.Open();
+                    //设置批量更新的每次处理条数 
+                    adapter.UpdateBatchSize = 5000;
+                    adapter.SelectCommand.Transaction = conn.BeginTransaction();/////////////////开始事务 
+                    if (dt.ExtendedProperties["SQL"] != null)
+                    {
+                        adapter.SelectCommand.CommandText = dt.ExtendedProperties["SQL"].ToString();
+                    }
+                    adapter.Update(dt);
+                    adapter.SelectCommand.Transaction.Commit();/////提交事务 
+                }
+                catch (Exception ex)
+                {
+                    if (adapter.SelectCommand != null && adapter.SelectCommand.Transaction != null)
+                    {
+                        adapter.SelectCommand.Transaction.Rollback();
+                    }
+                    throw ex;
+                }
+                finally
+                {
+                    conn.Close();
+                    conn.Dispose();
+                }
+            };
+        }
     }
 
 
