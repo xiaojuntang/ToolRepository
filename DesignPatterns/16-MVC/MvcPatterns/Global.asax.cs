@@ -22,23 +22,23 @@ namespace MvcPatterns
             {
                 while (true)
                 {
-                    if (MyExceptionAttribute.redisClient.GetListCount("errorMsg") > 0)
-                    {
-                        string msg = MyExceptionAttribute.redisClient.DequeueItemFromList("errorMsg");
-                        if (!string.IsNullOrEmpty(msg))
-                        {
-                            //ILog logger = LogManager.GetLogger("testError");
-                            //logger.Error(msg); //将异常信息写入Log4Net中  
-                        }
-                        else
-                        {
-                            Thread.Sleep(50);
-                        }
-                    }
-                    else
-                    {
-                        Thread.Sleep(100);
-                    }
+                    //if (MyExceptionAttribute.redisClient.GetListCount("errorMsg") > 0)
+                    //{
+                    //    string msg = MyExceptionAttribute.redisClient.DequeueItemFromList("errorMsg");
+                    //    if (!string.IsNullOrEmpty(msg))
+                    //    {
+                    //        //ILog logger = LogManager.GetLogger("testError");
+                    //        //logger.Error(msg); //将异常信息写入Log4Net中  
+                    //    }
+                    //    else
+                    //    {
+                    //        Thread.Sleep(50);
+                    //    }
+                    //}
+                    //else
+                    //{
+                    //    Thread.Sleep(100);
+                    //}
                 }
             });
         }

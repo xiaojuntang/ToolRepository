@@ -46,7 +46,7 @@ namespace Common.Net.Utility
                 item.Header.Add("apikey", Apikey);
                 //请求的返回值对象
                 HttpResult result = http.GetHtml(item);
-                JObject jo = JObject.Parse(result.Html);
+                Newtonsoft.Json.Linq.JObject jo = JObject.Parse(result.Html);
                 JToken value = null;
                 if (jo.TryGetValue("result", out value))
                 {
