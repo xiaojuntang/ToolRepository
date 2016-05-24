@@ -11,12 +11,12 @@ using System.Threading.Tasks;
 namespace Common.Net.DbProvider
 {
     /// <summary>
-    /// MySQL数据访问抽象基础类
+    /// SQLHelper数据访问抽象基础类
     /// </summary>
     public abstract class SQLHelper : IDisposable
     {
         /// <summary>
-        /// 数据库连接字符串
+        /// 数据库连接字符串（未用）
         /// </summary>	
         private static string connectionString = string.Empty;
 
@@ -40,8 +40,6 @@ namespace Common.Net.DbProvider
                 throw new ConfigurationErrorsException("配置文件中没有名为" + db.ToString() + "的数据库连接字符串");
             return connection;
         }
-
-        #region 公用方法
 
         /// <summary>
         /// 得到最大值,使用该方法有线程安全问题 使用LAST_INSERT_ID
@@ -110,9 +108,6 @@ namespace Common.Net.DbProvider
                 return true;
             }
         }
-        #endregion
-
-        #region  执行简单SQL语句
 
         /// <summary>
         /// 执行SQL语句，返回影响的记录数
@@ -120,7 +115,7 @@ namespace Common.Net.DbProvider
         /// <param name="SQLString">SQL语句</param>
         /// <param name="db">数据库配置字符</param>
         /// <returns>影响的记录数</returns>
-        public static int ExecuteSql(string SQLString, DataBase db = DataBase.None)
+        public static int ExecuteNonQuery(string SQLString, DataBase db = DataBase.None)
         {
             using (SqlConnection connection = (db == DataBase.None) ? new SqlConnection(connectionString) : MySelfSqlConnection(db))
             {
@@ -144,7 +139,9 @@ namespace Common.Net.DbProvider
         /// <summary>
         /// 执行多条SQL语句，实现数据库事务。
         /// </summary>
-        /// <param name="SQLStringList">多条SQL语句</param>		
+        /// <param name="SQLStringList">Sql列表</param>
+        /// <param name="db"></param>
+        /// <returns></returns>
         public static int ExecuteSqlTran(List<String> SQLStringList, DataBase db = DataBase.None)
         {
             using (SqlConnection conn = (db == DataBase.None) ? new SqlConnection(connectionString) : MySelfSqlConnection(db))
@@ -218,7 +215,6 @@ namespace Common.Net.DbProvider
             }
         }
 
-
         /// <summary>
         /// 向数据库里插入图像格式的字段(和上面情况类似的另一种实例)
         /// </summary>
@@ -272,7 +268,29 @@ namespace Common.Net.DbProvider
             }
         }
 
-        #endregion
+        /// <summary>
+        /// 执行查询语句，返回SqlDataReader
+        /// </summary>
+        /// <param name="SQLString">查询语句</param>
+        /// <param name="db"></param>
+        /// <returns></returns>
+        public static SqlDataReader ExecuteReader(string SQLString, DataBase db = DataBase.None)
+        {
+            using (SqlConnection connection = (db == DataBase.None) ? new SqlConnection(connectionString) : MySelfSqlConnection(db))
+            {
+                SqlCommand cmd = new SqlCommand(SQLString, connection);
+                try
+                {
+                    connection.Open();
+                    SqlDataReader myReader = cmd.ExecuteReader(CommandBehavior.CloseConnection);
+                    return myReader;
+                }
+                catch (SqlException e)
+                {
+                    throw e;
+                }
+            }
+        }
 
         #region 返回DataSet方法
 
@@ -280,35 +298,11 @@ namespace Common.Net.DbProvider
         /// 执行查询语句，返回DataSet
         /// </summary>
         /// <param name="SQLString">查询语句</param>
-        /// <returns>DataSet</returns>
-        public static DataSet FindDataSet(string SQLString)
-        {
-            using (SqlConnection connection = new SqlConnection(connectionString))
-            {
-                DataSet ds = new DataSet();
-                try
-                {
-                    connection.Open();
-                    SqlDataAdapter command = new SqlDataAdapter(SQLString, connection);
-                    command.Fill(ds, "ds");
-                }
-                catch (SqlException ex)
-                {
-                    throw new Exception(ex.Message);
-                }
-                return ds;
-            }
-        }
-
-        /// <summary>
-        /// 执行查询语句，返回DataSet
-        /// </summary>
-        /// <param name="SQLString">查询语句</param>
         /// <param name="db">数据库连接字符串</param>
         /// <returns></returns>
-        public static DataSet FindDataSet(string SQLString, DataBase db)
+        public static DataSet FindDataSet(string SQLString, DataBase db = DataBase.None)
         {
-            using (SqlConnection connection = MySelfSqlConnection(db))
+            using (SqlConnection connection = (db == DataBase.None) ? new SqlConnection(connectionString) : MySelfSqlConnection(db))
             {
                 DataSet ds = new DataSet();
                 try
@@ -332,9 +326,9 @@ namespace Common.Net.DbProvider
         /// <param name="SQLString">SQL</param>
         /// <param name="cmdParms">参数列表</param>
         /// <returns></returns>
-        public static DataSet FindDataSet(string SQLString, params SqlParameter[] cmdParms)
+        public static DataSet FindDataSet(string SQLString, DataBase db = DataBase.None, params SqlParameter[] cmdParms)
         {
-            using (SqlConnection connection = new SqlConnection(connectionString))
+            using (SqlConnection connection = (db == DataBase.None) ? new SqlConnection(connectionString) : MySelfSqlConnection(db))
             {
                 SqlCommand cmd = new SqlCommand();
                 PrepareCommand(cmd, connection, null, SQLString, cmdParms);
@@ -360,9 +354,9 @@ namespace Common.Net.DbProvider
         /// </summary>
         /// <param name="SQLString">查询语句</param>
         /// <returns>DataSet</returns>
-        public static DataSet FindDataSet(string SQLString, List<SqlParameter> cmdParms)
+        public static DataSet FindDataSet(string SQLString, List<SqlParameter> cmdParms, DataBase db = DataBase.None)
         {
-            using (SqlConnection connection = new SqlConnection(connectionString))
+            using (SqlConnection connection = (db == DataBase.None) ? new SqlConnection(connectionString) : MySelfSqlConnection(db))
             {
                 SqlCommand cmd = new SqlCommand();
                 PrepareCommand(cmd, connection, null, SQLString, cmdParms.ToArray());
@@ -390,9 +384,9 @@ namespace Common.Net.DbProvider
         /// </summary>
         /// <param name="SQLString">SQL语句</param>
         /// <returns>影响的记录数</returns>
-        public static int ExecuteNonQuery(string SQLString, params SqlParameter[] cmdParms)
+        public static int ExecuteNonQuery(string SQLString, DataBase db = DataBase.None, params SqlParameter[] cmdParms)
         {
-            using (SqlConnection connection = new SqlConnection(connectionString))
+            using (SqlConnection connection = (db == DataBase.None) ? new SqlConnection(connectionString) : MySelfSqlConnection(db))
             {
                 using (SqlCommand cmd = new SqlCommand())
                 {
@@ -439,12 +433,12 @@ namespace Common.Net.DbProvider
         /// 执行多条SQL语句，实现数据库事务。
         /// </summary>
         /// <param name="SQLStringList">SQL语句的哈希表（key为sql语句，value是该语句的SqlParameter[]）</param>
-        public static void ExecuteSqlTran(Hashtable SQLStringList)
+        public static void ExecuteSqlTran(Hashtable SQLStringList, DataBase db = DataBase.None)
         {
-            using (SqlConnection conn = new SqlConnection(connectionString))
+            using (SqlConnection connection = (db == DataBase.None) ? new SqlConnection(connectionString) : MySelfSqlConnection(db))
             {
-                conn.Open();
-                using (SqlTransaction trans = conn.BeginTransaction())
+                connection.Open();
+                using (SqlTransaction trans = connection.BeginTransaction())
                 {
                     SqlCommand cmd = new SqlCommand();
                     try
@@ -453,7 +447,7 @@ namespace Common.Net.DbProvider
                         {
                             string cmdText = myDE.Key.ToString();
                             SqlParameter[] cmdParms = (SqlParameter[])myDE.Value;
-                            PrepareCommand(cmd, conn, trans, cmdText, cmdParms);
+                            PrepareCommand(cmd, connection, trans, cmdText, cmdParms);
                             int val = cmd.ExecuteNonQuery();
                             cmd.Parameters.Clear();
                         }
@@ -754,34 +748,6 @@ namespace Common.Net.DbProvider
         }
 
         /// <summary>
-        /// 执行查询语句，返回SqlDataReader ( 注意：调用该方法后，一定要对SqlDataReader进行Close )
-        /// </summary>
-        /// <param name="strSQL">查询语句</param>
-        /// <returns>SqlDataReader</returns>
-        public static SqlDataReader ExecuteReader(string SQLString, params SqlParameter[] cmdParms)
-        {
-            SqlConnection connection = new SqlConnection(connectionString);
-            SqlCommand cmd = new SqlCommand();
-            try
-            {
-                PrepareCommand(cmd, connection, null, SQLString, cmdParms);
-                SqlDataReader myReader = cmd.ExecuteReader(CommandBehavior.CloseConnection);
-                cmd.Parameters.Clear();
-                return myReader;
-            }
-            catch (SqlException e)
-            {
-                throw e;
-            }
-            //			finally
-            //			{
-            //				cmd.Dispose();
-            //				connection.Close();
-            //			}	
-
-        }
-
-        /// <summary>
         /// 填充Command参数
         /// </summary>
         /// <param name="cmd">SqlCommand</param>
@@ -871,6 +837,34 @@ namespace Common.Net.DbProvider
         }
 
         /// <summary>
+        /// 返回一个实例对象
+        /// </summary>
+        /// <typeparam name="T">返回对象</typeparam>
+        /// <param name="SQLString">Sql语句</param>
+        /// <param name="readFunc">DataReader</param>
+        /// <param name="parameters">参数列表</param>
+        /// <param name="db">数据库名称</param>
+        /// <returns></returns>
+        public static T Find<T>(string SQLString, Func<SqlDataReader, T> readFunc, List<SqlParameter> parameters, DataBase db = DataBase.None)
+        {
+            T results = default(T);
+            using (SqlConnection connection = (db == DataBase.None) ? new SqlConnection(connectionString) : MySelfSqlConnection(db))
+            {
+                connection.Open();
+                var command = new SqlCommand(SQLString, connection);
+                command.CommandType = CommandType.Text;
+                if (parameters != null)
+                    foreach (var p in parameters)
+                        command.Parameters.Add(p);
+                using (var reader = command.ExecuteReader())
+                {
+                    results = readFunc(reader);
+                }
+            }
+            return results;
+        }
+
+        /// <summary>
         /// 执行带参数的SQL语句
         /// </summary>
         /// <param name="SQLString">Sql语句</param>
@@ -884,6 +878,31 @@ namespace Common.Net.DbProvider
                 connection.Open();
                 var command = new SqlCommand(SQLString, connection);
                 command.CommandType = commandtext;
+                command.CommandTimeout = CommandTimeOut;
+                if (parameters != null)
+                    foreach (var p in parameters)
+                        command.Parameters.Add(p);
+                using (var reader = command.ExecuteReader())
+                {
+                    readFunc(reader);
+                }
+            }
+        }
+
+        /// <summary>
+        /// 执行带参数的SQL语句
+        /// </summary>
+        /// <param name="SQLString">Sql语句</param>
+        /// <param name="readFunc">DataReader</param>
+        /// <param name="parameters">参数列表</param>
+        /// <param name="db">命令类型</param>
+        public static void FindList(string SQLString, Action<SqlDataReader> readFunc, List<SqlParameter> parameters, DataBase db = DataBase.None)
+        {
+            using (SqlConnection connection = (db == DataBase.None) ? new SqlConnection(connectionString) : MySelfSqlConnection(db))
+            {
+                connection.Open();
+                var command = new SqlCommand(SQLString, connection);
+                command.CommandType = CommandType.Text;
                 command.CommandTimeout = CommandTimeOut;
                 if (parameters != null)
                     foreach (var p in parameters)
@@ -1064,137 +1083,6 @@ namespace Common.Net.DbProvider
                 }
             }
         }
-        #endregion 批量操作
-
-        #region 数据分页方法
-
-        /// <summary>
-        /// 高效主键分页--适用于大数据
-        /// </summary>
-        /// <param name="conn">数据库连接</param>
-        /// <param name="fieldList">需查询字段列表逗号分隔</param>
-        /// <param name="tableList">表列表逗号分隔</param>
-        /// <param name="whereList">where条件 不用带where关键字没有请写"",</param>
-        /// <param name="keyList">主键</param>
-        /// <param name="orderList">排序列表</param>
-        /// <param name="pageSize">每页数量</param>
-        /// <param name="pageIndex">第几页</param>
-        /// <param name="_paras">参数</param>
-        /// <returns></returns>
-        public static DataTable GetPageTable(string conn, string fieldList, string tableList, string whereList, string orderList, int pageSize, int pageIndex, string keyList, params SqlParameter[] _paras)
-        {
-            //  string _sqlPageById = @" select {0} FROM {1} INNER JOIN( SELECT {2} FROM {1} {6}  {3} LIMIT {4}, {5} ) as lims using({2}}) ";//高效分页
-            if (whereList.Trim().Length > 0)
-            {
-                whereList = " where " + whereList;
-            }
-            if (orderList.Trim().Length > 0)
-            {
-                orderList = " ORDER BY   " + orderList;
-            }
-            int PageStar = pageSize * (pageIndex - 1);
-            string _sqlPageById = @" select " + fieldList + " FROM " + tableList + " INNER JOIN( SELECT " + keyList + " FROM " + tableList + whereList + orderList + " LIMIT " + PageStar + ", " + pageSize + " ) as lims using(" + keyList + ") ";//高效分页
-            //object[] pd =
-            //{
-            //   fieldList, tableList, keyList, orderList, PageStar.ToString() ,
-            //              pageSize.ToString(),whereList
-            //};
-            // _sqlPageById = string.Format(_sqlPageById, pd);
-            return FindDataSet(_sqlPageById, _paras).Tables[0];//ExecuteDataTable(_sqlPageById, conn, _paras);
-        }
-        /// <summary>
-        /// 简单分页--适用于少量数据
-        /// </summary>
-        /// <param name="conn">连接</param>
-        /// <param name="fieldList">查询字段列表</param>
-        /// <param name="tableList">表列表</param>
-        /// <param name="whereList">where条件</param>
-        /// <param name="orderList">排序条件</param>
-        /// <param name="pageSize">每页大小</param>
-        /// <param name="pageIndex">第几页</param>
-        /// <param name="_paras">参数</param>
-        /// <returns></returns>
-        public static DataTable GetPageTable(string conn, string fieldList, string tableList, string whereList, string orderList, int pageSize, int pageIndex, params SqlParameter[] _paras)
-        {
-            string _sqlPage = "SELECT  {0} FROM {1}  {2} {3} limit {4},{5};";//简单分页
-            if (whereList.Trim().Length > 0)
-            {
-                whereList = " where " + whereList;
-            }
-            if (orderList.Trim().Length > 0)
-            {
-                orderList = " ORDER BY   " + orderList;
-            }
-            int PageStar = pageSize * (pageIndex - 1);
-            _sqlPage = string.Format(_sqlPage, fieldList, tableList, whereList, orderList, PageStar, pageSize);
-            return FindDataSet(_sqlPage, _paras).Tables[0];// ExecuteDataTable(_sqlPage, conn, _paras);
-        }
-
-        /// <summary>
-        /// 高效主键分页--适用于大数据
-        /// </summary>
-        /// <param name="conn">数据库连接</param>
-        /// <param name="fieldList">需查询字段列表逗号分隔</param>
-        /// <param name="tableList">表列表逗号分隔</param>
-        /// <param name="whereList">where条件 不用带where关键字没有请写"",</param>
-        /// <param name="keyList">主键</param>
-        /// <param name="orderList">排序列表</param>
-        /// <param name="pageSize">每页数量</param>
-        /// <param name="pageIndex">第几页</param>
-        /// <param name="_paras">参数</param>
-        /// <returns></returns>
-        public static DataTable GetPageTable(DataBase db, string fieldList, string tableList, string whereList, string orderList, int pageSize, int pageIndex, string keyList, ref int allct, params SqlParameter[] _paras)
-        {
-            //  string _sqlPageById = @" select {0} FROM {1} INNER JOIN( SELECT {2} FROM {1} {6}  {3} LIMIT {4}, {5} ) as lims using({2}}) ";//高效分页
-            if (whereList.Trim().Length > 0)
-            {
-                whereList = " where " + whereList;
-            }
-            if (orderList.Trim().Length > 0)
-            {
-                orderList = " ORDER BY   " + orderList;
-            }
-            int PageStar = pageSize * (pageIndex - 1);
-            string _sqlPageById = @" select " + fieldList + " FROM " + tableList + " INNER JOIN( SELECT " + keyList + " FROM " + tableList + whereList + orderList + " LIMIT " + PageStar + ", " + pageSize + " ) as lims using(" + keyList + ") ";//高效分页
-            allct = Convert.ToInt32(ExecuteScalar("SELECT count(*) FROM  " + tableList + "  " + whereList + "", db, _paras));
-            //object[] pd =
-            //{
-            //   fieldList, tableList, keyList, orderList, PageStar.ToString() ,
-            //              pageSize.ToString(),whereList
-            //};
-            // _sqlPageById = string.Format(_sqlPageById, pd);
-            return FindDataSet(_sqlPageById, _paras).Tables[0];//ExecuteDataTable(_sqlPageById, conn, _paras);
-        }
-        /// <summary>
-        /// 简单分页--适用于少量数据
-        /// </summary>
-        /// <param name="conn">连接</param>
-        /// <param name="fieldList">查询字段列表</param>
-        /// <param name="tableList">表列表</param>
-        /// <param name="whereList">where条件</param>
-        /// <param name="orderList">排序条件</param>
-        /// <param name="pageSize">每页大小</param>
-        /// <param name="pageIndex">第几页</param>
-        /// <param name="allct">总行数</param>
-        /// <param name="_paras">参数</param>
-        /// <returns></returns>
-        public static DataTable GetPageTable(DataBase db, string fieldList, string tableList, string whereList, string orderList, int pageSize, int pageIndex, ref int allct, params SqlParameter[] _paras)
-        {
-            string _sqlPage = "SELECT  {0} FROM {1}  {2} {3} limit {4},{5};";//简单分页
-            if (whereList.Trim().Length > 0)
-            {
-                whereList = " where " + whereList;
-            }
-            if (orderList.Trim().Length > 0)
-            {
-                orderList = " ORDER BY   " + orderList;
-            }
-            int PageStar = pageSize * (pageIndex - 1);
-            _sqlPage = string.Format(_sqlPage, fieldList, tableList, whereList, orderList, PageStar, pageSize);
-            allct = Convert.ToInt32(ExecuteScalar("SELECT count(*) FROM  " + tableList + "  " + whereList, db, _paras));
-            return FindDataSet(_sqlPage, _paras).Tables[0];//ExecuteDataTable(_sqlPage, conn, _paras);
-        }
-        #endregion
 
 
         /// <summary> 
@@ -1240,7 +1128,6 @@ namespace Common.Net.DbProvider
             }
         }
 
-
         /// <summary> 
         /// 批量更新数据(每批次5000) 
         /// 若只是需要大批量插入数据使用bcp是最好的，若同时需要插入、删除、更新建议使用SqlDataAdapter我测试过有很高的效率，一般情况下这两种就满足需求了 
@@ -1249,7 +1136,8 @@ namespace Common.Net.DbProvider
         /// <param name="dt"></param> 
         public static void BulkUpdate(DataTable dt, DataBase db = DataBase.None)
         {
-            using (SqlConnection conn = (db == DataBase.None) ? new SqlConnection(connectionString) : MySelfSqlConnection(db)) {
+            using (SqlConnection conn = (db == DataBase.None) ? new SqlConnection(connectionString) : MySelfSqlConnection(db))
+            {
                 SqlCommand comm = conn.CreateCommand();
                 comm.CommandTimeout = 120;
                 comm.CommandType = CommandType.Text;
@@ -1284,6 +1172,7 @@ namespace Common.Net.DbProvider
                 }
             };
         }
+        #endregion 批量操作
     }
 
 
