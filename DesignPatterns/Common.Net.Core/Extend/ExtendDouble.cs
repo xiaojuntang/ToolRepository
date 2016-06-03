@@ -18,7 +18,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Common.Net.Func
+namespace Common.Net.Core
 {
     public static class ExtendDouble
     {

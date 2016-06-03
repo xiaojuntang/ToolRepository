@@ -13,22 +13,18 @@
 *        创建年份:           2016 
 /*****************************************************************************/
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Net;
 using System.Net.Mail;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Common.Net.Func
 {
     public enum EmailSysEnum
     {
         Register,//用户注册
-        MfgSys,//魔方格系统（内部使用，发送系统通知用）
-        Service,//魔方格系统（外部用户，发送系统邮件，如找回密码等）
-        Pub//魔方格推广邮件（广告推送）
+        MfgSys,//系统（内部使用，发送系统通知用）
+        Service,//系统（外部用户，发送系统邮件，如找回密码等）
+        Pub//推广邮件（广告推送）
     }
     public class Email
     {
@@ -94,10 +90,10 @@ namespace Common.Net.Func
             string attachmentFiles)
         {
             MailMessage message;
-            MailAddress from = new MailAddress(fromMail, "魔方格学习社区", System.Text.Encoding.GetEncoding("gb2312"));
+            MailAddress from = new MailAddress(fromMail, "学习社区", System.Text.Encoding.GetEncoding("gb2312"));
             MailAddress to = new MailAddress(toMail);
             message = new MailMessage(from, to);
-            message.Body = body.Length > 0 ? body : "魔方格云教学平台";
+            message.Body = body.Length > 0 ? body : "云教学平台";
             // Include some non-ASCII characters in body and subject.
             string someArrows = new string(new char[] { '\u2190', '\u2191', '\u2192', '\u2193' });//这是四个方向箭头，用于装饰
             //message.Body += Environment.NewLine + someArrows;

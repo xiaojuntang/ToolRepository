@@ -46,29 +46,20 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ChinaDate.cs" />
     <Compile Include="CmdUtil.cs" />
     <Compile Include="Consts.cs" />
     <Compile Include="DataFillObject.cs" />
     <Compile Include="DateUtil.cs" />
     <Compile Include="DownHelper.cs" />
     <Compile Include="DrawValidationCode.cs" />
-    <Compile Include="ExtendDate.cs" />
-    <Compile Include="ExtendDouble.cs" />
-    <Compile Include="ExtendFile.cs" />
     <Compile Include="ExtendHttpRequest.cs" />
     <Compile Include="ExtendString.cs" />
-    <Compile Include="FileUtil.cs" />
     <Compile Include="FilterWord.cs" />
     <Compile Include="FilterWord2.cs" />
-    <Compile Include="IniUitl.cs" />
     <Compile Include="IpMacManager.cs" />
     <Compile Include="Email.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PropertyList.cs" />
-    <Compile Include="Registrys.cs" />
-    <Compile Include="SecurityRSA.cs" />
-    <Compile Include="SecurityDES.cs" />
     <Compile Include="TransForm.cs" />
     <Compile Include="UniqueObjectID.cs" />
     <Compile Include="WebTools.cs" />

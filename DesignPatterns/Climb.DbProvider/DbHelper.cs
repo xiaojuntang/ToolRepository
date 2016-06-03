@@ -10,18 +10,21 @@ using System.Threading.Tasks;
 
 namespace Climb.DbProvider
 {
+    /// <summary>
+    /// 对数据库的二次封装
+    /// </summary>
     public class DbHelper : IDisposable, IDbHelper
     {
+        private string _queryDetaiLog = string.Empty;
         protected DbProviderFactory _dbProviderFactory;
-        private string _queryDetaiLog = "";
         protected DbDataAdapter DbaAdapter;
-        protected System.Data.Common.DbCommand DbCommand;
-        protected System.Data.Common.DbConnection DbConnection;
+        protected DbCommand DbCommand;
+        protected DbConnection DbConnection;
         protected string dbConnectionString;
         protected static readonly ILog DbLog = LogHelper.GetLogByName("DbLog");
-        private static readonly ILog DbQueryLog = LogHelper.GetLogByName("DbQueryLog");
-        protected System.Data.Common.DbTransaction DbTransaction;
+        protected DbTransaction DbTransaction;
         protected bool Disposed;
+        private static readonly ILog DbQueryLog = LogHelper.GetLogByName("DbQueryLog");
 
         protected DbHelper(DbProviderFactory dbfFactory, string connectionString)
         {

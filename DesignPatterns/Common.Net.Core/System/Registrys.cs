@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using Microsoft.Win32;
 
-namespace Common.Net.Func
+namespace Common.Net.Core
 {
     public class Registrys
     {

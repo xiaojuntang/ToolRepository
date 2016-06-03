@@ -14,7 +14,7 @@
 /*****************************************************************************/
 using System;
 
-namespace Common.Net.Func
+namespace Common.Net.Core
 {
     /// <summary>
     /// 时间的扩展

@@ -21,7 +21,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace Common.Net.Func
+namespace Common.Net.Core
 {
     public class SecurityDES
     {

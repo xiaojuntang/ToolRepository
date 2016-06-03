@@ -4,7 +4,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 
-namespace Common.Net.Func
+namespace Common.Net.Core
 {
     class IniUitl
     {

@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Web;
 
-namespace Common.Net.Func
+namespace Common.Net.Core
 {
     /// <summary>
     /// 文件实用类
