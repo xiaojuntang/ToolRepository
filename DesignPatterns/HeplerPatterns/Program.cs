@@ -1,4 +1,5 @@
-﻿using Common.Net.Helper;
+﻿using Common.Net.Core;
+using Common.Net.Helper;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,6 +17,10 @@ namespace HeplerPatterns
 
         static void Main(string[] args)
         {
+
+
+
+
             //Common.Net.Helper.LogHelper.GetLogByName("DebugFileAppender").Debug("1111111111");
             //Common.Net.Helper.LogHelper.GetLogByName().Error("2222222222");
             //Common.Net.Helper.LogHelper.GetLogByName().Info("33333333333");
@@ -60,5 +65,5 @@ namespace HeplerPatterns
     }
 
 
-   
+
 }

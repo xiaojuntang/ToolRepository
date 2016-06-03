@@ -5,7 +5,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace Common.Net.Utility
+namespace Common.Net.Core
 {
     /// <summary>
     /// 正则帮助类

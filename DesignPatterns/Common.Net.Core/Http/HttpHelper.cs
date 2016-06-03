@@ -10,7 +10,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace Common.Net.Utility
+namespace Common.Net.Core
 {
     /// <summary>  
     /// Http连接操作帮助类  

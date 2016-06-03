@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Common.Net.Utility
+namespace Common.Net.Core
 {
     /// <summary>
     /// 短信发送,采用乐云短信平台每天可以免费发送100条,同一接收人5分钟内只能发送两条
@@ -46,7 +46,7 @@ namespace Common.Net.Utility
                 item.Header.Add("apikey", Apikey);
                 //请求的返回值对象
                 HttpResult result = http.GetHtml(item);
-                JObject jo = JObject.Parse(result.Html);
+                Newtonsoft.Json.Linq.JObject jo = JObject.Parse(result.Html);
                 JToken value = null;
                 if (jo.TryGetValue("result", out value))
                 {
@@ -56,6 +56,7 @@ namespace Common.Net.Utility
             }
             catch (Exception ex)
             {
+                Console.WriteLine(ex.ToString());
                 //LogHelper.WriteLog("短信发送失败", ex);
                 return SMSCode.Exception;
             }

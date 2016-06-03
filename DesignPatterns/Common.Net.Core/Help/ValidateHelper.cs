@@ -185,8 +185,8 @@ namespace Common.Net.Core
             if (string.IsNullOrEmpty(sourceIP) || string.IsNullOrEmpty(targetIP))
                 return false;
 
-            string[] sourceIPBlockList = StringHelper.SplitString(sourceIP, @".");
-            string[] targetIPBlockList = StringHelper.SplitString(targetIP, @".");
+            string[] sourceIPBlockList = ExtendString.SplitString(sourceIP, @".");
+            string[] targetIPBlockList = ExtendString.SplitString(targetIP, @".");
 
             int sourceIPBlockListLength = sourceIPBlockList.Length;
 
@@ -235,7 +235,7 @@ namespace Common.Net.Core
         /// <returns></returns>
         public static bool InIPList(string sourceIP, string targetIPStr)
         {
-            string[] targetIPList = StringHelper.SplitString(targetIPStr, "\n");
+            string[] targetIPList = ExtendString.SplitString(targetIPStr, "\n");
             return InIPList(sourceIP, targetIPList);
         }
 
@@ -290,7 +290,7 @@ namespace Common.Net.Core
         /// <returns></returns>
         public static bool BetweenPeriod(string periodStr, out string liePeriod)
         {
-            string[] periodList = StringHelper.SplitString(periodStr, "\n");
+            string[] periodList = ExtendString.SplitString(periodStr, "\n");
             return BetweenPeriod(periodList, out liePeriod);
         }
 
@@ -327,7 +327,7 @@ namespace Common.Net.Core
         /// </summary>
         public static bool IsNumericRule(string numericRuleStr, string splitChar)
         {
-            return IsNumericArray(StringHelper.SplitString(numericRuleStr, splitChar));
+            return IsNumericArray(ExtendString.SplitString(numericRuleStr, splitChar));
         }
 
         /// <summary>

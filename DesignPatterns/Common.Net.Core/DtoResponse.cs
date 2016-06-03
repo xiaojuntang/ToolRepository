@@ -9,7 +9,7 @@ namespace Common.Net.Core
     /// <summary>
     /// 接口与异步返回类
     /// </summary>
-    public class Response
+    public class DtoResponse
     {
         /// <summary>
         /// 返回代码.具体见方法返回值说明
@@ -29,7 +29,7 @@ namespace Common.Net.Core
         /// <summary>
         /// 构造函数
         /// </summary>
-        public Response()
+        public DtoResponse()
         {
             Code = Codes.Failure;
         }

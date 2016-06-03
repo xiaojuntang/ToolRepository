@@ -6,7 +6,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Common.Net.Utility
+namespace Common.Net.Core
 {
     /// <summary>
     /// 枚举帮助类

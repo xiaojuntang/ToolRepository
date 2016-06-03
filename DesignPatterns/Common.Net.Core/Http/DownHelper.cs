@@ -2,7 +2,7 @@
 using System.IO;
 using System.Web;
 
-namespace Common.Net.Func
+namespace Common.Net.Core
 {
     /// <summary>
     /// Web文档下载类

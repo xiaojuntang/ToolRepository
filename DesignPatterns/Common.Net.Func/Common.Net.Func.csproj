@@ -48,12 +48,9 @@
   <ItemGroup>
     <Compile Include="DataFillObject.cs" />
     <Compile Include="DateUtil.cs" />
-    <Compile Include="DownHelper.cs" />
     <Compile Include="FilterWord.cs" />
     <Compile Include="FilterWord2.cs" />
-    <Compile Include="Email.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="UniqueObjectID.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

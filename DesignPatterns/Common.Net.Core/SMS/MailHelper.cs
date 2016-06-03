@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Common.Net.Utility
+namespace Common.Net.Core
 {
     /// <summary>
     /// 使用SMTP发送邮件,需要添加发送人邮件 用户名密码进行认证才能发送成功
@@ -87,6 +87,7 @@ namespace Common.Net.Utility
             }
             catch (Exception ex)
             {
+                Console.WriteLine(ex.ToString());
                 //LogHelper.WriteLog("邮件发送失败", ex);
                 return SMSCode.Exception;
             }

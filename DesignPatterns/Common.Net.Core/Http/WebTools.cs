@@ -257,16 +257,7 @@ namespace Common.Net.Core
             HttpContext.Current.Application.Lock();
             HttpContext.Current.Response.Cookies.Remove(key);
             HttpContext.Current.Application.UnLock();
-        }
-
-        /// <summary>
-        /// 获取一个 登录 生成的惟一key 
-        /// </summary>
-        /// <returns></returns>
-        public static string GetLoginKey()
-        {
-            return (HttpContext.Current.Session.SessionID + DateTime.Now.ToString("yyyyMMddHHss")).md5();
-        }
+        }   
 
         /// <summary>
         /// 发送post请求(utf8 编码)

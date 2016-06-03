@@ -47,15 +47,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CacheHelper.cs" />
-    <Compile Include="DataTableListHelper.cs" />
-    <Compile Include="DateTimeHelper.cs" />
-    <Compile Include="EnumHelper.cs" />
-    <Compile Include="HttpHelper\HttpCookieHelper.cs" />
-    <Compile Include="HttpHelper\HttpHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="RegexHelper.cs" />
-    <Compile Include="SMS\MailHelper.cs" />
-    <Compile Include="SMS\SmsHelper.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

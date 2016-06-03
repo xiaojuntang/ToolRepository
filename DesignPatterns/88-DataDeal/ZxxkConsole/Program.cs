@@ -1,4 +1,5 @@
-﻿using Common.Net.DbProvider;
+﻿using Common.Net.Core;
+using Common.Net.DbProvider;
 using Common.Net.Func;
 using Common.Net.Helper;
 using System;

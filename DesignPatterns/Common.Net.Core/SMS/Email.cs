@@ -7,7 +7,7 @@
 *        新建项输入的名称:   MailHelper 
 *        机器名称:           LD 
 *        注册组织名:          
-*        命名空间名称:       Common.Net.Helper 
+*        命名空间名称:       Common.Net.Core 
 *        文件名:             MailHelper 
 *        创建系统时间:       2016/2/3 10:13:10 
 *        创建年份:           2016 
@@ -17,7 +17,7 @@ using System.IO;
 using System.Net;
 using System.Net.Mail;
 
-namespace Common.Net.Func
+namespace Common.Net.Core
 {
     public enum EmailSysEnum
     {
