@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 
-namespace Common.Net.Func
+namespace Common.Net.Core
 {
     public class TransForm
     {

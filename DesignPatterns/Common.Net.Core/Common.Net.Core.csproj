@@ -20,6 +20,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -45,11 +46,13 @@
   <ItemGroup>
     <Compile Include="Consts.cs" />
     <Compile Include="Data\DataHelper.cs" />
+    <Compile Include="Data\TransForm.cs" />
     <Compile Include="Extend\ChinaDate.cs" />
     <Compile Include="Extend\ExtendDate.cs" />
     <Compile Include="Extend\ExtendDouble.cs" />
     <Compile Include="Extend\ExtendString.cs" />
     <Compile Include="Extend\PropertyList.cs" />
+    <Compile Include="File\DrawValidationCode.cs" />
     <Compile Include="File\ExtendFile.cs" />
     <Compile Include="File\FileUtil.cs" />
     <Compile Include="File\IniUitl.cs" />
