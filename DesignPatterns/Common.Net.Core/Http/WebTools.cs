@@ -18,7 +18,7 @@ using System.Net;
 using System.Text;
 using System.Web;
 
-namespace Common.Net.Func
+namespace Common.Net.Core
 {
     public sealed class WebTools
     {

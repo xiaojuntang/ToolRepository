@@ -4,7 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 
-namespace Common.Net.Func
+namespace Common.Net.Core
 {
     /// <summary>
     /// 执行命令

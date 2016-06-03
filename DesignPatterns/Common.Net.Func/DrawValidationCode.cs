@@ -20,7 +20,7 @@ using System.Drawing.Text;
 using System.IO;
 using System.Text;
 
-namespace Common.Net.Func
+namespace Common.Net.Core
 {
     #region 验证码生成类
 

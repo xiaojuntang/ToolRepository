@@ -6,7 +6,7 @@ using System.Net;
 using System.Text.RegularExpressions;
 using System.Management;
 
-namespace Common.Net.Func
+namespace Common.Net.Core
 {
     public sealed class IpMacManager
     {

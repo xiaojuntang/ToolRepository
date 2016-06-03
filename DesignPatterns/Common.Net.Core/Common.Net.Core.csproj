@@ -33,6 +33,7 @@
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Management" />
     <Reference Include="System.Web" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -42,9 +43,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Consts.cs" />
+    <Compile Include="Data\DataHelper.cs" />
     <Compile Include="Extend\ChinaDate.cs" />
     <Compile Include="Extend\ExtendDate.cs" />
     <Compile Include="Extend\ExtendDouble.cs" />
+    <Compile Include="Extend\ExtendString.cs" />
+    <Compile Include="Extend\PropertyList.cs" />
     <Compile Include="File\ExtendFile.cs" />
     <Compile Include="File\FileUtil.cs" />
     <Compile Include="File\IniUitl.cs" />
@@ -53,12 +58,15 @@
     <Compile Include="Help\ValidateHelper.cs" />
     <Compile Include="Http\StringHelper.cs" />
     <Compile Include="Http\WebHelper.cs" />
+    <Compile Include="Http\WebTools.cs" />
     <Compile Include="Paging.cs" />
     <Compile Include="Response.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Security\SecurityDES.cs" />
     <Compile Include="Security\SecurityRSA.cs" />
     <Compile Include="SynchronisedDictionary.cs" />
+    <Compile Include="System\CmdUtil.cs" />
+    <Compile Include="System\IpMacManager.cs" />
     <Compile Include="System\Registrys.cs" />
   </ItemGroup>
   <ItemGroup />

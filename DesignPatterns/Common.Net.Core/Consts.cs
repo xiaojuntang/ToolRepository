@@ -18,12 +18,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Common.Net.Func
+namespace Common.Net.Core
 {
     public class Consts
     {
         /// <summary>非法字符提示符
         /// </summary>
-        public const string PARA_ERROR = "PE";
+        public const string PARA_ERROR = "PARA_ERROR";
     }
 }

@@ -18,6 +18,24 @@ namespace Common.Net.Core
     /// </summary>
     public class WebHelper
     {
+        #region 数据成员
+        /// <summary>PC（包括iE、google、sarfri）
+        /// </summary>
+        private static readonly string[] PC = { "Windows NT", "Macintosh" };
+        /// <summary>安卓
+        /// </summary>
+        private static readonly string[] Android = { "Android" };
+        /// <summary>IOS（"iPhone", "iPod", "iPad" ）
+        /// </summary>
+        private static readonly string[] IOS = { "iPhone", "iPod", "iPad" };
+        /// <summary>windows phone
+        /// </summary>
+        private static readonly string[] WP = { "Windows Phone" };
+        /// <summary>微信
+        /// </summary>
+        private static readonly string[] WX = { "micromessenger" };
+        #endregion
+
         //浏览器列表
         private static string[] _browserlist = new string[] { "ie", "chrome", "mozilla", "netscape", "firefox", "opera", "konqueror" };
         //搜索引擎列表
@@ -25,6 +43,31 @@ namespace Common.Net.Core
         //meta正则表达式
         private static Regex _metaregex = new Regex("<meta([^<]*)charset=([^<]*)[\"']", RegexOptions.IgnoreCase | RegexOptions.Multiline);
 
+
+
+        /// <summary>
+        /// 获取客户端类型----pc还是移动端 未使用
+        /// </summary>
+        /// <param name="rqst"></param>
+        /// <returns>1:pc/未知   ， 2:mobile</returns>   
+        public static int GetClientType(System.Web.HttpRequest _rqst)
+        {
+            var userAgent = _rqst.UserAgent;
+            if (userAgent != null)
+            {
+
+                if (PC.Any(source => userAgent.IndexOf(source, StringComparison.Ordinal) > -1))//判断是否是pc端
+                {
+                    return 1;
+                }
+                else if (new string[][] { Android, IOS, WP, WX }.Any(source => source.Any(ua => userAgent.IndexOf(ua, StringComparison.Ordinal) > -1)))//判断是否是移动端。
+                {
+                    return 0;
+                }
+
+            }
+            return 1;
+        }
         #region 编码
 
         /// <summary>
@@ -870,6 +913,6 @@ namespace Common.Net.Core
 
         }
 
-        #endregion
+        #endregion  
     }
 }
