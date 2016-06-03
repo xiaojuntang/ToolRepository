@@ -20,7 +20,7 @@ using System.Threading.Tasks;
 
 namespace Common.Net.Core
 {
-    public class Consts
+    public class Constants
     {
         /// <summary>非法字符提示符
         /// </summary>

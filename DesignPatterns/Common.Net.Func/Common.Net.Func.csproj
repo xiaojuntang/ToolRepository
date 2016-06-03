@@ -46,8 +46,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DataFillObject.cs" />
-    <Compile Include="DateUtil.cs" />
     <Compile Include="FilterWord.cs" />
     <Compile Include="FilterWord2.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

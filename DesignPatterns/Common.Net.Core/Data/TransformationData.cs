@@ -13,7 +13,7 @@ namespace Common.Net.Core
     /// <summary>
     /// 数据转换
     /// </summary>
-    public class DataHelper
+    public class TransformationData
     {
         #region 将DataTable的数据转换为实体类集合
 

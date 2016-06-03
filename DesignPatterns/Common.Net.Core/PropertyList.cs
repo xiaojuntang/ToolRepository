@@ -19,7 +19,7 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Common.Net.Func
+namespace Common.Net.Core
 {
     /// <summary>
     /// 获取对象的属性

@@ -48,15 +48,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Consts.cs" />
-    <Compile Include="Data\DataHelper.cs" />
+    <Compile Include="Constants.cs" />
+    <Compile Include="Data\TransformationData.cs" />
     <Compile Include="Data\TransForm.cs" />
     <Compile Include="Extend\ChinaDate.cs" />
+    <Compile Include="Extend\ExtendArray.cs" />
     <Compile Include="Extend\ExtendDateTime.cs" />
-    <Compile Include="Extend\ExtendDate.cs" />
     <Compile Include="Extend\ExtendDouble.cs" />
     <Compile Include="Extend\ExtendString.cs" />
-    <Compile Include="Extend\PropertyList.cs" />
+    <Compile Include="Help\XmlHelper.cs" />
+    <Compile Include="PropertyList.cs" />
     <Compile Include="File\DrawValidationCode.cs" />
     <Compile Include="File\ExtendFile.cs" />
     <Compile Include="File\FileUtil.cs" />

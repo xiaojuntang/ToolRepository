@@ -29,7 +29,7 @@ namespace Common.Net.Core
         /// <param name="ct">整数部分前边需要补零个数</param>
         /// <param name="dec">小数部分后便需要补零个数</param>
         /// <returns></returns>
-        public static string format(this double num, int ct, int dec)
+        public static string Format(this double num, int ct, int dec)
         {
             string formatStr = string.Empty;
             for (int i = 1; i <= ct; i++)

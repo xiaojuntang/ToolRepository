@@ -264,13 +264,13 @@ namespace Common.Net.Core
             }
             if (edition.Length > 30)
             {
-                return Consts.PARA_ERROR;
+                return Constants.PARA_ERROR;
             }
             else
             {
                 if (!edition.IsNumber())
                 {
-                    return Consts.PARA_ERROR;
+                    return Constants.PARA_ERROR;
                 }
                 else
                 {
@@ -294,7 +294,7 @@ namespace Common.Net.Core
             bool timeflag = DateTime.TryParse(time, out mintime);
             if (!timeflag || mintime < DateTime.Parse("1900-1-1") || mintime > DateTime.Parse("5000-12-30"))
             {
-                return Consts.PARA_ERROR;
+                return Constants.PARA_ERROR;
             }
             else
             {
