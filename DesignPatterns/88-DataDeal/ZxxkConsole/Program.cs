@@ -48,6 +48,8 @@ namespace ZxxkConsole
         //}
         static void Main(string[] args)
         {
+
+            T001();
             //86e5dbe2774411d434142357e2b1b507
 
 
@@ -128,8 +130,8 @@ namespace ZxxkConsole
             {
                 string key = item.Key;
                 string value = item.Value;
-                string sql = $@"INSERT INTO [HomeWork].[dbo].[HW_TencentMata] ([MetaType] ,[MetaKey] ,[MetaValue])VALUES('{type}','{key}','{value}')";
-                //object result = SQLHelper.ExecuteScalar(sql, DataBase.ZYTConnString);
+                string sql = $@"INSERT INTO [HomeWork].[dbo].[TX_TencentMata] ([MetaType] ,[MetaKey] ,[MetaValue])VALUES('{type}','{key}','{value}')";
+                object result = SQLHelper.ExecuteScalar(sql, DataBase.ZYTConnString);
             }
         }
 
