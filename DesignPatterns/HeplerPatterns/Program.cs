@@ -93,6 +93,10 @@ namespace HeplerPatterns
                 list.Add(test);
             }
 
+            var dsds = XmlSerialize.Serialize(list);
+
+      
+
             CacheHelper.Add("C:U:001", list);
 
             if (CacheHelper.IsExist("C:U:001"))

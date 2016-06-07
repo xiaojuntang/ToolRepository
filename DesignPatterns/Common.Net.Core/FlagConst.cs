@@ -7,7 +7,7 @@
 *        新建项输入的名称:   Consts 
 *        机器名称:           LD 
 *        注册组织名:          
-*        命名空间名称:       Common.Net.Func 
+*        命名空间名称:       Common.Net.Core 
 *        文件名:             Consts 
 *        创建系统时间:       2016/2/3 10:01:54 
 *        创建年份:           2016 
@@ -20,10 +20,14 @@ using System.Threading.Tasks;
 
 namespace Common.Net.Core
 {
-    public class Constants
+    /// <summary>
+    /// 常量类
+    /// </summary>
+    public class FlagConst
     {
-        /// <summary>非法字符提示符
+        /// <summary>
+        /// 非法字符提示符
         /// </summary>
-        public const string PARA_ERROR = "PARA_ERROR";
+        public static readonly string PARA_ERROR = "PARA_ERROR";
     }
 }

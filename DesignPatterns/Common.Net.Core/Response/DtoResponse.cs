@@ -7,8 +7,9 @@ using System.Threading.Tasks;
 namespace Common.Net.Core
 {
     /// <summary>
-    /// 接口与异步返回类
+    /// 输出响应类
     /// </summary>
+    [Serializable]
     public class DtoResponse
     {
         /// <summary>
@@ -31,23 +32,7 @@ namespace Common.Net.Core
         /// </summary>
         public DtoResponse()
         {
-            Code = Codes.Failure;
+            Code = Codes.Success;
         }
-    }
-
-    public enum Codes
-    {
-        /// <summary>
-        /// 成功
-        /// </summary>
-        Success,
-        /// <summary>
-        /// 失败
-        /// </summary>
-        Failure,
-        /// <summary>
-        /// 错误
-        /// </summary>
-        Error
     }
 }

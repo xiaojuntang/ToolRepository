@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace Common.Net.Core
 {
     /// <summary>
-    /// 分页类
+    /// 分页参数类
     /// </summary>
     /// <typeparam name="T"></typeparam>
     public class Paging<T> where T : class
@@ -30,12 +30,15 @@ namespace Common.Net.Core
         /// <summary>
         /// 当前页记录列表
         /// </summary>
-        public List<T> Items { get; set; }
+        public List<T> Data { get; set; }
 
-        public Paging()
+        /// <summary>
+        /// 构造函数
+        /// </summary>
+        public Paging(int pageIndex, int pageSize)
         {
-            PageIndex = 1;
-            PageSize = 20;
+            PageIndex = pageIndex;
+            PageSize = pageSize;
         }
     }
 }
