@@ -93,6 +93,35 @@ namespace Common.Net.Core
             return list;
         }
 
+        public static List<T> QueryList<T>(IDataReader reader) where T : class, new()
+        {
+            List<T> list = new List<T>();
+            //using (reader)
+            //{
+            //    if (reader.Read())
+            //    {
+            //        int fcount = reader.FieldCount;
+            //        INamedMemberAccessor[] accessors = new INamedMemberAccessor[fcount];
+            //        DelegatedReflectionMemberAccessor drm = new DelegatedReflectionMemberAccessor();
+            //        for (int i = 0; i < fcount; i++)
+            //        {
+            //            accessors[i] = drm.FindAccessor<T>(reader.GetName(i));
+            //        }
+            //        do
+            //        {
+            //            T t = new T();
+            //            for (int i = 0; i < fcount; i++)
+            //            {
+            //                if (!reader.IsDBNull(i))
+            //                    accessors[i].SetValue(t, reader.GetValue(i));
+            //            }
+            //            list.Add(t);
+            //        } while (reader.Read());
+            //    }
+            //}
+            return list;
+        }
+
         /// <summary>
         /// 将数据某条记录转换为实体类。
         /// </summary>
