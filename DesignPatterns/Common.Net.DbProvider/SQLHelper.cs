@@ -196,7 +196,7 @@ namespace Common.Net.DbProvider
                         string strsql = SQLStringList[n];
                         if (strsql.Trim().Length > 1)
                         {
-                            PrepareCommand(cmd, conn, tx, strsql, SqlParameterList[n]);
+                            PrepareCommand(cmd, conn, tx, strsql, SqlParameterList == null ? null : SqlParameterList[n]);
                             count += cmd.ExecuteNonQuery();
                             ac++;
                         }
@@ -1174,6 +1174,4 @@ namespace Common.Net.DbProvider
         }
         #endregion 批量操作
     }
-
-
 }
