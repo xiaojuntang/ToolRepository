@@ -48,6 +48,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="File\IPSearch.cs" />
     <Compile Include="FlagConst.cs" />
     <Compile Include="Data\TransformationData.cs" />
     <Compile Include="Data\TransForm.cs" />

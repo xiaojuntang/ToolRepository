@@ -1306,6 +1306,7 @@ namespace Common.Net.DbProvider
         /// <summary>
         /// 资源线下测试数据库 192.168.180.186
         /// </summary>
-        CResourceKF
+        CResourceKF,
+        ZYTConnString68
     }
 }

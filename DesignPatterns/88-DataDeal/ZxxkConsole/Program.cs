@@ -130,10 +130,36 @@ namespace ZxxkConsole
             {
                 string key = item.Key;
                 string value = item.Value;
-                string sql = $@"INSERT INTO [HomeWork].[dbo].[TX_TencentMata] ([MetaType] ,[MetaKey] ,[MetaValue])VALUES('{type}','{key}','{value}')";
+                string sql = $@"INSERT INTO [TX_TencentMata] ([MetaType] ,[MetaKey] ,[MetaValue])VALUES('{type}','{key}','{value}')";
                 object result = SQLHelper.ExecuteScalar(sql, DataBase.ZYTConnString);
             }
         }
+
+        //private static List<HW_ZujuanNodes> TA68()
+        //{
+        //    List<HW_ZujuanNodes> models = new List<HW_ZujuanNodes>();
+        //    string sql = $@"select * from HW_ZujuanNodes where ParentNodeID= {pId}; ";
+        //    SQLHelper.FindList(sql, (a) =>
+        //    {
+        //        if (a.HasRows)
+        //        {
+        //            while (a.Read())
+        //            {
+        //                HW_ZujuanNodes model = new HW_ZujuanNodes();
+        //                model.ID = a.GetInt32(0);
+        //                model.NodeID = a.GetInt32(1);
+        //                model.NodeName = a.GetString(2);
+        //                model.ParentNodeID = a.GetInt32(3);
+        //                model.OrderNumber = a.IsDBNull(4) ? 0 : a.GetInt32(4);
+        //                model.TencentID = a.IsDBNull(5) ? "" : a.GetString(5);
+        //                models.Add(model);
+        //            }
+        //        }
+        //    }, null, CommandType.Text, DataBase.ZYTConnString);
+        //    return models;
+        //}
+
+
 
         private static List<HW_ZujuanNodes> T002(int pId)
         {

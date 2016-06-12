@@ -84,6 +84,7 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="config.xml" />
     <Content Include="NPOI.xml" />
   </ItemGroup>
   <ItemGroup>
