@@ -459,7 +459,7 @@ namespace Common.Tools
         public DataSet ExcelToDataSet(string path)
         {
             DataSet ds = new DataSet();
-            IWorkbook wb = new HSSFWorkbook();//WorkbookFactory.Create(path);
+            IWorkbook wb = WorkbookFactory.Create(path);
             for (int sheetIndex = 0; sheetIndex < wb.NumberOfSheets; sheetIndex++)
             {
                 ISheet sheet = wb.GetSheetAt(sheetIndex);
@@ -476,7 +476,8 @@ namespace Common.Tools
                 {
                     DataRow dr = dt.NewRow();
                     for (int j = 0; j < columnCount; j++)
-                        dr.SetField(j, sheet.GetRow(i).GetCell(j).StringCellValue);
+                        //dr.SetField(j, sheet.GetRow(i).GetCell(j).StringCellValue);
+                        dr.SetField(j, sheet.GetRow(i).GetCell(j).ToString());
                     dt.Rows.Add(dr);
                 }
                 ds.Tables.Add(dt);

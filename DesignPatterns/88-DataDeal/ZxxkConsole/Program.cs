@@ -2,6 +2,7 @@
 using Common.Net.DbProvider;
 using Common.Net.Func;
 using Common.Net.Helper;
+using Common.Tools;
 using System;
 using System.Collections;
 using System.Collections.Concurrent;
@@ -49,7 +50,7 @@ namespace ZxxkConsole
         static void Main(string[] args)
         {
 
-            T001();
+            T100();
             //86e5dbe2774411d434142357e2b1b507
 
 
@@ -93,6 +94,49 @@ namespace ZxxkConsole
             T004(0);
 
             Console.ReadLine();
+        }
+
+        private static void T100()
+        {
+            OfficeHelper office = new OfficeHelper();
+            DataTable dt = office.ExcelToDataSet("E:\\a.xlsx").Tables[0];
+            if (dt != null && dt.Rows.Count > 0)
+            {
+                foreach (DataRow item in dt.Rows)
+                {
+                    int nodeId = Convert.ToInt32(item[0].ToString());
+                    var tId = item[1].ToString();
+                    HW_ZujuanNodes hw = T099(nodeId);
+                    if (hw.NodeID > 0)
+                    {
+                        //存在
+                        string a = tId.Substring(0, 4);
+                        string b = tId.Substring(0, 9);
+                        string c = tId.Substring(0, 14);
+
+                        //更新第四级
+                        T098(hw.NodeID, tId);//51158
+
+                        //更新第三级
+                        T098(hw.ParentNodeID, c);//28107
+
+                        //更新第二级
+                        HW_ZujuanNodes hw2 = T099(hw.ParentNodeID);
+                        T098(hw2.ParentNodeID, b);//888881
+
+                        //更新第一级
+                        HW_ZujuanNodes hw3 = T099(hw2.ParentNodeID);
+                        T098(hw3.ParentNodeID, a);
+
+                    }
+                    else
+                    {
+                        Console.WriteLine(nodeId + "不存在");
+                    }
+
+                }
+
+            }
         }
 
         private static void T001()
@@ -159,7 +203,35 @@ namespace ZxxkConsole
         //    return models;
         //}
 
+        private static HW_ZujuanNodes T099(int NodeId)
+        {
+            HW_ZujuanNodes model = new HW_ZujuanNodes();
+            string sql = $@"select * from HW_ZujuanNodes where NodeID = {NodeId}; ";
+            SQLHelper.FindList(sql, (a) =>
+            {
+                if (a.HasRows)
+                {
+                    while (a.Read())
+                    {
 
+                        model.ID = a.GetInt32(0);
+                        model.NodeID = a.GetInt32(1);
+                        model.NodeName = a.GetString(2);
+                        model.ParentNodeID = a.GetInt32(3);
+                        model.OrderNumber = a.IsDBNull(4) ? 0 : a.GetInt32(4);
+                        model.TencentID = a.IsDBNull(5) ? "" : a.GetString(5);
+                    }
+                }
+            }, null, CommandType.Text, DataBase.ZYTConnString68);
+            return model;
+        }
+
+        private static bool T098(int NodeId, string TID)
+        {
+            HW_ZujuanNodes model = new HW_ZujuanNodes();
+            string sql = $@"update HW_ZujuanNodes set TencentID='{TID}' where NodeID = {NodeId};";
+            return Convert.ToInt32(SQLHelper.ExecuteScalar(sql, DataBase.ZYTConnString68)) > 0;
+        }
 
         private static List<HW_ZujuanNodes> T002(int pId)
         {
@@ -355,7 +427,8 @@ namespace ZxxkConsole
             {
                 List<HW_ZujuanNodes> allNode = T006(0);
                 object lockObj;
-                if (!LockDic.TryGetValue(cacheKey, out lockObj)) {
+                if (!LockDic.TryGetValue(cacheKey, out lockObj))
+                {
                     lockObj = new object();
                     LockDic.TryAdd(cacheKey, lockObj);
                 }
