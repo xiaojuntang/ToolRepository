@@ -58,6 +58,7 @@
     <Compile Include="Extend\ExtendDouble.cs" />
     <Compile Include="Extend\ExtendString.cs" />
     <Compile Include="Help\XmlHelper.cs" />
+    <Compile Include="Http\Http2Hepler.cs" />
     <Compile Include="PageBar.cs" />
     <Compile Include="Response\Codes.cs" />
     <Compile Include="Response\OutputResponse.cs" />

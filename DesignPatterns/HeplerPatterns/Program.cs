@@ -78,7 +78,7 @@ namespace HeplerPatterns
         static void Main(string[] args)
         {
 
-
+            string abc = Http2Helper.OpenReadWithHttps("https://ewt.zxxk.com:800/",string.Empty, "application/x-www-form-urlencoded");
 
 
             //Common.Net.Helper.LogHelper.GetLogByName("DebugFileAppender").Debug("1111111111");
@@ -95,7 +95,7 @@ namespace HeplerPatterns
 
             var dsds = XmlSerialize.Serialize(list);
 
-      
+
 
             CacheHelper.Add("C:U:001", list);
 
