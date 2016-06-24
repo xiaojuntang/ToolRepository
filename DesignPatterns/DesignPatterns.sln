@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.25123.0
+VisualStudioVersion = 14.0.25402.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DesignPatterns", "DesignPatterns\DesignPatterns.csproj", "{64E70C4B-B419-4754-898D-8B1227208C07}"
 EndProject
@@ -129,6 +129,10 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Repo.Demo.Dal", "17-PatternsRepository\Repo.Demo.Dal\Repo.Demo.Dal.csproj", "{D7591650-0FDD-415E-A3BD-42FD5659C9E9}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common.DB.MySql", "Common.DB.MySql\Common.DB.MySql.csproj", "{3EEE7056-A137-4313-8D8F-F6B77B50FE29}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "18-线程使用", "18-线程使用", "{87491050-D4C8-448B-A0C0-AB97191CB52F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestProject.Tasks", "TestProject.Tasks\TestProject.Tasks.csproj", "{B8389EB9-911A-4A27-9B01-6DA397272243}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -304,6 +308,10 @@ Global
 		{3EEE7056-A137-4313-8D8F-F6B77B50FE29}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3EEE7056-A137-4313-8D8F-F6B77B50FE29}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3EEE7056-A137-4313-8D8F-F6B77B50FE29}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B8389EB9-911A-4A27-9B01-6DA397272243}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B8389EB9-911A-4A27-9B01-6DA397272243}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B8389EB9-911A-4A27-9B01-6DA397272243}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B8389EB9-911A-4A27-9B01-6DA397272243}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -350,5 +358,6 @@ Global
 		{9AB15F37-D2BE-4A50-8434-0D4CA1A3462D} = {00F38FB8-6187-491E-AE34-C49105CE3D27}
 		{D7591650-0FDD-415E-A3BD-42FD5659C9E9} = {00F38FB8-6187-491E-AE34-C49105CE3D27}
 		{3EEE7056-A137-4313-8D8F-F6B77B50FE29} = {AC0B9422-35BB-45E3-A19F-516ADC5A8310}
+		{B8389EB9-911A-4A27-9B01-6DA397272243} = {87491050-D4C8-448B-A0C0-AB97191CB52F}
 	EndGlobalSection
 EndGlobal
