@@ -58,7 +58,8 @@
     <Compile Include="Extend\ExtendDouble.cs" />
     <Compile Include="Extend\ExtendString.cs" />
     <Compile Include="Help\XmlHelper.cs" />
-    <Compile Include="Http\Http2Hepler.cs" />
+    <Compile Include="Http\Http2Helper.cs" />
+    <Compile Include="Http\Http3Helper.cs" />
     <Compile Include="PageBar.cs" />
     <Compile Include="Response\Codes.cs" />
     <Compile Include="Response\OutputResponse.cs" />
@@ -74,7 +75,6 @@
     <Compile Include="Help\TypeHelper.cs" />
     <Compile Include="Help\ValidateHelper.cs" />
     <Compile Include="Http\DownHelper.cs" />
-    <Compile Include="Http\HttpCookieHelper.cs" />
     <Compile Include="Http\HttpHelper.cs" />
     <Compile Include="Http\WebHelper.cs" />
     <Compile Include="Http\WebTools.cs" />
