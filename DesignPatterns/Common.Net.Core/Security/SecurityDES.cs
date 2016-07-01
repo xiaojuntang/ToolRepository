@@ -25,7 +25,7 @@ namespace Common.Net.Core
 {
     public class SecurityDES
     {
-        /// <summary>加密
+        /// <summary>
         /// 加密
         /// </summary>
         /// <param name="pToEncrypt">加密的字符串</param>
@@ -42,6 +42,7 @@ namespace Common.Net.Core
             //建立加密对象的密钥和偏移量  
             //原文使用ASCIIEncoding.ASCII方法的GetBytes方法  
             //使得输入密码必须输入英文文本  
+            sKey = System.Web.Security.FormsAuthentication.HashPasswordForStoringInConfigFile(sKey, "md5").Substring(0, 8);
             des.Key = ASCIIEncoding.ASCII.GetBytes(sKey);
             des.IV = ASCIIEncoding.ASCII.GetBytes(sKey);
             MemoryStream ms = new MemoryStream();
@@ -61,7 +62,7 @@ namespace Common.Net.Core
             return ret.ToString();
         }
 
-        /// <summary>解密方法  
+        /// <summary> 
         /// 解密方法  
         /// </summary>
         /// <param name="pToDecrypt">要解密的后的字符串</param>
@@ -82,6 +83,7 @@ namespace Common.Net.Core
             }
 
             //建立加密对象的密钥和偏移量，此值重要，不能修改  
+            sKey = System.Web.Security.FormsAuthentication.HashPasswordForStoringInConfigFile(sKey, "md5").Substring(0, 8);
             des.Key = ASCIIEncoding.ASCII.GetBytes(sKey);
             des.IV = ASCIIEncoding.ASCII.GetBytes(sKey);
             MemoryStream ms = new MemoryStream();

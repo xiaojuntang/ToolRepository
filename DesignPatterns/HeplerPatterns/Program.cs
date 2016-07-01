@@ -77,6 +77,10 @@ namespace HeplerPatterns
         }
         static void Main(string[] args)
         {
+            var s1 = SecurityDES.Encrypt("123", "11111111");
+            var s2 = SecurityDES.Decrypt(s1, "11111111");
+
+
 
             string abc = Http2Helper.OpenReadWithHttps("https://ewt.zxxk.com:800/",string.Empty, "application/x-www-form-urlencoded");
 
