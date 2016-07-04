@@ -4,9 +4,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Common.Net.DbProvider
 {
@@ -112,14 +110,41 @@ namespace Common.Net.DbProvider
         /// <summary>
         /// 执行SQL语句，返回影响的记录数
         /// </summary>
-        /// <param name="SQLString">SQL语句</param>
+        /// <param name="commandText">SQL语句</param>
+        /// <param name="connStr">数据库配置字符</param>
+        /// <returns>影响的记录数</returns>
+        public static int ExecuteNonQuery(string commandText, string connStr)
+        {
+            using (SqlConnection connection = new SqlConnection(connStr))
+            {
+                using (SqlCommand cmd = new SqlCommand(commandText, connection))
+                {
+                    try
+                    {
+                        connection.Open();
+                        int rows = cmd.ExecuteNonQuery();
+                        return rows;
+                    }
+                    catch (SqlException e)
+                    {
+                        connection.Close();
+                        throw e;
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// 执行SQL语句，返回影响的记录数
+        /// </summary>
+        /// <param name="commandText">SQL语句</param>
         /// <param name="db">数据库配置字符</param>
         /// <returns>影响的记录数</returns>
-        public static int ExecuteNonQuery(string SQLString, DataBase db = DataBase.None)
+        public static int ExecuteNonQuery(string commandText, DataBase db = DataBase.None)
         {
             using (SqlConnection connection = (db == DataBase.None) ? new SqlConnection(connectionString) : MySelfSqlConnection(db))
             {
-                using (SqlCommand cmd = new SqlCommand(SQLString, connection))
+                using (SqlCommand cmd = new SqlCommand(commandText, connection))
                 {
                     try
                     {
@@ -139,10 +164,10 @@ namespace Common.Net.DbProvider
         /// <summary>
         /// 执行多条SQL语句，实现数据库事务。
         /// </summary>
-        /// <param name="SQLStringList">Sql列表</param>
+        /// <param name="commandTexts">Sql列表</param>
         /// <param name="db"></param>
         /// <returns></returns>
-        public static int ExecuteSqlTran(List<String> SQLStringList, DataBase db = DataBase.None)
+        public static int ExecuteSqlTran(List<String> commandTexts, DataBase db = DataBase.None)
         {
             using (SqlConnection conn = (db == DataBase.None) ? new SqlConnection(connectionString) : MySelfSqlConnection(db))
             {
@@ -154,9 +179,9 @@ namespace Common.Net.DbProvider
                 try
                 {
                     int count = 0;
-                    for (int n = 0; n < SQLStringList.Count; n++)
+                    for (int n = 0; n < commandTexts.Count; n++)
                     {
-                        string strsql = SQLStringList[n];
+                        string strsql = commandTexts[n];
                         if (strsql.Trim().Length > 1)
                         {
                             cmd.CommandText = strsql;
@@ -177,10 +202,10 @@ namespace Common.Net.DbProvider
         /// <summary>
         /// 执行多条SQL语句，实现数据库事务。
         /// </summary>
-        /// <param name="SQLStringList">多条SQL语句</param>
+        /// <param name="commandTexts">多条SQL语句</param>
         /// <param name="SqlParameterList">多条SQL参数</param>
         /// <returns>影响的行数</returns>
-        public static int ExecuteSqlTran(List<String> SQLStringList, List<SqlParameter[]> SqlParameterList, DataBase db = DataBase.None)
+        public static int ExecuteSqlTran(List<String> commandTexts, List<SqlParameter[]> SqlParameterList, DataBase db = DataBase.None)
         {
             using (SqlConnection conn = (db == DataBase.None) ? new SqlConnection(connectionString) : MySelfSqlConnection(db))
             {
@@ -191,9 +216,9 @@ namespace Common.Net.DbProvider
                 try
                 {
                     int count = 0;
-                    for (int n = 0; n < SQLStringList.Count; n++)
+                    for (int n = 0; n < commandTexts.Count; n++)
                     {
-                        string strsql = SQLStringList[n];
+                        string strsql = commandTexts[n];
                         if (strsql.Trim().Length > 1)
                         {
                             PrepareCommand(cmd, conn, tx, strsql, SqlParameterList == null ? null : SqlParameterList[n]);
@@ -207,7 +232,7 @@ namespace Common.Net.DbProvider
                 catch (Exception ex)
                 {
                     var a = ac;
-                    var b = SQLStringList[ac];
+                    var b = commandTexts[ac];
                     var c = SqlParameterList[ac];
                     tx.Rollback();
                     throw ex;
@@ -218,14 +243,14 @@ namespace Common.Net.DbProvider
         /// <summary>
         /// 向数据库里插入图像格式的字段(和上面情况类似的另一种实例)
         /// </summary>
-        /// <param name="SQLString">SQL语句</param>
+        /// <param name="commandText">SQL语句</param>
         /// <param name="fs">图像字节,数据库的字段类型为image的情况</param>
         /// <returns>影响的记录数</returns>
-        public static int ExecuteSqlInsertImg(string SQLString, byte[] fs)
+        public static int ExecuteSqlInsertImg(string commandText, byte[] fs)
         {
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
-                SqlCommand cmd = new SqlCommand(SQLString, connection);
+                SqlCommand cmd = new SqlCommand(commandText, connection);
                 SqlParameter myParameter = new SqlParameter("@fs", SqlDbType.Image);
                 myParameter.Value = fs;
                 cmd.Parameters.Add(myParameter);
@@ -297,10 +322,36 @@ namespace Common.Net.DbProvider
         /// <summary>
         /// 执行查询语句，返回DataSet
         /// </summary>
-        /// <param name="SQLString">查询语句</param>
+        /// <param name="commandText">查询语句</param>
+        /// <param name="connStr">数据库连接字符串</param>
+        /// <returns></returns>
+        public static DataSet FindDataSet(string commandText, string connStr)
+        {
+            using (SqlConnection connection = new SqlConnection(connStr))
+            {
+                DataSet ds = new DataSet();
+                try
+                {
+                    connection.Open();
+                    SqlDataAdapter command = new SqlDataAdapter(commandText, connection);
+                    command.SelectCommand.CommandTimeout = CommandTimeOut;
+                    command.Fill(ds, "ds");
+                }
+                catch (SqlException ex)
+                {
+                    throw new Exception(ex.Message);
+                }
+                return ds;
+            }
+        }
+
+        /// <summary>
+        /// 执行查询语句，返回DataSet
+        /// </summary>
+        /// <param name="commandText">查询语句</param>
         /// <param name="db">数据库连接字符串</param>
         /// <returns></returns>
-        public static DataSet FindDataSet(string SQLString, DataBase db = DataBase.None)
+        public static DataSet FindDataSet(string commandText, DataBase db = DataBase.None)
         {
             using (SqlConnection connection = (db == DataBase.None) ? new SqlConnection(connectionString) : MySelfSqlConnection(db))
             {
@@ -308,7 +359,7 @@ namespace Common.Net.DbProvider
                 try
                 {
                     connection.Open();
-                    SqlDataAdapter command = new SqlDataAdapter(SQLString, connection);
+                    SqlDataAdapter command = new SqlDataAdapter(commandText, connection);
                     command.SelectCommand.CommandTimeout = CommandTimeOut;
                     command.Fill(ds, "ds");
                 }
@@ -323,15 +374,15 @@ namespace Common.Net.DbProvider
         /// <summary>
         /// 执行带参数查询语句，返回DataSet
         /// </summary>
-        /// <param name="SQLString">SQL</param>
+        /// <param name="commandText">SQL</param>
         /// <param name="cmdParms">参数列表</param>
         /// <returns></returns>
-        public static DataSet FindDataSet(string SQLString, DataBase db = DataBase.None, params SqlParameter[] cmdParms)
+        public static DataSet FindDataSet(string commandText, DataBase db = DataBase.None, params SqlParameter[] cmdParms)
         {
             using (SqlConnection connection = (db == DataBase.None) ? new SqlConnection(connectionString) : MySelfSqlConnection(db))
             {
                 SqlCommand cmd = new SqlCommand();
-                PrepareCommand(cmd, connection, null, SQLString, cmdParms);
+                PrepareCommand(cmd, connection, null, commandText, cmdParms);
                 using (SqlDataAdapter da = new SqlDataAdapter(cmd))
                 {
                     DataSet ds = new DataSet();
@@ -352,14 +403,14 @@ namespace Common.Net.DbProvider
         /// <summary>
         /// 执行查询语句，返回DataSet
         /// </summary>
-        /// <param name="SQLString">查询语句</param>
+        /// <param name="commandText">查询语句</param>
         /// <returns>DataSet</returns>
-        public static DataSet FindDataSet(string SQLString, List<SqlParameter> cmdParms, DataBase db = DataBase.None)
+        public static DataSet FindDataSet(string commandText, List<SqlParameter> cmdParms, DataBase db = DataBase.None)
         {
             using (SqlConnection connection = (db == DataBase.None) ? new SqlConnection(connectionString) : MySelfSqlConnection(db))
             {
                 SqlCommand cmd = new SqlCommand();
-                PrepareCommand(cmd, connection, null, SQLString, cmdParms.ToArray());
+                PrepareCommand(cmd, connection, null, commandText, cmdParms.ToArray());
                 using (SqlDataAdapter da = new SqlDataAdapter(cmd))
                 {
                     DataSet ds = new DataSet();

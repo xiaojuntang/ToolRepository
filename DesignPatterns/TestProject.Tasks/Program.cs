@@ -11,9 +11,11 @@ namespace TestProject.Tasks
     {
         static void Main(string[] args)
         {
-            Parallel.For(0, 10, i => Console.WriteLine(i));
+            ChangeFileName.GetFileList();
 
-            NewMethod4();
+            //Parallel.For(0, 10, i => Console.WriteLine(i));
+
+            //NewMethod4();
             Console.ReadLine();
         }
 
