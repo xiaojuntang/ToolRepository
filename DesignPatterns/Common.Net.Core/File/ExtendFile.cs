@@ -17,100 +17,70 @@ using System.Data;
 using System.Data.OleDb;
 using System.IO;
 using System.Web;
+using System.Web.UI;
 
 namespace Common.Net.Core
 {
+    /// <summary>
+    /// 文件扩展类
+    /// </summary>
     public sealed class ExtendFile
     {
         /// <summary>
-        /// 以utf8格式读取磁盘某个文本文件
+        /// 下载磁盘文件 filepage 物理路径
         /// </summary>
-        /// <param name="fileName">要读取的文件名（物理路径加文件名）</param>
-        /// <returns>返回文件内容，出错返回空字符串</returns>
-        public static string LoadString(string fileName)
+        /// <param name="page">下载文件的页面page</param>
+        /// <param name="filePath">要下载的文件的物理路径</param>
+        /// <param name="saveName">推送到客户端的文件名称</param>
+        public static void DownFile(Page page, string filePath, string saveName)
         {
-            StreamReader sr = null;
-            if (!File.Exists(fileName))
-                return string.Empty;
-            else
-            {
-                try
-                {
-                    sr = new StreamReader(fileName, System.Text.Encoding.UTF8);
-                    try
-                    {
-                        return sr.ReadToEnd();
-                    }
-                    catch
-                    {
-                        return string.Empty;
-                    }
-                    finally
-                    {
-                        sr.Close();
-                    }
-                }
-                catch
-                {
-                    return string.Empty;
-                }
-            }
+            page.Response.ClearHeaders();
+            page.Response.Clear();
+            page.Response.Buffer = true;
+            page.Response.Charset = "UTF-8";
+            page.EnableViewState = false;
+            page.Response.ContentEncoding = System.Text.Encoding.UTF8;
+            page.Response.AddHeader("content-disposition", "attachment;filename=" +
+                HttpUtility.UrlEncode(saveName, System.Text.Encoding.UTF8));
+            page.Response.WriteFile(filePath);
         }
 
         /// <summary>
-        /// 下载磁盘文件 filepage 物理路径
-        /// </summary>
-        /// <param name="_page">下载文件的页面page</param>
-        /// <param name="filePath">要下载的文件的物理路径</param>
-        /// <param name="saveName">推送到客户端的文件名称</param>
-        public static void downFile(System.Web.UI.Page _page, string filePath, string saveName)
-        {
-            _page.Response.ClearHeaders();
-            _page.Response.Clear();
-            _page.Response.Buffer = true;
-            _page.Response.Charset = "UTF-8";
-            _page.EnableViewState = false;
-            _page.Response.ContentEncoding = System.Text.Encoding.UTF8;
-            _page.Response.AddHeader("content-disposition", "attachment;filename=" +
-                HttpUtility.UrlEncode(saveName, System.Text.Encoding.UTF8));
-            _page.Response.WriteFile(filePath);
-        }
-        /// <summary>
         /// 下载磁盘文件 filepage 物理路径（浏览器下载）
         /// </summary>
-        /// <param name="_page"></param>
+        /// <param name="page"></param>
         /// <param name="filePath"></param>
         /// <param name="saveName"></param>
-        public static void DownFile(System.Web.UI.Page _page, string filePath, string saveName)
+        public static void DownFile2(Page page, string filePath, string saveName)
         {
             //以字符流的形式下载文件 
             FileStream fs = new FileStream(filePath, FileMode.Open);
             byte[] bytes = new byte[(int)fs.Length];
             fs.Read(bytes, 0, bytes.Length);
             fs.Close();
-            _page.Response.ContentType = "application/octet-stream";
+            page.Response.ContentType = "application/octet-stream";
             //通知浏览器下载文件而不是打开 
-            _page.Response.AddHeader("Content-Disposition", "attachment; filename=" + HttpUtility.UrlEncode(saveName, System.Text.Encoding.UTF8));
-            _page.Response.BinaryWrite(bytes);
-            _page.Response.Flush();
-            _page.Response.End();
+            page.Response.AddHeader("Content-Disposition", "attachment; filename=" + HttpUtility.UrlEncode(saveName, System.Text.Encoding.UTF8));
+            page.Response.BinaryWrite(bytes);
+            page.Response.Flush();
+            page.Response.End();
         }
-        /// <summary>把文本写到客户段 _type :excel txt word html
-        /// 把文本写到客户段 _type :excel txt word html
+
+        /// <summary>
+        /// 把文本写到客户端 _type :excel txt word html
         /// </summary>
-        /// <param name="_page">页面类</param>
-        /// <param name="Content">文本内容</param>
+        /// <param name="page">页面类</param>
+        /// <param name="content">文本内容</param>
         /// <param name="saveName">推送到客户端的文件名字</param>
-        /// <param name="_type">文件的格式</param>
-        public static void WriteFile(System.Web.UI.Page _page, string Content, string saveName, string _type)
+        /// <param name="type">文件的格式</param>
+        public static void WriteFile(Page page, string content, string saveName, string type)
         {
-            _page.Response.ClearHeaders();
-            _page.Response.Clear();
-            _page.Response.Buffer = true;
-            _page.Response.Charset = "UTF-8";
+            page.Response.ClearHeaders();
+            page.Response.Clear();
+            page.Response.Buffer = true;
+            page.Response.Charset = "UTF-8";
             string fileNameTemp = saveName;
-
-            string UserAgent = _page.Request.ServerVariables["http_user_agent"].ToLower();
+            string UserAgent = page.Request.ServerVariables["http_user_agent"].ToLower();
             if (UserAgent.IndexOf("firefox") > 0)
             {
                 //火狐不需要编码  mxk 修改
@@ -119,28 +89,30 @@ namespace Common.Net.Core
             else
             {
                 fileNameTemp = HttpUtility.UrlEncode(saveName, System.Text.Encoding.UTF8);
-
             }
-
-            _page.Response.AppendHeader("Content-Disposition", "attachment;filename=" + fileNameTemp);
-
-            _page.Response.ContentEncoding = System.Text.Encoding.GetEncoding("gb2312");
-            _page.Response.ContentType = "application/ms-" + _type;
-            _page.EnableViewState = false;
-            _page.Response.Write(Content);
-            _page.Response.End();
-
+            page.Response.AppendHeader("Content-Disposition", "attachment;filename=" + fileNameTemp);
+            page.Response.ContentEncoding = System.Text.Encoding.GetEncoding("gb2312");
+            page.Response.ContentType = "application/ms-" + type;
+            page.EnableViewState = false;
+            page.Response.Write(content);
+            page.Response.End();
         }
 
-        public static void WriteFile(System.Web.HttpContext _page, string Content, string saveName, string _type)
+        /// <summary>
+        /// 把文本写到客户端
+        /// </summary>
+        /// <param name="page"></param>
+        /// <param name="content"></param>
+        /// <param name="saveName"></param>
+        /// <param name="type"></param>
+        public static void WriteFile(HttpContext page, string content, string saveName, string type)
         {
-            _page.Response.ClearHeaders();
-            _page.Response.Clear();
-            _page.Response.Buffer = true;
-            _page.Response.Charset = "UTF-8";
+            page.Response.ClearHeaders();
+            page.Response.Clear();
+            page.Response.Buffer = true;
+            page.Response.Charset = "UTF-8";
             string fileNameTemp = saveName;
-
-            string UserAgent = _page.Request.ServerVariables["http_user_agent"].ToLower();
+            string UserAgent = page.Request.ServerVariables["http_user_agent"].ToLower();
             if (UserAgent.IndexOf("firefox") > 0)
             {
                 //火狐不需要编码  mxk 修改
@@ -149,21 +121,15 @@ namespace Common.Net.Core
             else
             {
                 fileNameTemp = HttpUtility.UrlEncode(saveName, System.Text.Encoding.UTF8);
-
             }
-
-            _page.Response.AppendHeader("Content-Disposition", "attachment;filename=" + fileNameTemp);
-
-            _page.Response.ContentEncoding = System.Text.Encoding.GetEncoding("gb2312");
-            _page.Response.ContentType = "application/ms-" + _type;
-            _page.Response.Write(Content);
-            _page.Response.End();
-
+            page.Response.AppendHeader("Content-Disposition", "attachment;filename=" + fileNameTemp);
+            page.Response.ContentEncoding = System.Text.Encoding.GetEncoding("gb2312");
+            page.Response.ContentType = "application/ms-" + type;
+            page.Response.Write(content);
+            page.Response.End();
         }
 
-
-
-        /// <summary>得到上传文件的物理路径，包括文件的名称。不包括扩展名
+        /// <summary>
         /// 得到上传文件的物理路径，包括文件的名称。不包括扩展名
         /// </summary>
         /// <returns></returns>
@@ -184,39 +150,6 @@ namespace Common.Net.Core
                     return string.Empty;
                 }
                 return tmpPath + "\\" + tmpStr;
-            }
-        }
-        /// <summary>读取Excel 文件
-        /// 读取Excel 文件（filePath）中 sheet sheetIndex个表格 的数据 如果有标题请去掉
-        /// </summary>
-        /// <param name="filePath">文件的物理路径</param>
-        /// <param name="sheetIndex">第几个sheet页</param>
-        /// <returns>获取到的数据集（dataReader形式)</returns>
-        public static OleDbDataReader GetExcel(string filePath, int sheetIndex)
-        {
-            OleDbConnection conn = new OleDbConnection("Provider=Microsoft.Jet.OLEDB.4.0;Data Source=" + filePath + ";Extended Properties='Excel 8.0;HDR=NO;IMEX=1';");
-            try
-            {
-                conn.Open();
-            }
-            catch (Exception err)
-            {
-                return null;
-            }
-            OleDbCommand myCm = new OleDbCommand("SELECT * FROM [sheet" + sheetIndex.ToString() + "$]", conn);
-            myCm.CommandType = CommandType.Text;
-            OleDbDataReader myDr = null;
-            try
-            {
-                myDr = myCm.ExecuteReader(CommandBehavior.CloseConnection);
-                return myDr;
-            }
-            catch (Exception err)
-            {
-                if (myDr != null)
-                    myDr.Close();
-                conn.Close();
-                return null;
             }
         }
     }

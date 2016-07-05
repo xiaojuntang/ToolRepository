@@ -9,8 +9,32 @@ using System.Web.Script.Serialization;
 
 namespace Common.Net.Core
 {
+    /// <summary>
+    /// Json数据转换
+    /// </summary>
     public class JsonConverter
     {
+        /// <summary>
+        /// Newtonsoft.Json 对象转Json
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
+        public static string SerializeObject(object obj)
+        {
+            return Newtonsoft.Json.JsonConvert.SerializeObject(obj);
+        }
+
+        /// <summary>
+        /// Newtonsoft.Json 将Json转对象
+        /// </summary>
+        /// <param name="json">Json字符串</param>
+        /// <typeparam name="T">返回对象类型</typeparam>
+        /// <returns></returns>
+        public static T Deserialize<T>(string json) where T : class
+        {
+            return Newtonsoft.Json.JsonConvert.DeserializeObject<T>(json);
+        }
+
         /// <summary>
         /// 自定义查询对象转换动态类
         /// </summary>
@@ -155,10 +179,11 @@ namespace Common.Net.Core
             Json.Append("]}");
             return Json.ToString();
         }
+
         /// <summary>   
         /// Datatable转换为Json
         /// </summary>   
-        /// <param name="table">Datatable对象</param>   
+        /// <param name="dt"></param>
         /// <returns>Json字符串</returns>   
         public static string ToJson(DataTable dt)
         {
@@ -234,7 +259,7 @@ namespace Common.Net.Core
         /// </summary>  
         /// <param name="s"></param>  
         /// <returns></returns>  
-        public static string String2Json(String s)
+        public static string String2Json(string s)
         {
             StringBuilder sb = new StringBuilder();
             for (int i = 0; i < s.Length; i++)
@@ -268,10 +293,24 @@ namespace Common.Net.Core
             }
             return sb.ToString();
         }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="ds"></param>
+        /// <param name="totalProperty"></param>
+        /// <param name="root"></param>
+        /// <returns></returns>
         public static string GetDataGridJsonByDataSet(DataSet ds, string totalProperty, string root)
         {
             return GetDataGridJsonByDataTable(ds.Tables[0], totalProperty, root);
         }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="dt"></param>
+        /// <param name="totalProperty"></param>
+        /// <param name="root"></param>
+        /// <returns></returns>
         public static string GetDataGridJsonByDataTable(DataTable dt, string totalProperty, string root)
         {
             StringBuilder jsonBuilder = new StringBuilder();
@@ -298,10 +337,20 @@ namespace Common.Net.Core
             jsonBuilder.Append("})");
             return jsonBuilder.ToString();
         }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="ds"></param>
+        /// <returns></returns>
         public static string GetTreeJsonByDataSet(DataSet ds)
         {
             return GetTreeJsonByDataTable(ds.Tables[0]);
         }
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="dataTable"></param>
+        /// <returns></returns>
         public static string GetTreeJsonByDataTable(DataTable dataTable)
         {
             DataTable dt = FormatDataTableForTree(dataTable);

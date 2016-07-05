@@ -6,8 +6,14 @@ using System.Text;
 
 namespace Common.Net.Core
 {
-    class IniUitl
+    /// <summary>
+    /// INI文件操作对象
+    /// </summary>
+    public class IniUitl
     {
+        /// <summary>
+        /// 文件路径
+        /// </summary>
         public string filePath;
 
         /// <summary>
@@ -24,10 +30,8 @@ namespace Common.Net.Core
         [DllImport("kernel32")]
         private static extern int GetPrivateProfileString(string section, string key, string def, StringBuilder retVal, int size, string filePath);
 
-
         [DllImport("kernel32")]
         private static extern int GetPrivateProfileString(string section, string key, string defVal, Byte[] retVal, int size, string filePath);
-
 
         /// <summary>
         /// 写INI文件
@@ -51,11 +55,16 @@ namespace Common.Net.Core
             return temp.ToString();
         }
 
+        /// <summary>
+        /// 读取INI文件
+        /// </summary>
+        /// <param name="section">分组节点</param>
+        /// <param name="key">关键字</param>
+        /// <returns></returns>
         public byte[] IniReadValues(string section, string key) {
             byte[] temp = new byte[255];
             int i = GetPrivateProfileString(section, key, "", temp, 255, this.filePath);
             return temp;
-
         }
 
         /// <summary>
