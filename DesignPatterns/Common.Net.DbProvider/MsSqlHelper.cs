@@ -1,12 +1,23 @@
-﻿using System;
+﻿/***************************************************************************** 
+*        filename :          MsSqlHelper 
+*        描述 :              MSSQL数据库访问抽象基础类库
+*        创建者              唐晓军（QQ:417281862）
+*        CLR版本:            4.0.30319.42000 
+*        新建项输入的名称:   MsSqlHelper 
+*        机器名称:           LD 
+*        注册组织名:         无
+*        命名空间名称:       Common.Net.DbProvider
+*        文件名:             MsSqlHelper 
+*        创建系统时间:       2016/07/05 10:13:10 
+*        创建年份:           2016 
+/*****************************************************************************/
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Common.Net.DbProvider
 {
@@ -26,7 +37,7 @@ namespace Common.Net.DbProvider
         /// </summary>
         /// <param name="db">数据库配置</param>
         /// <returns>SqlConnection对象</returns>
-        private static SqlConnection MsSqlConnection(string db)
+        private static SqlConnection MsSqlConnection(string db = DBConnect.ConnStr)
         {
             SqlConnection connection = new SqlConnection();
             var conn = ConfigurationManager.ConnectionStrings[db];
@@ -37,27 +48,16 @@ namespace Common.Net.DbProvider
             return connection;
         }
 
-        /// <summary>
-        /// 获取某字段的最大值加一 使用该方法有线程安全问题 使用LAST_INSERT_ID
-        /// </summary>
-        /// <param name="fieldName">字段</param>
-        /// <param name="tableName">表名</param>
-        /// <returns>增长后的值</returns>
-        public static int GetMaxId(string fieldName, string tableName)
-        {
-            string strsql = "select max(" + fieldName + ") + 1 from " + tableName;
-            object obj = ExecuteScalar(strsql);
-            return obj == null ? 1 : int.Parse(obj.ToString());
-        }
-
+        #region Exists
         /// <summary>
         /// 判断记录是否存在
         /// </summary>
         /// <param name="sql">SQL语句</param>
+        /// <param name="db">数据库配置</param>
         /// <returns></returns>
-        public static bool Exists(string sql)
+        public static bool Exists(string sql, string db = DBConnect.ConnStr)
         {
-            var obj = ExecuteScalar(sql);
+            var obj = ExecuteScalar(sql, db);
             int cmdresult;
             if ((object.Equals(obj, null)) || (object.Equals(obj, DBNull.Value)))
             {
@@ -90,8 +90,10 @@ namespace Common.Net.DbProvider
                 cmdresult = int.Parse(obj.ToString());
             }
             return cmdresult != 0;
-        }
+        } 
+        #endregion
 
+        #region ExecuteNonQuery
         /// <summary>
         /// 执行SQL语句返回影响的记录数
         /// </summary>
@@ -119,6 +121,131 @@ namespace Common.Net.DbProvider
             }
         }
 
+        /// <summary>
+        /// 返回影响的记录数
+        /// </summary>
+        /// <param name="sql">SQL语句</param>
+        /// <param name="db"></param>
+        /// <param name="cmdParms"></param>
+        /// <returns>影响的记录数</returns>
+        public static int ExecuteNonQuery(string sql, string db = DBConnect.ConnStr, params SqlParameter[] cmdParms)
+        {
+            using (SqlConnection connection = MsSqlConnection(db))
+            {
+                using (SqlCommand cmd = new SqlCommand())
+                {
+                    try
+                    {
+                        PrepareCommand(cmd, connection, null, sql, cmdParms);
+                        int rows = cmd.ExecuteNonQuery();
+                        cmd.Parameters.Clear();
+                        return rows;
+                    }
+                    catch (SqlException e)
+                    {
+                        throw e;
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// 执行带参数返回受影响的行数Sql
+        /// </summary>
+        /// <param name="sql">SQL</param>
+        /// <param name="parameters">参数</param>
+        /// <param name="commandtext">执行类型</param>
+        /// <param name="db"></param>
+        /// <returns></returns>
+        public static int ExecuteNonQuery(string sql, List<SqlParameter> parameters, string db = DBConnect.ConnStr, CommandType commandtext = CommandType.Text)
+        {
+            int results;
+            using (SqlConnection connection = MsSqlConnection(db))
+            {
+                connection.Open();
+                var command = new SqlCommand(sql, connection);
+                command.CommandType = commandtext;
+                if (parameters != null)
+                    foreach (var p in parameters)
+                        command.Parameters.Add(p);
+                results = command.ExecuteNonQuery();
+                command.Parameters.Clear();
+            }
+            return results;
+        }
+        #endregion
+
+        #region ExecuteScalar
+        /// <summary>
+        /// 获取首行首列
+        /// </summary>
+        /// <param name="sql">计算查询结果语句</param>
+        /// <param name="db"></param>
+        /// <returns>查询结果（object）</returns>
+        public static object ExecuteScalar(string sql, string db = DBConnect.ConnStr)
+        {
+            using (SqlConnection connection = MsSqlConnection(db))
+            {
+                using (SqlCommand cmd = new SqlCommand(sql, connection))
+                {
+                    try
+                    {
+                        connection.Open();
+                        object obj = cmd.ExecuteScalar();
+                        if ((Equals(obj, null)) || (object.Equals(obj, System.DBNull.Value)))
+                        {
+                            return null;
+                        }
+                        else
+                        {
+                            return obj;
+                        }
+                    }
+                    catch (SqlException e)
+                    {
+                        connection.Close();
+                        throw e;
+                    }
+                }
+            }
+        }
+        /// <summary>
+        /// 获取首行首列
+        /// </summary>
+        /// <param name="sql">>SQL</param>
+        /// <param name="db">数据库</param>
+        /// <param name="cmdParms">参数列表</param>
+        /// <returns>返回结果</returns>
+        public static object ExecuteScalar(string sql, string db = DBConnect.ConnStr, params SqlParameter[] cmdParms)
+        {
+            using (SqlConnection connection = MsSqlConnection(db))
+            {
+                using (SqlCommand cmd = new SqlCommand())
+                {
+                    try
+                    {
+                        PrepareCommand(cmd, connection, null, sql, cmdParms);
+                        object obj = cmd.ExecuteScalar();
+                        cmd.Parameters.Clear();
+                        if ((object.Equals(obj, null)) || (object.Equals(obj, System.DBNull.Value)))
+                        {
+                            return null;
+                        }
+                        else
+                        {
+                            return obj;
+                        }
+                    }
+                    catch (SqlException e)
+                    {
+                        throw e;
+                    }
+                }
+            }
+        }
+        #endregion
+
+        #region SqlTransaction
         /// <summary>
         /// 执行多条SQL语句，实现数据库事务。
         /// </summary>
@@ -233,177 +360,10 @@ namespace Common.Net.DbProvider
         }
 
         /// <summary>
-        /// 执行查询语句，返回SqlDataReader
-        /// </summary>
-        /// <param name="sql">查询语句</param>
-        /// <param name="db"></param>
-        /// <returns></returns>
-        public static SqlDataReader ExecuteReader(string sql, string db = DBConnect.ConnStr)
-        {
-            using (SqlConnection connection = MsSqlConnection(db))
-            {
-                SqlCommand cmd = new SqlCommand(sql, connection);
-                try
-                {
-                    connection.Open();
-                    SqlDataReader myReader = cmd.ExecuteReader(CommandBehavior.CloseConnection);
-                    return myReader;
-                }
-                catch (SqlException e)
-                {
-                    throw e;
-                }
-            }
-        }
-
-        #region 返回DataSet方法
-
-        /// <summary>
-        /// 执行查询语句，返回DataSet
-        /// </summary>
-        /// <param name="sql">查询语句</param>
-        /// <param name="db">数据库连接字符串</param>
-        /// <returns></returns>
-        public static DataSet FindDataSet(string sql, string db = DBConnect.ConnStr)
-        {
-            using (SqlConnection connection = MsSqlConnection(db))
-            {
-                DataSet ds = new DataSet();
-                try
-                {
-                    connection.Open();
-                    SqlDataAdapter command = new SqlDataAdapter(sql, connection);
-                    command.SelectCommand.CommandTimeout = CommandTimeOut;
-                    command.Fill(ds, "ds");
-                }
-                catch (SqlException ex)
-                {
-                    throw new Exception(ex.Message);
-                }
-                return ds;
-            }
-        }
-
-        /// <summary>
-        /// 执行带参数查询语句，返回DataSet
-        /// </summary>
-        /// <param name="sql">SQL</param>
-        /// <param name="db"></param>
-        /// <param name="cmdParms">参数列表</param>
-        /// <returns></returns>
-        public static DataSet FindDataSet(string sql, string db = DBConnect.ConnStr, params SqlParameter[] cmdParms)
-        {
-            using (SqlConnection connection = MsSqlConnection(db))
-            {
-                SqlCommand cmd = new SqlCommand();
-                PrepareCommand(cmd, connection, null, sql, cmdParms);
-                using (SqlDataAdapter da = new SqlDataAdapter(cmd))
-                {
-                    DataSet ds = new DataSet();
-                    try
-                    {
-                        da.Fill(ds, "ds");
-                        cmd.Parameters.Clear();
-                    }
-                    catch (SqlException ex)
-                    {
-                        throw new Exception(ex.Message);
-                    }
-                    return ds;
-                }
-            }
-        }
-
-        /// <summary>
-        /// 执行查询语句，返回DataSet
-        /// </summary>
-        /// <param name="sql">查询语句</param>
-        /// <param name="cmdParms"></param>
-        /// <param name="db"></param>
-        /// <returns>DataSet</returns>
-        public static DataSet FindDataSet(string sql, List<SqlParameter> cmdParms, string db = DBConnect.ConnStr)
-        {
-            using (SqlConnection connection = MsSqlConnection(db))
-            {
-                SqlCommand cmd = new SqlCommand();
-                PrepareCommand(cmd, connection, null, sql, cmdParms.ToArray());
-                using (SqlDataAdapter da = new SqlDataAdapter(cmd))
-                {
-                    DataSet ds = new DataSet();
-                    try
-                    {
-                        da.Fill(ds, "ds");
-                        cmd.Parameters.Clear();
-                    }
-                    catch (SqlException ex)
-                    {
-                        throw new Exception(ex.Message);
-                    }
-                    return ds;
-                }
-            }
-        }
-
-        #endregion
-
-        /// <summary>
-        /// 返回影响的记录数
-        /// </summary>
-        /// <param name="sql">SQL语句</param>
-        /// <param name="db"></param>
-        /// <param name="cmdParms"></param>
-        /// <returns>影响的记录数</returns>
-        public static int ExecuteNonQuery(string sql, string db = DBConnect.ConnStr, params SqlParameter[] cmdParms)
-        {
-            using (SqlConnection connection = MsSqlConnection(db))
-            {
-                using (SqlCommand cmd = new SqlCommand())
-                {
-                    try
-                    {
-                        PrepareCommand(cmd, connection, null, sql, cmdParms);
-                        int rows = cmd.ExecuteNonQuery();
-                        cmd.Parameters.Clear();
-                        return rows;
-                    }
-                    catch (SqlException e)
-                    {
-                        throw e;
-                    }
-                }
-            }
-        }
-
-        /// <summary>
-        /// 执行带参数返回受影响的行数Sql
-        /// </summary>
-        /// <param name="sql">SQL</param>
-        /// <param name="parameters">参数</param>
-        /// <param name="commandtext">执行类型</param>
-        /// <param name="db"></param>
-        /// <returns></returns>
-        public static int ExecuteNonQuery(string sql, List<SqlParameter> parameters, CommandType commandtext = CommandType.Text, string db = DBConnect.ConnStr)
-        {
-            int results = 0;
-            using (SqlConnection connection = MsSqlConnection(db))
-            {
-                connection.Open();
-                var command = new SqlCommand(sql, connection);
-                command.CommandType = commandtext;
-                if (parameters != null)
-                    foreach (var p in parameters)
-                        command.Parameters.Add(p);
-                results = command.ExecuteNonQuery();
-                command.Parameters.Clear();
-            }
-            return results;
-        }
-
-        /// <summary>
-        /// 执行多条SQL语句，实现数据库事务。
+        /// 使用Hashtable执行多条SQL语句实现数据库事务。
         /// </summary>
         /// <param name="sqlList">SQL语句的哈希表（key为sql语句，value是该语句的SqlParameter[]）</param>
-        /// <param name="db"></param>
+        /// <param name="db">数据库配置</param>
         public static void ExecuteSqlTran(Hashtable sqlList, string db = DBConnect.ConnStr)
         {
             using (SqlConnection connection = MsSqlConnection(db))
@@ -414,12 +374,12 @@ namespace Common.Net.DbProvider
                     SqlCommand cmd = new SqlCommand();
                     try
                     {
-                        foreach (DictionaryEntry myDE in sqlList)
+                        foreach (DictionaryEntry item in sqlList)
                         {
-                            string cmdText = myDE.Key.ToString();
-                            SqlParameter[] cmdParms = (SqlParameter[])myDE.Value;
+                            string cmdText = item.Key.ToString();
+                            SqlParameter[] cmdParms = (SqlParameter[])item.Value;
                             PrepareCommand(cmd, connection, trans, cmdText, cmdParms);
-                            int val = cmd.ExecuteNonQuery();
+                            cmd.ExecuteNonQuery();
                             cmd.Parameters.Clear();
                         }
                         trans.Commit();
@@ -603,72 +563,29 @@ namespace Common.Net.DbProvider
                     }
                 }
             }
-        }
+        } 
+        #endregion
 
         /// <summary>
-        /// 获取首行首列
+        /// 执行查询语句，返回SqlDataReader
         /// </summary>
-        /// <param name="sql">计算查询结果语句</param>
+        /// <param name="sql">查询语句</param>
         /// <param name="db"></param>
-        /// <returns>查询结果（object）</returns>
-        public static object ExecuteScalar(string sql, string db = DBConnect.ConnStr)
+        /// <returns></returns>
+        public static SqlDataReader ExecuteReader(string sql, string db = DBConnect.ConnStr)
         {
             using (SqlConnection connection = MsSqlConnection(db))
             {
-                using (SqlCommand cmd = new SqlCommand(sql, connection))
+                SqlCommand cmd = new SqlCommand(sql, connection);
+                try
                 {
-                    try
-                    {
-                        connection.Open();
-                        object obj = cmd.ExecuteScalar();
-                        if ((Equals(obj, null)) || (object.Equals(obj, System.DBNull.Value)))
-                        {
-                            return null;
-                        }
-                        else
-                        {
-                            return obj;
-                        }
-                    }
-                    catch (SqlException e)
-                    {
-                        connection.Close();
-                        throw e;
-                    }
+                    connection.Open();
+                    SqlDataReader myReader = cmd.ExecuteReader(CommandBehavior.CloseConnection);
+                    return myReader;
                 }
-            }
-        }
-        /// <summary>
-        /// 获取首行首列
-        /// </summary>
-        /// <param name="sql">>SQL</param>
-        /// <param name="db">数据库</param>
-        /// <param name="cmdParms">参数列表</param>
-        /// <returns>返回结果</returns>
-        public static object ExecuteScalar(string sql, string db = DBConnect.ConnStr, params SqlParameter[] cmdParms)
-        {
-            using (SqlConnection connection = MsSqlConnection(db))
-            {
-                using (SqlCommand cmd = new SqlCommand())
+                catch (SqlException e)
                 {
-                    try
-                    {
-                        PrepareCommand(cmd, connection, null, sql, cmdParms);
-                        object obj = cmd.ExecuteScalar();
-                        cmd.Parameters.Clear();
-                        if ((object.Equals(obj, null)) || (object.Equals(obj, System.DBNull.Value)))
-                        {
-                            return null;
-                        }
-                        else
-                        {
-                            return obj;
-                        }
-                    }
-                    catch (SqlException e)
-                    {
-                        throw e;
-                    }
+                    throw e;
                 }
             }
         }
@@ -704,6 +621,97 @@ namespace Common.Net.DbProvider
             }
         }
 
+        #region 返回DataSet方法
+
+        /// <summary>
+        /// 执行查询语句，返回DataSet
+        /// </summary>
+        /// <param name="sql">查询语句</param>
+        /// <param name="db">数据库连接字符串</param>
+        /// <returns></returns>
+        public static DataSet FindDataSet(string sql, string db = DBConnect.ConnStr)
+        {
+            using (SqlConnection connection = MsSqlConnection(db))
+            {
+                DataSet ds = new DataSet();
+                try
+                {
+                    connection.Open();
+                    SqlDataAdapter command = new SqlDataAdapter(sql, connection);
+                    command.SelectCommand.CommandTimeout = CommandTimeOut;
+                    command.Fill(ds, "ds");
+                }
+                catch (SqlException ex)
+                {
+                    throw new Exception(ex.Message);
+                }
+                return ds;
+            }
+        }
+
+        /// <summary>
+        /// 执行带参数查询语句，返回DataSet
+        /// </summary>
+        /// <param name="sql">SQL</param>
+        /// <param name="db"></param>
+        /// <param name="cmdParms">参数列表</param>
+        /// <returns></returns>
+        public static DataSet FindDataSet(string sql, string db = DBConnect.ConnStr, params SqlParameter[] cmdParms)
+        {
+            using (SqlConnection connection = MsSqlConnection(db))
+            {
+                SqlCommand cmd = new SqlCommand();
+                PrepareCommand(cmd, connection, null, sql, cmdParms);
+                using (SqlDataAdapter da = new SqlDataAdapter(cmd))
+                {
+                    DataSet ds = new DataSet();
+                    try
+                    {
+                        da.Fill(ds, "ds");
+                        cmd.Parameters.Clear();
+                    }
+                    catch (SqlException ex)
+                    {
+                        throw new Exception(ex.Message);
+                    }
+                    return ds;
+                }
+            }
+        }
+
+        /// <summary>
+        /// 执行查询语句，返回DataSet
+        /// </summary>
+        /// <param name="sql">查询语句</param>
+        /// <param name="cmdParms"></param>
+        /// <param name="db"></param>
+        /// <returns>DataSet</returns>
+        public static DataSet FindDataSet(string sql, List<SqlParameter> cmdParms, string db = DBConnect.ConnStr)
+        {
+            using (SqlConnection connection = MsSqlConnection(db))
+            {
+                SqlCommand cmd = new SqlCommand();
+                PrepareCommand(cmd, connection, null, sql, cmdParms.ToArray());
+                using (SqlDataAdapter da = new SqlDataAdapter(cmd))
+                {
+                    DataSet ds = new DataSet();
+                    try
+                    {
+                        da.Fill(ds, "ds");
+                        cmd.Parameters.Clear();
+                    }
+                    catch (SqlException ex)
+                    {
+                        throw new Exception(ex.Message);
+                    }
+                    return ds;
+                }
+            }
+        }
+
+        #endregion
+
+        #region FindList查询
         /// <summary>
         /// 返回数据集合
         /// </summary>
@@ -841,7 +849,8 @@ namespace Common.Net.DbProvider
                     readFunc(reader);
                 }
             }
-        }
+        } 
+        #endregion
 
         #region 其它扩展公用代码
         /// <summary>
