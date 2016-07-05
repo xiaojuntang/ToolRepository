@@ -13,7 +13,7 @@ namespace Common.Net.DbProvider
     /// <summary>
     /// MySQL数据访问抽象基础类
     /// </summary>
-    public abstract class MySQLHelper : IDisposable
+    public abstract class MySqlHelper : IDisposable
     {
         /// <summary>
         /// 数据库连接字符串
@@ -23,7 +23,7 @@ namespace Common.Net.DbProvider
         /// <summary>
         /// 构造函数
         /// </summary>
-        public MySQLHelper() { }
+        public MySqlHelper() { }
 
         /// <summary>
         /// 自定义数据库连接

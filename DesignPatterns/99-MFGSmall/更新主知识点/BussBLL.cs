@@ -48,7 +48,7 @@ namespace 更新主知识点
                     }
                     if (tmp.Rows.Count >= 30000)
                     {
-                        int total = MySQLHelper.BulkInsert(tmp, DataBase.CResourceKF);
+                        int total = MySqlHelper.BulkInsert(tmp, DataBase.CResourceKF);
                         if (total > 0 && total == tmp.Rows.Count)
                         {
                             Console.WriteLine("[{0}] {1}", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), "1111入库");
@@ -59,7 +59,7 @@ namespace 更新主知识点
 
                 if (tmp.Rows.Count > 0)
                 {
-                    int total = MySQLHelper.BulkInsert(tmp, DataBase.CResourceKF);
+                    int total = MySqlHelper.BulkInsert(tmp, DataBase.CResourceKF);
                     if (total > 0 && total == tmp.Rows.Count)
                     {
                         Console.WriteLine("[{0}] {1}", DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"), "入库");

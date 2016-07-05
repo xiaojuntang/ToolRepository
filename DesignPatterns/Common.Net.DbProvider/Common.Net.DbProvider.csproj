@@ -48,7 +48,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="CommandInfo.cs" />
-    <Compile Include="MySQLHelper.cs" />
+    <Compile Include="DataConnect.cs" />
+    <Compile Include="MsSqlHelper.cs" />
+    <Compile Include="MySqlHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="SQLHelper.cs" />
   </ItemGroup>

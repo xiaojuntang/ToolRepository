@@ -18,7 +18,7 @@ namespace 更新主知识点
         {
             List<Q1> list = new List<Q1>();
             string sqlText = string.Format("SELECT f_id,f_mainsec,f_secorder,f_subject FROM mfg_t_questionmanage WHERE f_subject='{0}' And f_isapp=1;", subject);
-            MySQLHelper.FindList(sqlText, (a) =>
+            MySqlHelper.FindList(sqlText, (a) =>
              {
                  if (a.HasRows)
                  {
