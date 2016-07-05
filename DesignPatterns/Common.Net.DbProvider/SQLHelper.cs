@@ -9,7 +9,8 @@ using System.Text;
 namespace Common.Net.DbProvider
 {
     /// <summary>
-    /// SQLHelper数据访问抽象基础类
+    /// SQLHelper数据访问抽象基础类 
+    /// 该对象不通用
     /// </summary>
     public abstract class SQLHelper : IDisposable
     {

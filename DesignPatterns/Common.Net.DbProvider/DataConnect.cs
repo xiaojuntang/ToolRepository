@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 namespace Common.Net.DbProvider
 {
     /// <summary>
-    /// 数据库连接对象
+    /// 数据库连接对象项目可继承该类
     /// </summary>
-    public class DBConnect
+    public abstract class DBConnect
     {
         /// <summary>
         /// 默认数据连接

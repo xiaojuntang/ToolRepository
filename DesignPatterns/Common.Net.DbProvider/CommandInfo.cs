@@ -1,9 +1,5 @@
 ﻿using MySql.Data.MySqlClient;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Common.Net.DbProvider
 {
@@ -68,6 +64,9 @@ namespace Common.Net.DbProvider
     }
 
 
+    /// <summary>
+    /// EffentNextType
+    /// </summary>
     public enum EffentNextType
     {
         /// <summary>
