@@ -63,7 +63,6 @@ namespace Common.Net.DbProvider
         }
     }
 
-
     /// <summary>
     /// EffentNextType
     /// </summary>
