@@ -7,7 +7,7 @@
 *        新建项输入的名称:   DrawValidationCode 
 *        机器名称:           LD 
 *        注册组织名:          
-*        命名空间名称:       Common.Net.Func 
+*        命名空间名称:       Common.Net.Core
 *        文件名:             DrawValidationCode 
 *        创建系统时间:       2016/2/3 9:51:03 
 *        创建年份:           2016 
