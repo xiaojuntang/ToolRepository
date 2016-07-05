@@ -10,9 +10,9 @@ namespace Common.Net.Core
     /// <summary> 
     /// RSA加密解密及RSA签名和验证
     /// </summary> 
-    public class RSACryption
+    public class AlgorithmicRSA
     {
-        public RSACryption()
+        public AlgorithmicRSA()
         {
         }
 

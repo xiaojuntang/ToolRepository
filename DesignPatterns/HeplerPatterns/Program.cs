@@ -77,6 +77,14 @@ namespace HeplerPatterns
         }
         static void Main(string[] args)
         {
+
+            for (int i = 0; i < 10; i++)
+            {
+                Console.WriteLine(HashEncode.GetSecurity());
+
+            }
+               
+
             var s1 = SecurityDES.Encrypt("123", "11111111");
             var s2 = SecurityDES.Decrypt(s1, "11111111");
 
