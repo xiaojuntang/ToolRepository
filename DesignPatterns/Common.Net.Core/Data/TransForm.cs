@@ -1,12 +1,13 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 
 namespace Common.Net.Core
 {
+    /// <summary>
+    /// 数据转换库
+    /// </summary>
     public class TransForm
     {
         #region 基础判别函数
@@ -907,13 +908,13 @@ namespace Common.Net.Core
         /// <summary>
         /// 获取2个时间之间的时间差
         /// </summary>
-        /// <param name="StarTime">第一个时间</param>
-        /// <param name="EndTime">第二个时间</param>
+        /// <param name="starTime">第一个时间</param>
+        /// <param name="endTime">第二个时间</param>
         /// <returns>double</returns>
-        public static double DateDiff(DateTime StarTime, DateTime EndTime) {
+        public static double DateDiff(DateTime starTime, DateTime endTime) {
             try {
-                TimeSpan StarTimeSpan = new TimeSpan(StarTime.Ticks);
-                TimeSpan EndTimeSpan = new TimeSpan(EndTime.Ticks);
+                TimeSpan StarTimeSpan = new TimeSpan(starTime.Ticks);
+                TimeSpan EndTimeSpan = new TimeSpan(endTime.Ticks);
                 TimeSpan TotalTimeSpan = StarTimeSpan.Subtract(EndTimeSpan).Duration();
                 return TotalTimeSpan.TotalMilliseconds;
             }
@@ -922,8 +923,8 @@ namespace Common.Net.Core
         /// <summary>
         /// 计算一个时间与当前本地日期和时间的时间间隔,返回的是时间间隔的日期差的绝对值.
         /// </summary>
-        /// <param name="StarTime">一个日期和时间</param>
+        /// <param name="starTime">一个日期和时间</param>
         /// <returns>double</returns>
-        private static double DateDiff(DateTime StarTime) { return DateDiff(StarTime, DateTime.Now); }
+        private static double DateDiff(DateTime starTime) { return DateDiff(starTime, DateTime.Now); }
     };
 }
