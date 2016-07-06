@@ -66,7 +66,7 @@ namespace Common.Net.Core
         /// <summary>
         /// 是否IP地址
         /// </summary>
-        /// <param name="str1">待判断的IP地址</param>
+        /// <param name="input">待判断的IP地址</param>
         /// <returns></returns>
         public static bool IsIPAddress(string input)
         {

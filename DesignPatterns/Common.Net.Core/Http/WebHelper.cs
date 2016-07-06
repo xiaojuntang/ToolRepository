@@ -19,40 +19,48 @@ namespace Common.Net.Core
     public class WebHelper
     {
         #region 数据成员
-        /// <summary>PC（包括iE、google、sarfri）
+        /// <summary>
+        /// PC（包括iE、google、sarfri）
         /// </summary>
         private static readonly string[] PC = { "Windows NT", "Macintosh" };
-        /// <summary>安卓
+        /// <summary>
+        /// 安卓
         /// </summary>
         private static readonly string[] Android = { "Android" };
-        /// <summary>IOS（"iPhone", "iPod", "iPad" ）
+        /// <summary>
+        /// IOS（"iPhone", "iPod", "iPad" ）
         /// </summary>
         private static readonly string[] IOS = { "iPhone", "iPod", "iPad" };
-        /// <summary>windows phone
+        /// <summary>
+        /// windows phone
         /// </summary>
         private static readonly string[] WP = { "Windows Phone" };
-        /// <summary>微信
+        /// <summary>
+        /// 微信
         /// </summary>
         private static readonly string[] WX = { "micromessenger" };
+        /// <summary>
+        /// 浏览器列表
+        /// </summary>
+        private static readonly string[] _browserlist = new string[] { "ie", "chrome", "mozilla", "netscape", "firefox", "opera", "konqueror" };
+        /// <summary>
+        /// 搜索引擎列表
+        /// </summary>
+        private static readonly string[] _searchenginelist = new string[] { "baidu", "google", "360", "sogou", "bing", "msn", "sohu", "soso", "sina", "163", "yahoo", "jikeu" };
+        /// <summary>
+        /// meta正则表达式
+        /// </summary>
+        private static readonly Regex _metaregex = new Regex("<meta([^<]*)charset=([^<]*)[\"']", RegexOptions.IgnoreCase | RegexOptions.Multiline);
         #endregion
-
-        //浏览器列表
-        private static string[] _browserlist = new string[] { "ie", "chrome", "mozilla", "netscape", "firefox", "opera", "konqueror" };
-        //搜索引擎列表
-        private static string[] _searchenginelist = new string[] { "baidu", "google", "360", "sogou", "bing", "msn", "sohu", "soso", "sina", "163", "yahoo", "jikeu" };
-        //meta正则表达式
-        private static Regex _metaregex = new Regex("<meta([^<]*)charset=([^<]*)[\"']", RegexOptions.IgnoreCase | RegexOptions.Multiline);
-
-
 
         /// <summary>
         /// 获取客户端类型----pc还是移动端 未使用
         /// </summary>
-        /// <param name="rqst"></param>
-        /// <returns>1:pc/未知   ， 2:mobile</returns>   
-        public static int GetClientType(System.Web.HttpRequest _rqst)
+        /// <param name="request"></param>
+        /// <returns>1:pc/未知 2:mobile</returns>   
+        public static int GetClientType(HttpRequest request)
         {
-            var userAgent = _rqst.UserAgent;
+            var userAgent = request.UserAgent;
             if (userAgent != null)
             {
 
@@ -64,15 +72,16 @@ namespace Common.Net.Core
                 {
                     return 0;
                 }
-
             }
             return 1;
         }
+
         #region 编码
 
         /// <summary>
         /// HTML解码
         /// </summary>
+        /// <param name="s"></param>
         /// <returns></returns>
         public static string HtmlDecode(string s)
         {
@@ -82,6 +91,7 @@ namespace Common.Net.Core
         /// <summary>
         /// HTML编码
         /// </summary>
+        /// <param name="s"></param>
         /// <returns></returns>
         public static string HtmlEncode(string s)
         {
@@ -91,6 +101,7 @@ namespace Common.Net.Core
         /// <summary>
         /// URL解码
         /// </summary>
+        /// <param name="s"></param>
         /// <returns></returns>
         public static string UrlDecode(string s)
         {
@@ -100,6 +111,7 @@ namespace Common.Net.Core
         /// <summary>
         /// URL编码
         /// </summary>
+        /// <param name="s"></param>
         /// <returns></returns>
         public static string UrlEncode(string s)
         {
@@ -249,11 +261,18 @@ namespace Common.Net.Core
         /// <returns></returns>
         public static bool IsAjax()
         {
-            return HttpContext.Current.Request.Headers["X-Requested-With"] == "XMLHttpRequest";
+            try
+            {
+                return HttpContext.Current.Request.Headers["X-Requested-With"] == "XMLHttpRequest";
+            }
+            catch (Exception)
+            {
+                return false;
+            }
         }
 
         /// <summary>
-        /// 是否存在Key
+        /// 判断URL中是否存在Key
         /// </summary>
         /// <param name="key"></param>
         /// <returns></returns>
@@ -417,7 +436,6 @@ namespace Common.Net.Core
             Uri uri = HttpContext.Current.Request.UrlReferrer;
             if (uri == null)
                 return string.Empty;
-
             return uri.ToString();
         }
 
@@ -459,7 +477,6 @@ namespace Common.Net.Core
                 ip = HttpContext.Current.Request.ServerVariables["HTTP_X_FORWARDED_FOR"].ToString();
             else
                 ip = HttpContext.Current.Request.ServerVariables["REMOTE_ADDR"].ToString();
-
             if (string.IsNullOrEmpty(ip) || !ValidateHelper.IsIP(ip))
                 ip = "127.0.0.1";
             return ip;
@@ -474,7 +491,6 @@ namespace Common.Net.Core
             string type = HttpContext.Current.Request.Browser.Type;
             if (string.IsNullOrEmpty(type) || type == "unknown")
                 return "未知";
-
             return type.ToLower();
         }
 
@@ -513,7 +529,6 @@ namespace Common.Net.Core
             string userAgent = HttpContext.Current.Request.UserAgent;
             if (userAgent == null)
                 return "未知";
-
             string type = null;
             if (userAgent.Contains("NT 6.1"))
                 type = "Windows 7";
@@ -549,7 +564,6 @@ namespace Common.Net.Core
                 type = "SunOS";
             else
                 type = "未知";
-
             return type;
         }
 
@@ -562,7 +576,6 @@ namespace Common.Net.Core
             string name = HttpContext.Current.Request.Browser.Platform;
             if (string.IsNullOrEmpty(name))
                 return "未知";
-
             return name;
         }
 

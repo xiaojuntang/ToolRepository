@@ -77,6 +77,7 @@ namespace HeplerPatterns
         }
         static void Main(string[] args)
         {
+            var aaaa = SmsHelper.SendMessage("13691429153", "你好，我的测试短信！");
 
             for (int i = 0; i < 10; i++)
             {

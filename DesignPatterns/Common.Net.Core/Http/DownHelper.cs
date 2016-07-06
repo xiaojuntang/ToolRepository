@@ -9,7 +9,10 @@ namespace Common.Net.Core
     /// </summary>
     public class DownHelper
     {
-        HttpResponse Response = null;
+        readonly HttpResponse Response = null;
+        /// <summary>
+        /// 构造函数
+        /// </summary>
         public DownHelper()
         {
             Response = HttpContext.Current.Response;
@@ -34,8 +37,7 @@ namespace Common.Net.Core
                 long dataLengthToRead = stream.Length;
 
                 Response.ContentType = "application/octet-stream";
-                Response.AddHeader("Content-Disposition",
-                    string.Format("attachment; filename={0}", HttpUtility.UrlPathEncode(fileName)));
+                Response.AddHeader("Content-Disposition", $"attachment; filename={HttpUtility.UrlPathEncode(fileName)}");
 
                 while (dataLengthToRead > 0 && Response.IsClientConnected)
                 {
@@ -49,6 +51,11 @@ namespace Common.Net.Core
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="filePath"></param>
+        /// <param name="fielName"></param>
         public void DownloadByTransmitFile(string filePath, string fielName)
         {
             FileInfo info = new FileInfo(filePath);
@@ -64,14 +71,18 @@ namespace Common.Net.Core
             Response.Close();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="filePath"></param>
+        /// <param name="fileName"></param>
         public void DownloadByWriteFile(string filePath, string fileName)
         {
             FileInfo info = new FileInfo(filePath);
             long fileSize = info.Length;
             Response.Clear();
             Response.ContentType = "application/octet-stream";
-            Response.AddHeader("Content-Disposition",
-                string.Format("attachment;filename={0}", HttpUtility.UrlPathEncode(fileName)));
+            Response.AddHeader("Content-Disposition", string.Format("attachment;filename={0}", HttpUtility.UrlPathEncode(fileName)));
 
             //指定文件大小  
             Response.AddHeader("Content-Length", fileSize.ToString());
@@ -80,6 +91,11 @@ namespace Common.Net.Core
             Response.Close();
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="filePath"></param>
+        /// <param name="fileName"></param>
         public void DownloadByOutputStreamBlock(string filePath, string fileName)
         {
             using (FileStream stream = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read))
@@ -93,8 +109,7 @@ namespace Common.Net.Core
 
                 //添加Http头  
                 Response.ContentType = "application/octet-stream";
-                Response.AddHeader("Content-Disposition",
-                    string.Format("attachment;filename={0}", HttpUtility.UrlPathEncode(fileName)));
+                Response.AddHeader("Content-Disposition", string.Format("attachment;filename={0}", HttpUtility.UrlPathEncode(fileName)));
                 Response.AddHeader("Content-Length", dataToRead.ToString());
 
                 while (dataToRead > 0 && Response.IsClientConnected)
@@ -109,6 +124,11 @@ namespace Common.Net.Core
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="filePath"></param>
+        /// <param name="fileName"></param>
         public void DownloadByBinary(string filePath, string fileName)
         {
             using (FileStream stream = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read))
@@ -122,8 +142,7 @@ namespace Common.Net.Core
 
                 //添加Http头  
                 Response.ContentType = "application/octet-stream";
-                Response.AddHeader("Content-Disposition",
-                    string.Format("attachment;filename={0}", HttpUtility.UrlPathEncode(fileName)));
+                Response.AddHeader("Content-Disposition", string.Format("attachment;filename={0}", HttpUtility.UrlPathEncode(fileName)));
 
                 Response.AddHeader("Content-Length", bytes.Length.ToString());
                 Response.BinaryWrite(bytes);
@@ -132,6 +151,11 @@ namespace Common.Net.Core
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="filePath"></param>
+        /// <param name="fileName"></param>
         public void DownloadByBinaryBlock(string filePath, string fileName)
         {
             using (FileStream stream = new FileStream(filePath, FileMode.Open, FileAccess.Read, FileShare.Read))
@@ -145,8 +169,7 @@ namespace Common.Net.Core
 
                 //添加Http头  
                 Response.ContentType = "application/octet-stream";
-                Response.AddHeader("Content-Disposition",
-                    string.Format("attachment;filename={0}", HttpUtility.UrlPathEncode(fileName)));
+                Response.AddHeader("Content-Disposition", string.Format("attachment;filename={0}", HttpUtility.UrlPathEncode(fileName)));
                 Response.AddHeader("Content-Length", dataToRead.ToString());
 
                 while (dataToRead > 0 && Response.IsClientConnected)

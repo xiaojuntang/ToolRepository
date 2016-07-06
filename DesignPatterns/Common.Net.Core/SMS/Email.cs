@@ -19,13 +19,32 @@ using System.Net.Mail;
 
 namespace Common.Net.Core
 {
+    /// <summary>
+    /// 发送邮件类型
+    /// </summary>
     public enum EmailSysEnum
     {
-        Register,//用户注册
-        MfgSys,//系统（内部使用，发送系统通知用）
-        Service,//系统（外部用户，发送系统邮件，如找回密码等）
-        Pub//推广邮件（广告推送）
+        /// <summary>
+        /// 用户注册
+        /// </summary>
+        Register,
+        /// <summary>
+        /// 系统（内部使用，发送系统通知用）
+        /// </summary>
+        Sys,
+        /// <summary>
+        /// 系统（外部用户，发送系统邮件，如找回密码等）
+        /// </summary>
+        Service,
+        /// <summary>
+        /// 推广邮件（广告推送）
+        /// </summary>
+        Pub
     }
+
+    /// <summary>
+    /// 邮件发送对象
+    /// </summary>
     public class Email
     {
         /// <summary>发送邮件的方法
@@ -35,7 +54,7 @@ namespace Common.Net.Core
         /// <param name="mailtitle">发送邮件的标题</param>
         /// <param name="mailcontent">发送邮件的内容</param>
         /// <param name="addfiles">发送邮件的内容</param>
-        /// <param name="mailcontent">发送邮件的内容</param>
+        /// <param name="emailsys">邮件类型</param>
         /// <returns>成功返回 ok  失败返回失败的原因</returns>
         public static string SendEmail(string toemail, string mailtitle, string mailcontent, string addfiles, EmailSysEnum emailsys)
         {
@@ -76,18 +95,13 @@ namespace Common.Net.Core
         /// <summary>
         /// 用于组装邮件
         /// </summary>
-        /// <param name="fromMail"></param>
-        /// <param name="toMail"></param>
-        /// <param name="subject"></param>
-        /// <param name="body"></param>
-        /// <param name="attachmentFiles"></param>
+        /// <param name="fromMail">发送人地址</param>
+        /// <param name="toMail">收件人地址</param>
+        /// <param name="subject">邮件标题</param>
+        /// <param name="body">邮件内容</param>
+        /// <param name="attachmentFiles">附件</param>
         /// <returns></returns>
-        private static MailMessage EmailCompose(
-            string fromMail,
-            string toMail,
-            string subject,
-            string body,
-            string attachmentFiles)
+        private static MailMessage EmailCompose(string fromMail, string toMail, string subject, string body, string attachmentFiles)
         {
             MailMessage message;
             MailAddress from = new MailAddress(fromMail, "学习社区", System.Text.Encoding.GetEncoding("gb2312"));

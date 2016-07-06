@@ -134,6 +134,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "18-线程使用", "18-线�
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestProject.Tasks", "TestProject.Tasks\TestProject.Tasks.csproj", "{B8389EB9-911A-4A27-9B01-6DA397272243}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common.Net.Log", "Common.Net.Log\Common.Net.Log.csproj", "{DADBC82F-85C6-4FC6-B2F8-A5EDC983D7A6}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -312,6 +314,10 @@ Global
 		{B8389EB9-911A-4A27-9B01-6DA397272243}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B8389EB9-911A-4A27-9B01-6DA397272243}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B8389EB9-911A-4A27-9B01-6DA397272243}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DADBC82F-85C6-4FC6-B2F8-A5EDC983D7A6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DADBC82F-85C6-4FC6-B2F8-A5EDC983D7A6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DADBC82F-85C6-4FC6-B2F8-A5EDC983D7A6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DADBC82F-85C6-4FC6-B2F8-A5EDC983D7A6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -359,5 +365,6 @@ Global
 		{D7591650-0FDD-415E-A3BD-42FD5659C9E9} = {00F38FB8-6187-491E-AE34-C49105CE3D27}
 		{3EEE7056-A137-4313-8D8F-F6B77B50FE29} = {AC0B9422-35BB-45E3-A19F-516ADC5A8310}
 		{B8389EB9-911A-4A27-9B01-6DA397272243} = {87491050-D4C8-448B-A0C0-AB97191CB52F}
+		{DADBC82F-85C6-4FC6-B2F8-A5EDC983D7A6} = {2BB11AE2-D56F-4C51-A855-786C1EE6A5BD}
 	EndGlobalSection
 EndGlobal
