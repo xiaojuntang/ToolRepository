@@ -47,8 +47,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="CommandInfo.cs" />
-    <Compile Include="DataConnect.cs" />
+    <Compile Include="DataBase.cs" />
     <Compile Include="MsSqlHelper.cs" />
     <Compile Include="MySqlHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

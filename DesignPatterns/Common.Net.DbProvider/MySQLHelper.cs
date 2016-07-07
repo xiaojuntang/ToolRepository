@@ -16,56 +16,39 @@ namespace Common.Net.DbProvider
     public abstract class MySqlHelper : IDisposable
     {
         /// <summary>
-        /// 数据库连接字符串
-        /// </summary>	
-        private static string connectionString = string.Empty;
-
-        /// <summary>
         /// 构造函数
         /// </summary>
-        public MySqlHelper() { }
+        protected MySqlHelper() { }
 
         /// <summary>
         /// 自定义数据库连接
         /// </summary>
         /// <param name="db">数据库名称</param>
         /// <returns></returns>
-        private static MySqlConnection MySelfSqlConnection(DataBase db)
+        private static MySqlConnection MySelfSqlConnection(string db)
         {
             MySqlConnection connection = new MySqlConnection();
-            var conn = ConfigurationManager.ConnectionStrings[db.ToString()];
+            var conn = ConfigurationManager.ConnectionStrings[db];
             if (conn != null)
                 connection.ConnectionString = conn.ConnectionString;
             else
-                throw new ConfigurationErrorsException("配置文件中没有名为" + db.ToString() + "的数据库连接字符串");
+                throw new ConfigurationErrorsException("配置文件中没有名为" + db + "的数据库连接字符串");
             return connection;
         }
 
         #region 公用方法
 
         /// <summary>
-        /// 得到最大值,使用该方法有线程安全问题 使用LAST_INSERT_ID
-        /// </summary>
-        /// <param name="FieldName">字段</param>
-        /// <param name="TableName">表名</param>
-        /// <returns>增长后的值</returns>
-        public static int GetMaxID(string FieldName, string TableName)
-        {
-            string strsql = "select max(" + FieldName + ")+1 from " + TableName;
-            object obj = ExecuteScalar(strsql);
-            return obj == null ? 1 : int.Parse(obj.ToString());
-        }
-
-        /// <summary>
         /// 判断记录是否存在
         /// </summary>
-        /// <param name="SQLString">SQL</param>
+        /// <param name="sql">SQL语句</param>
+        /// <param name="db">数据库配置</param>
         /// <returns></returns>
-        public static bool Exists(string SQLString)
+        public static bool Exists(string sql, string db = DataBase.ConnStr)
         {
-            object obj = ExecuteScalar(SQLString);
+            object obj = ExecuteScalar(sql, db);
             int cmdresult;
-            if ((Object.Equals(obj, null)) || (Object.Equals(obj, System.DBNull.Value)))
+            if ((object.Equals(obj, null)) || (object.Equals(obj, System.DBNull.Value)))
             {
                 cmdresult = 0;
             }
@@ -73,27 +56,21 @@ namespace Common.Net.DbProvider
             {
                 cmdresult = int.Parse(obj.ToString());
             }
-            if (cmdresult == 0)
-            {
-                return false;
-            }
-            else
-            {
-                return true;
-            }
+            return cmdresult != 0;
         }
 
         /// <summary>
         /// 判断记录是否存在（基于MySqlParameter）
         /// </summary>
-        /// <param name="SQLString"></param>
-        /// <param name="cmdParms"></param>
+        /// <param name="sql">SQL语句</param>
+        /// <param name="db">数据库配置</param>
+        /// <param name="cmdParms">参数</param>
         /// <returns></returns>
-        public static bool Exists(string SQLString, DataBase db, params MySqlParameter[] cmdParms)
+        public static bool Exists(string sql, string db = DataBase.ConnStr, params MySqlParameter[] cmdParms)
         {
-            object obj = ExecuteScalar(SQLString, db, cmdParms);
+            object obj = ExecuteScalar(sql, db, cmdParms);
             int cmdresult;
-            if ((Object.Equals(obj, null)) || (Object.Equals(obj, System.DBNull.Value)))
+            if ((object.Equals(obj, null)) || (object.Equals(obj, System.DBNull.Value)))
             {
                 cmdresult = 0;
             }
@@ -101,14 +78,7 @@ namespace Common.Net.DbProvider
             {
                 cmdresult = int.Parse(obj.ToString());
             }
-            if (cmdresult == 0)
-            {
-                return false;
-            }
-            else
-            {
-                return true;
-            }
+            return cmdresult != 0;
         }
         #endregion
 
@@ -117,14 +87,14 @@ namespace Common.Net.DbProvider
         /// <summary>
         /// 执行SQL语句，返回影响的记录数
         /// </summary>
-        /// <param name="SQLString">SQL语句</param>
-        /// <param name="db">数据库配置字符</param>
+        /// <param name="sql">SQL语句</param>
+        /// <param name="db">数据库配置</param>
         /// <returns>影响的记录数</returns>
-        public static int ExecuteSql(string SQLString, DataBase db = DataBase.None)
+        public static int ExecuteSql(string sql, string db = DataBase.ConnStr)
         {
-            using (MySqlConnection connection = (db == DataBase.None) ? new MySqlConnection(connectionString) : MySelfSqlConnection(db))
+            using (MySqlConnection connection = MySelfSqlConnection(db))
             {
-                using (MySqlCommand cmd = new MySqlCommand(SQLString, connection))
+                using (MySqlCommand cmd = new MySqlCommand(sql, connection))
                 {
                     try
                     {
@@ -132,7 +102,7 @@ namespace Common.Net.DbProvider
                         int rows = cmd.ExecuteNonQuery();
                         return rows;
                     }
-                    catch (MySql.Data.MySqlClient.MySqlException e)
+                    catch (MySqlException e)
                     {
                         connection.Close();
                         throw e;
@@ -144,22 +114,23 @@ namespace Common.Net.DbProvider
         /// <summary>
         /// 执行多条SQL语句，实现数据库事务。
         /// </summary>
-        /// <param name="SQLStringList">多条SQL语句</param>		
-        public static int ExecuteSqlTran(List<String> SQLStringList, DataBase db = DataBase.None)
+        /// <param name="sql">多条SQL语句</param>
+        /// <param name="db">数据库配置</param>		
+        public static int ExecuteSqlTran(List<string> sql, string db = DataBase.ConnStr)
         {
-            using (MySqlConnection conn = (db == DataBase.None) ? new MySqlConnection(connectionString) : MySelfSqlConnection(db))
+            using (MySqlConnection connection = MySelfSqlConnection(db))
             {
-                conn.Open();
+                connection.Open();
                 MySqlCommand cmd = new MySqlCommand();
-                cmd.Connection = conn;
-                MySqlTransaction tx = conn.BeginTransaction();
+                cmd.Connection = connection;
+                MySqlTransaction tx = connection.BeginTransaction();
                 cmd.Transaction = tx;
                 try
                 {
                     int count = 0;
-                    for (int n = 0; n < SQLStringList.Count; n++)
+                    for (int n = 0; n < sql.Count; n++)
                     {
-                        string strsql = SQLStringList[n];
+                        string strsql = sql[n];
                         if (strsql.Trim().Length > 1)
                         {
                             cmd.CommandText = strsql;
@@ -180,26 +151,27 @@ namespace Common.Net.DbProvider
         /// <summary>
         /// 执行多条SQL语句，实现数据库事务。
         /// </summary>
-        /// <param name="SQLStringList">多条SQL语句</param>
-        /// <param name="SqlParameterList">多条SQL参数</param>
+        /// <param name="sqlList">多条SQL语句</param>
+        /// <param name="sqlParameter">多条SQL参数</param>
+        /// <param name="db">数据库配置</param>
         /// <returns>影响的行数</returns>
-        public static int ExecuteSqlTran(List<String> SQLStringList, List<MySqlParameter[]> SqlParameterList, DataBase db = DataBase.None)
+        public static int ExecuteSqlTran(List<string> sqlList, List<MySqlParameter[]> sqlParameter, string db = DataBase.ConnStr)
         {
-            using (MySqlConnection conn = (db == DataBase.None) ? new MySqlConnection(connectionString) : MySelfSqlConnection(db))
+            using (MySqlConnection connection = MySelfSqlConnection(db))
             {
-                conn.Open();
+                connection.Open();
                 MySqlCommand cmd = new MySqlCommand();
-                MySqlTransaction tx = conn.BeginTransaction();
+                MySqlTransaction tx = connection.BeginTransaction();
                 int ac = 0;
                 try
                 {
                     int count = 0;
-                    for (int n = 0; n < SQLStringList.Count; n++)
+                    for (int n = 0; n < sqlList.Count; n++)
                     {
-                        string strsql = SQLStringList[n];
+                        string strsql = sqlList[n];
                         if (strsql.Trim().Length > 1)
                         {
-                            PrepareCommand(cmd, conn, tx, strsql, SqlParameterList[n]);
+                            PrepareCommand(cmd, connection, tx, strsql, sqlParameter[n]);
                             count += cmd.ExecuteNonQuery();
                             ac++;
                         }
@@ -210,8 +182,8 @@ namespace Common.Net.DbProvider
                 catch (Exception ex)
                 {
                     var a = ac;
-                    var b = SQLStringList[ac];
-                    var c = SqlParameterList[ac];
+                    var b = sqlList[ac];
+                    var c = sqlParameter[ac];
                     tx.Rollback();
                     throw ex;
                 }
@@ -222,15 +194,16 @@ namespace Common.Net.DbProvider
         /// <summary>
         /// 向数据库里插入图像格式的字段(和上面情况类似的另一种实例)
         /// </summary>
-        /// <param name="SQLString">SQL语句</param>
+        /// <param name="sql">SQL语句</param>
         /// <param name="fs">图像字节,数据库的字段类型为image的情况</param>
+        /// <param name="db">数据库配置</param>
         /// <returns>影响的记录数</returns>
-        public static int ExecuteSqlInsertImg(string SQLString, byte[] fs)
+        public static int ExecuteSqlInsertImg(string sql, byte[] fs, string db = DataBase.ConnStr)
         {
-            using (MySqlConnection connection = new MySqlConnection(connectionString))
+            using (MySqlConnection connection = MySelfSqlConnection(db))
             {
-                MySqlCommand cmd = new MySqlCommand(SQLString, connection);
-                MySql.Data.MySqlClient.MySqlParameter myParameter = new MySql.Data.MySqlClient.MySqlParameter("@fs", SqlDbType.Image);
+                MySqlCommand cmd = new MySqlCommand(sql, connection);
+                MySqlParameter myParameter = new MySqlParameter("@fs", SqlDbType.Image);
                 myParameter.Value = fs;
                 cmd.Parameters.Add(myParameter);
                 try
@@ -239,7 +212,7 @@ namespace Common.Net.DbProvider
                     int rows = cmd.ExecuteNonQuery();
                     return rows;
                 }
-                catch (MySql.Data.MySqlClient.MySqlException e)
+                catch (MySqlException e)
                 {
                     throw e;
                 }
@@ -254,19 +227,20 @@ namespace Common.Net.DbProvider
         /// <summary>
         /// 执行查询语句，返回MySqlDataReader ( 注意：调用该方法后，一定要对MySqlDataReader进行Close )
         /// </summary>
-        /// <param name="SQLString">查询语句</param>
+        /// <param name="sql">查询语句</param>
+        /// <param name="db"></param>
         /// <returns>MySqlDataReader</returns>
-        public static MySqlDataReader ExecuteReader(string SQLString)
+        public static MySqlDataReader ExecuteReader(string sql, string db = DataBase.ConnStr)
         {
-            MySqlConnection connection = new MySqlConnection(connectionString);
-            MySqlCommand cmd = new MySqlCommand(SQLString, connection);
+            MySqlConnection connection = MySelfSqlConnection(db);
+            MySqlCommand cmd = new MySqlCommand(sql, connection);
             try
             {
                 connection.Open();
                 MySqlDataReader myReader = cmd.ExecuteReader(CommandBehavior.CloseConnection);
                 return myReader;
             }
-            catch (MySql.Data.MySqlClient.MySqlException e)
+            catch (MySqlException e)
             {
                 throw e;
             }
@@ -279,34 +253,10 @@ namespace Common.Net.DbProvider
         /// <summary>
         /// 执行查询语句，返回DataSet
         /// </summary>
-        /// <param name="SQLString">查询语句</param>
-        /// <returns>DataSet</returns>
-        public static DataSet FindDataSet(string SQLString)
-        {
-            using (MySqlConnection connection = new MySqlConnection(connectionString))
-            {
-                DataSet ds = new DataSet();
-                try
-                {
-                    connection.Open();
-                    MySqlDataAdapter command = new MySqlDataAdapter(SQLString, connection);
-                    command.Fill(ds, "ds");
-                }
-                catch (MySql.Data.MySqlClient.MySqlException ex)
-                {
-                    throw new Exception(ex.Message);
-                }
-                return ds;
-            }
-        }
-
-        /// <summary>
-        /// 执行查询语句，返回DataSet
-        /// </summary>
-        /// <param name="SQLString">查询语句</param>
+        /// <param name="sql">查询语句</param>
         /// <param name="db">数据库连接字符串</param>
         /// <returns></returns>
-        public static DataSet FindDataSet(string SQLString, DataBase db)
+        public static DataSet FindDataSet(string sql, string db = DataBase.ConnStr)
         {
             using (MySqlConnection connection = MySelfSqlConnection(db))
             {
@@ -314,11 +264,11 @@ namespace Common.Net.DbProvider
                 try
                 {
                     connection.Open();
-                    MySqlDataAdapter command = new MySqlDataAdapter(SQLString, connection);
+                    MySqlDataAdapter command = new MySqlDataAdapter(sql, connection);
                     command.SelectCommand.CommandTimeout = CommandTimeOut;
                     command.Fill(ds, "ds");
                 }
-                catch (MySql.Data.MySqlClient.MySqlException ex)
+                catch (MySqlException ex)
                 {
                     throw new Exception(ex.Message);
                 }
@@ -329,15 +279,16 @@ namespace Common.Net.DbProvider
         /// <summary>
         /// 执行带参数查询语句，返回DataSet
         /// </summary>
-        /// <param name="SQLString">SQL</param>
+        /// <param name="sql">SQL</param>
+        /// <param name="db"></param>
         /// <param name="cmdParms">参数列表</param>
         /// <returns></returns>
-        public static DataSet FindDataSet(string SQLString, params MySqlParameter[] cmdParms)
+        public static DataSet FindDataSet(string sql, string db = DataBase.ConnStr, params MySqlParameter[] cmdParms)
         {
-            using (MySqlConnection connection = new MySqlConnection(connectionString))
+            using (MySqlConnection connection = MySelfSqlConnection(db))
             {
                 MySqlCommand cmd = new MySqlCommand();
-                PrepareCommand(cmd, connection, null, SQLString, cmdParms);
+                PrepareCommand(cmd, connection, null, sql, cmdParms);
                 using (MySqlDataAdapter da = new MySqlDataAdapter(cmd))
                 {
                     DataSet ds = new DataSet();
@@ -346,7 +297,7 @@ namespace Common.Net.DbProvider
                         da.Fill(ds, "ds");
                         cmd.Parameters.Clear();
                     }
-                    catch (MySql.Data.MySqlClient.MySqlException ex)
+                    catch (MySqlException ex)
                     {
                         throw new Exception(ex.Message);
                     }
@@ -358,14 +309,16 @@ namespace Common.Net.DbProvider
         /// <summary>
         /// 执行查询语句，返回DataSet
         /// </summary>
-        /// <param name="SQLString">查询语句</param>
+        /// <param name="sql">查询语句</param>
+        /// <param name="cmdParms"></param>
+        /// <param name="db">数据库配置</param>
         /// <returns>DataSet</returns>
-        public static DataSet FindDataSet(string SQLString, List<MySqlParameter> cmdParms)
+        public static DataSet FindDataSet(string sql, List<MySqlParameter> cmdParms, string db = DataBase.ConnStr)
         {
-            using (MySqlConnection connection = new MySqlConnection(connectionString))
+            using (MySqlConnection connection = MySelfSqlConnection(db))
             {
                 MySqlCommand cmd = new MySqlCommand();
-                PrepareCommand(cmd, connection, null, SQLString, cmdParms.ToArray());
+                PrepareCommand(cmd, connection, null, sql, cmdParms.ToArray());
                 using (MySqlDataAdapter da = new MySqlDataAdapter(cmd))
                 {
                     DataSet ds = new DataSet();
@@ -374,7 +327,7 @@ namespace Common.Net.DbProvider
                         da.Fill(ds, "ds");
                         cmd.Parameters.Clear();
                     }
-                    catch (MySql.Data.MySqlClient.MySqlException ex)
+                    catch (MySqlException ex)
                     {
                         throw new Exception(ex.Message);
                     }
@@ -388,17 +341,19 @@ namespace Common.Net.DbProvider
         /// <summary>
         /// 返回影响的记录数
         /// </summary>
-        /// <param name="SQLString">SQL语句</param>
+        /// <param name="sql">SQL语句</param>
+        /// <param name="db"></param>
+        /// <param name="cmdParms"></param>
         /// <returns>影响的记录数</returns>
-        public static int ExecuteNonQuery(string SQLString, params MySqlParameter[] cmdParms)
+        public static int ExecuteNonQuery(string sql, string db = DataBase.ConnStr, params MySqlParameter[] cmdParms)
         {
-            using (MySqlConnection connection = new MySqlConnection(connectionString))
+            using (MySqlConnection connection = MySelfSqlConnection(db))
             {
                 using (MySqlCommand cmd = new MySqlCommand())
                 {
                     try
                     {
-                        PrepareCommand(cmd, connection, null, SQLString, cmdParms);
+                        PrepareCommand(cmd, connection, null, sql, cmdParms);
                         int rows = cmd.ExecuteNonQuery();
                         cmd.Parameters.Clear();
                         return rows;
@@ -414,17 +369,18 @@ namespace Common.Net.DbProvider
         /// <summary>
         /// 执行带参数返回受影响的行数Sql
         /// </summary>
-        /// <param name="SQLString">SQL</param>
+        /// <param name="sql">SQL</param>
         /// <param name="parameters">参数</param>
+        /// <param name="db"></param>
         /// <param name="commandtext">执行类型</param>
         /// <returns></returns>
-        public static int ExecuteNonQuery(string SQLString, List<MySqlParameter> parameters, CommandType commandtext = CommandType.Text)
+        public static int ExecuteNonQuery(string sql, List<MySqlParameter> parameters, string db = DataBase.ConnStr, CommandType commandtext = CommandType.Text)
         {
             int results = 0;
-            using (MySqlConnection connection = new MySqlConnection(connectionString))
+            using (MySqlConnection connection = MySelfSqlConnection(db))
             {
                 connection.Open();
-                var command = new MySqlCommand(SQLString, connection);
+                var command = new MySqlCommand(sql, connection);
                 command.CommandType = commandtext;
                 if (parameters != null)
                     foreach (var p in parameters)
@@ -438,22 +394,23 @@ namespace Common.Net.DbProvider
         /// <summary>
         /// 执行多条SQL语句，实现数据库事务。
         /// </summary>
-        /// <param name="SQLStringList">SQL语句的哈希表（key为sql语句，value是该语句的MySqlParameter[]）</param>
-        public static void ExecuteSqlTran(Hashtable SQLStringList)
+        /// <param name="sql">SQL语句的哈希表（key为sql语句，value是该语句的MySqlParameter[]）</param>
+        /// <param name="db"></param>
+        public static void ExecuteSqlTran(Hashtable sql, string db = DataBase.ConnStr)
         {
-            using (MySqlConnection conn = new MySqlConnection(connectionString))
+            using (MySqlConnection connection = MySelfSqlConnection(db))
             {
-                conn.Open();
-                using (MySqlTransaction trans = conn.BeginTransaction())
+                connection.Open();
+                using (MySqlTransaction trans = connection.BeginTransaction())
                 {
                     MySqlCommand cmd = new MySqlCommand();
                     try
                     {
-                        foreach (DictionaryEntry myDE in SQLStringList)
+                        foreach (DictionaryEntry myDE in sql)
                         {
                             string cmdText = myDE.Key.ToString();
                             MySqlParameter[] cmdParms = (MySqlParameter[])myDE.Value;
-                            PrepareCommand(cmd, conn, trans, cmdText, cmdParms);
+                            PrepareCommand(cmd, connection, trans, cmdText, cmdParms);
                             int val = cmd.ExecuteNonQuery();
                             cmd.Parameters.Clear();
                         }
@@ -471,24 +428,25 @@ namespace Common.Net.DbProvider
         /// <summary>
         /// 执行多条SQL语句，实现数据库事务。
         /// </summary>
-        /// <param name="SQLStringList">SQL语句的哈希表（key为sql语句，value是该语句的MySqlParameter[]）</param>
-        public static int ExecuteSqlTran(System.Collections.Generic.List<CommandInfo> cmdList)
+        /// <param name="sqlList">SQL语句的哈希表（key为sql语句，value是该语句的MySqlParameter[]）</param>
+        /// <param name="db"></param>
+        public static int ExecuteSqlTran(List<CommandInfo> sqlList, string db = DataBase.ConnStr)
         {
-            using (MySqlConnection conn = new MySqlConnection(connectionString))
+            using (MySqlConnection connection = MySelfSqlConnection(db))
             {
-                conn.Open();
-                using (MySqlTransaction trans = conn.BeginTransaction())
+                connection.Open();
+                using (MySqlTransaction trans = connection.BeginTransaction())
                 {
                     MySqlCommand cmd = new MySqlCommand();
                     try
                     {
                         int count = 0;
                         //循环
-                        foreach (CommandInfo myDE in cmdList)
+                        foreach (CommandInfo myDE in sqlList)
                         {
                             string cmdText = myDE.CommandText;
                             MySqlParameter[] cmdParms = (MySqlParameter[])myDE.Parameters;
-                            PrepareCommand(cmd, conn, trans, cmdText, cmdParms);
+                            PrepareCommand(cmd, connection, trans, cmdText, cmdParms);
 
                             if (myDE.EffentNextType == EffentNextType.WhenHaveContine || myDE.EffentNextType == EffentNextType.WhenNoHaveContine)
                             {
@@ -542,20 +500,21 @@ namespace Common.Net.DbProvider
         /// <summary>
         /// 执行多条SQL语句，实现数据库事务。
         /// </summary>
-        /// <param name="SQLStringList">SQL语句的哈希表（key为sql语句，value是该语句的MySqlParameter[]）</param>
-        public static void ExecuteSqlTranWithIndentity(System.Collections.Generic.List<CommandInfo> SQLStringList)
+        /// <param name="sqlList">SQL语句的哈希表（key为sql语句，value是该语句的MySqlParameter[]）</param>
+        /// <param name="db"></param>
+        public static void ExecuteSqlTranWithIndentity(List<CommandInfo> sqlList, string db = DataBase.ConnStr)
         {
-            using (MySqlConnection conn = new MySqlConnection(connectionString))
+            using (MySqlConnection connection = MySelfSqlConnection(db))
             {
-                conn.Open();
-                using (MySqlTransaction trans = conn.BeginTransaction())
+                connection.Open();
+                using (MySqlTransaction trans = connection.BeginTransaction())
                 {
                     MySqlCommand cmd = new MySqlCommand();
                     try
                     {
                         int indentity = 0;
                         //循环
-                        foreach (CommandInfo myDE in SQLStringList)
+                        foreach (CommandInfo myDE in sqlList)
                         {
                             string cmdText = myDE.CommandText;
                             MySqlParameter[] cmdParms = (MySqlParameter[])myDE.Parameters;
@@ -566,7 +525,7 @@ namespace Common.Net.DbProvider
                                     q.Value = indentity;
                                 }
                             }
-                            PrepareCommand(cmd, conn, trans, cmdText, cmdParms);
+                            PrepareCommand(cmd, connection, trans, cmdText, cmdParms);
                             int val = cmd.ExecuteNonQuery();
                             foreach (MySqlParameter q in cmdParms)
                             {
@@ -591,58 +550,9 @@ namespace Common.Net.DbProvider
         /// <summary>
         /// 执行多条SQL语句.实现数据库事务.
         /// </summary>
-        /// <param name="SqlList">SQL语句的哈希表（key为sql语句，value是该语句的MySqlParameter[]）</param>
-        public static void ExecuteSqlTranWithIndentity(Hashtable SqlList)
-        {
-            using (MySqlConnection conn = new MySqlConnection(connectionString))
-            {
-                conn.Open();
-                using (MySqlTransaction trans = conn.BeginTransaction())
-                {
-                    MySqlCommand cmd = new MySqlCommand();
-                    try
-                    {
-                        int indentity = 0;
-                        //循环
-                        foreach (DictionaryEntry myDE in SqlList)
-                        {
-                            string cmdText = myDE.Key.ToString();
-                            MySqlParameter[] cmdParms = (MySqlParameter[])myDE.Value;
-                            foreach (MySqlParameter q in cmdParms)
-                            {
-                                if (q.Direction == ParameterDirection.InputOutput)
-                                {
-                                    q.Value = indentity;
-                                }
-                            }
-                            PrepareCommand(cmd, conn, trans, cmdText, cmdParms);
-                            int val = cmd.ExecuteNonQuery();
-                            foreach (MySqlParameter q in cmdParms)
-                            {
-                                if (q.Direction == ParameterDirection.Output)
-                                {
-                                    indentity = Convert.ToInt32(q.Value);
-                                }
-                            }
-                            cmd.Parameters.Clear();
-                        }
-                        trans.Commit();
-                    }
-                    catch
-                    {
-                        trans.Rollback();
-                        throw;
-                    }
-                }
-            }
-        }
-
-        /// <summary>
-        /// 执行多条SQL语句.实现数据库事务.
-        /// </summary>
-        /// <param name="SqlList">SQL语句的哈希表（key为sql语句，value是该语句的MySqlParameter[]）</param>
+        /// <param name="sqlList">SQL语句的哈希表（key为sql语句，value是该语句的MySqlParameter[]）</param>
         /// <param name="db">数据库名称</param>
-        public static void ExecuteSqlTranWithIndentity(Hashtable SqlList, DataBase db)
+        public static void ExecuteSqlTranWithIndentity(Hashtable sqlList, string db = DataBase.ConnStr)
         {
             using (MySqlConnection conn = MySelfSqlConnection(db))
             {
@@ -654,7 +564,7 @@ namespace Common.Net.DbProvider
                     {
                         int indentity = 0;
                         //循环
-                        foreach (DictionaryEntry myDE in SqlList)
+                        foreach (DictionaryEntry myDE in sqlList)
                         {
                             string cmdText = myDE.Key.ToString();
                             MySqlParameter[] cmdParms = (MySqlParameter[])myDE.Value;
@@ -686,22 +596,24 @@ namespace Common.Net.DbProvider
                 }
             }
         }
+
         /// <summary>
         /// 获取首行首列
         /// </summary>
-        /// <param name="SQLString">计算查询结果语句</param>
+        /// <param name="sql">计算查询结果语句</param>
+        /// <param name="db"></param>
         /// <returns>查询结果（object）</returns>
-        public static object ExecuteScalar(string SQLString, DataBase db = DataBase.None)
+        public static object ExecuteScalar(string sql, string db = DataBase.ConnStr)
         {
-            using (MySqlConnection connection = (db == DataBase.None) ? new MySqlConnection(connectionString) : MySelfSqlConnection(db))
+            using (MySqlConnection connection = MySelfSqlConnection(db))
             {
-                using (MySqlCommand cmd = new MySqlCommand(SQLString, connection))
+                using (MySqlCommand cmd = new MySqlCommand(sql, connection))
                 {
                     try
                     {
                         connection.Open();
                         object obj = cmd.ExecuteScalar();
-                        if ((Object.Equals(obj, null)) || (Object.Equals(obj, System.DBNull.Value)))
+                        if ((object.Equals(obj, null)) || (object.Equals(obj, System.DBNull.Value)))
                         {
                             return null;
                         }
@@ -710,7 +622,7 @@ namespace Common.Net.DbProvider
                             return obj;
                         }
                     }
-                    catch (MySql.Data.MySqlClient.MySqlException e)
+                    catch (MySqlException e)
                     {
                         connection.Close();
                         throw e;
@@ -721,22 +633,22 @@ namespace Common.Net.DbProvider
         /// <summary>
         /// 获取首行首列
         /// </summary>
-        /// <param name="SQLString">>SQL</param>
+        /// <param name="sql">>SQL</param>
         /// <param name="db">数据库</param>
         /// <param name="cmdParms">参数列表</param>
         /// <returns>返回结果</returns>
-        public static object ExecuteScalar(string SQLString, DataBase db, params MySqlParameter[] cmdParms)
+        public static object ExecuteScalar(string sql, string db = DataBase.ConnStr, params MySqlParameter[] cmdParms)
         {
-            using (MySqlConnection connection = (db == DataBase.None) ? new MySqlConnection(connectionString) : MySelfSqlConnection(db))
+            using (MySqlConnection connection = MySelfSqlConnection(db))
             {
                 using (MySqlCommand cmd = new MySqlCommand())
                 {
                     try
                     {
-                        PrepareCommand(cmd, connection, null, SQLString, cmdParms);
+                        PrepareCommand(cmd, connection, null, sql, cmdParms);
                         object obj = cmd.ExecuteScalar();
                         cmd.Parameters.Clear();
-                        if ((Object.Equals(obj, null)) || (Object.Equals(obj, System.DBNull.Value)))
+                        if ((object.Equals(obj, null)) || (object.Equals(obj, System.DBNull.Value)))
                         {
                             return null;
                         }
@@ -756,20 +668,22 @@ namespace Common.Net.DbProvider
         /// <summary>
         /// 执行查询语句，返回MySqlDataReader ( 注意：调用该方法后，一定要对MySqlDataReader进行Close )
         /// </summary>
-        /// <param name="strSQL">查询语句</param>
+        /// <param name="sql">查询语句</param>
+        /// <param name="db"></param>
+        /// <param name="cmdParms"></param>
         /// <returns>MySqlDataReader</returns>
-        public static MySqlDataReader ExecuteReader(string SQLString, params MySqlParameter[] cmdParms)
+        public static MySqlDataReader ExecuteReader(string sql, string db = DataBase.ConnStr, params MySqlParameter[] cmdParms)
         {
-            MySqlConnection connection = new MySqlConnection(connectionString);
+            MySqlConnection connection = MySelfSqlConnection(db);
             MySqlCommand cmd = new MySqlCommand();
             try
             {
-                PrepareCommand(cmd, connection, null, SQLString, cmdParms);
+                PrepareCommand(cmd, connection, null, sql, cmdParms);
                 MySqlDataReader myReader = cmd.ExecuteReader(CommandBehavior.CloseConnection);
                 cmd.Parameters.Clear();
                 return myReader;
             }
-            catch (MySql.Data.MySqlClient.MySqlException e)
+            catch (MySqlException e)
             {
                 throw e;
             }
@@ -816,18 +730,19 @@ namespace Common.Net.DbProvider
         /// 返回数据集合
         /// </summary>
         /// <typeparam name="T">实体</typeparam>
-        /// <param name="SQLString">SQL</param>
+        /// <param name="sql">SQL</param>
         /// <param name="readFunc">FUN</param>
         /// <param name="parameters">参数</param>
         /// <param name="commandtext">执行类型</param>
+        /// <param name="db"></param>
         /// <returns></returns>
-        public static List<T> FindList<T>(string SQLString, Func<MySqlDataReader, T> readFunc, List<MySqlParameter> parameters, CommandType commandtext = CommandType.Text, DataBase db = DataBase.None)
+        public static List<T> FindList<T>(string sql, Func<MySqlDataReader, T> readFunc, List<MySqlParameter> parameters, CommandType commandtext = CommandType.Text, string db = DataBase.ConnStr)
         {
             List<T> results = new List<T>();
-            using (MySqlConnection connection = (db == DataBase.None) ? new MySqlConnection(connectionString) : MySelfSqlConnection(db))
+            using (MySqlConnection connection = MySelfSqlConnection(db))
             {
                 connection.Open();
-                var command = new MySqlCommand(SQLString, connection);
+                var command = new MySqlCommand(sql, connection);
                 command.CommandType = commandtext;
                 if (parameters != null)
                     foreach (var p in parameters)
@@ -846,18 +761,19 @@ namespace Common.Net.DbProvider
         /// 返回一个实例对象
         /// </summary>
         /// <typeparam name="T">返回对象</typeparam>
-        /// <param name="SQLString">Sql语句</param>
+        /// <param name="sql">Sql语句</param>
         /// <param name="readFunc">DataReader</param>
         /// <param name="parameters">参数列表</param>
+        /// <param name="db"></param>
         /// <param name="commandtext">命令类型</param>
         /// <returns></returns>
-        public static T Find<T>(string SQLString, Func<MySqlDataReader, T> readFunc, List<MySqlParameter> parameters, CommandType commandtext = CommandType.Text, DataBase db = DataBase.None)
+        public static T Find<T>(string sql, Func<MySqlDataReader, T> readFunc, List<MySqlParameter> parameters, string db = DataBase.ConnStr, CommandType commandtext = CommandType.Text)
         {
             T results = default(T);
-            using (MySqlConnection connection = (db == DataBase.None) ? new MySqlConnection(connectionString) : MySelfSqlConnection(db))
+            using (MySqlConnection connection = MySelfSqlConnection(db))
             {
                 connection.Open();
-                var command = new MySqlCommand(SQLString, connection);
+                var command = new MySqlCommand(sql, connection);
                 command.CommandType = commandtext;
                 if (parameters != null)
                     foreach (var p in parameters)
@@ -873,16 +789,17 @@ namespace Common.Net.DbProvider
         /// <summary>
         /// 执行带参数的SQL语句
         /// </summary>
-        /// <param name="SQLString">Sql语句</param>
+        /// <param name="sql">Sql语句</param>
         /// <param name="readFunc">DataReader</param>
         /// <param name="parameters">参数列表</param>
         /// <param name="commandtext">命令类型</param>
-        public static void FindList(string SQLString, Action<MySqlDataReader> readFunc, List<MySqlParameter> parameters, CommandType commandtext = CommandType.Text, DataBase db = DataBase.None)
+        /// <param name="db"></param>
+        public static void FindList(string sql, Action<MySqlDataReader> readFunc, List<MySqlParameter> parameters, string db = DataBase.ConnStr, CommandType commandtext = CommandType.Text)
         {
-            using (MySqlConnection connection = (db == DataBase.None) ? new MySqlConnection(connectionString) : MySelfSqlConnection(db))
+            using (MySqlConnection connection = MySelfSqlConnection(db))
             {
                 connection.Open();
-                var command = new MySqlCommand(SQLString, connection);
+                var command = new MySqlCommand(sql, connection);
                 command.CommandType = commandtext;
                 command.CommandTimeout = CommandTimeOut;
                 if (parameters != null)
@@ -942,13 +859,14 @@ namespace Common.Net.DbProvider
         /// 超时时间
         /// </summary>
         public static int CommandTimeOut = 600;
-        /// <summary>
-        ///大批量数据插入,返回成功插入行数
-        /// </summary>
-        /// <param name="connectionString">数据库连接字符串</param>
-        /// <param name="table">数据表</param>
+
+        ///  <summary>
+        /// 大批量数据插入,返回成功插入行数
+        ///  </summary>
+        ///  <param name="db">数据库连接字符串</param>
+        ///  <param name="table">数据表</param>
         /// <returns>返回成功插入行数</returns>
-        public static int BulkInsert(DataTable table, DataBase db)
+        public static int BulkInsert(DataTable table, string db = DataBase.ConnStr)
         {
             if (string.IsNullOrEmpty(table.TableName)) throw new Exception("请给DataTable的TableName属性附上表名称");
             if (table.Rows.Count == 0) return 0;
@@ -956,14 +874,14 @@ namespace Common.Net.DbProvider
             string tmpPath = Path.GetTempFileName();
             string csv = DataTableToCsv(table);
             File.WriteAllText(tmpPath, csv);
-            using (MySqlConnection conn = (db == DataBase.None) ? new MySqlConnection(connectionString) : MySelfSqlConnection(db))
+            using (MySqlConnection connection = MySelfSqlConnection(db))
             {
                 MySqlTransaction tran = null;
                 try
                 {
-                    conn.Open();
-                    tran = conn.BeginTransaction();
-                    MySqlBulkLoader bulk = new MySqlBulkLoader(conn)
+                    connection.Open();
+                    tran = connection.BeginTransaction();
+                    MySqlBulkLoader bulk = new MySqlBulkLoader(connection)
                     {
                         FieldTerminator = ",",
                         FieldQuotationCharacter = '"',
@@ -1022,11 +940,11 @@ namespace Common.Net.DbProvider
         /// <summary>
         ///使用MySqlDataAdapter批量更新数据
         /// </summary>
-        /// <param name="connectionString">数据库连接字符串</param>
+        /// <param name="db">数据库连接字符串</param>
         /// <param name="table">数据表</param>
-        public static void BatchUpdate(DataTable table, DataBase db)
+        public static void BatchUpdate(DataTable table, string db = DataBase.ConnStr)
         {
-            using (MySqlConnection connection = (db == DataBase.None) ? new MySqlConnection(connectionString) : MySelfSqlConnection(db))
+            using (MySqlConnection connection = MySelfSqlConnection(db))
             {
                 MySqlCommand command = connection.CreateCommand();
                 command.CommandTimeout = CommandTimeOut;
@@ -1071,7 +989,7 @@ namespace Common.Net.DbProvider
         /// <summary>
         /// 高效主键分页--适用于大数据
         /// </summary>
-        /// <param name="conn">数据库连接</param>
+        /// <param name="db">数据库连接</param>
         /// <param name="fieldList">需查询字段列表逗号分隔</param>
         /// <param name="tableList">表列表逗号分隔</param>
         /// <param name="whereList">where条件 不用带where关键字没有请写"",</param>
@@ -1081,7 +999,7 @@ namespace Common.Net.DbProvider
         /// <param name="pageIndex">第几页</param>
         /// <param name="_paras">参数</param>
         /// <returns></returns>
-        public static DataTable GetPageTable(string conn, string fieldList, string tableList, string whereList, string orderList, int pageSize, int pageIndex, string keyList, params MySqlParameter[] _paras)
+        public static DataTable GetPageTable(string db, string fieldList, string tableList, string whereList, string orderList, int pageSize, int pageIndex, string keyList, params MySqlParameter[] _paras)
         {
             //  string _sqlPageById = @" select {0} FROM {1} INNER JOIN( SELECT {2} FROM {1} {6}  {3} LIMIT {4}, {5} ) as lims using({2}}) ";//高效分页
             if (whereList.Trim().Length > 0)
@@ -1100,12 +1018,12 @@ namespace Common.Net.DbProvider
             //              pageSize.ToString(),whereList
             //};
             // _sqlPageById = string.Format(_sqlPageById, pd);
-            return FindDataSet(_sqlPageById, _paras).Tables[0];//ExecuteDataTable(_sqlPageById, conn, _paras);
+            return FindDataSet(_sqlPageById, db, _paras).Tables[0];//ExecuteDataTable(_sqlPageById, conn, _paras);
         }
         /// <summary>
         /// 简单分页--适用于少量数据
         /// </summary>
-        /// <param name="conn">连接</param>
+        /// <param name="db">连接</param>
         /// <param name="fieldList">查询字段列表</param>
         /// <param name="tableList">表列表</param>
         /// <param name="whereList">where条件</param>
@@ -1114,7 +1032,7 @@ namespace Common.Net.DbProvider
         /// <param name="pageIndex">第几页</param>
         /// <param name="_paras">参数</param>
         /// <returns></returns>
-        public static DataTable GetPageTable(string conn, string fieldList, string tableList, string whereList, string orderList, int pageSize, int pageIndex, params MySqlParameter[] _paras)
+        public static DataTable GetPageTable(string db, string fieldList, string tableList, string whereList, string orderList, int pageSize, int pageIndex, params MySqlParameter[] _paras)
         {
             string _sqlPage = "SELECT  {0} FROM {1}  {2} {3} limit {4},{5};";//简单分页
             if (whereList.Trim().Length > 0)
@@ -1127,13 +1045,12 @@ namespace Common.Net.DbProvider
             }
             int PageStar = pageSize * (pageIndex - 1);
             _sqlPage = string.Format(_sqlPage, fieldList, tableList, whereList, orderList, PageStar, pageSize);
-            return FindDataSet(_sqlPage, _paras).Tables[0];// ExecuteDataTable(_sqlPage, conn, _paras);
+            return FindDataSet(_sqlPage, db, _paras).Tables[0];// ExecuteDataTable(_sqlPage, conn, _paras);
         }
 
         /// <summary>
         /// 高效主键分页--适用于大数据
         /// </summary>
-        /// <param name="conn">数据库连接</param>
         /// <param name="fieldList">需查询字段列表逗号分隔</param>
         /// <param name="tableList">表列表逗号分隔</param>
         /// <param name="whereList">where条件 不用带where关键字没有请写"",</param>
@@ -1141,9 +1058,12 @@ namespace Common.Net.DbProvider
         /// <param name="orderList">排序列表</param>
         /// <param name="pageSize">每页数量</param>
         /// <param name="pageIndex">第几页</param>
-        /// <param name="_paras">参数</param>
+        /// <param name="db">数据库连接</param>
+        /// <param name="paras">参数</param>
+        /// <param name="allct"></param>
         /// <returns></returns>
-        public static DataTable GetPageTable(DataBase db, string fieldList, string tableList, string whereList, string orderList, int pageSize, int pageIndex, string keyList, ref int allct, params MySqlParameter[] _paras)
+        public static DataTable GetPageTable(string fieldList, string tableList, string whereList, string orderList, int pageSize, int pageIndex,
+            string keyList, ref int allct, string db = DataBase.ConnStr, params MySqlParameter[] paras)
         {
             //  string _sqlPageById = @" select {0} FROM {1} INNER JOIN( SELECT {2} FROM {1} {6}  {3} LIMIT {4}, {5} ) as lims using({2}}) ";//高效分页
             if (whereList.Trim().Length > 0)
@@ -1156,14 +1076,14 @@ namespace Common.Net.DbProvider
             }
             int PageStar = pageSize * (pageIndex - 1);
             string _sqlPageById = @" select " + fieldList + " FROM " + tableList + " INNER JOIN( SELECT " + keyList + " FROM " + tableList + whereList + orderList + " LIMIT " + PageStar + ", " + pageSize + " ) as lims using(" + keyList + ") ";//高效分页
-            allct = Convert.ToInt32(ExecuteScalar("SELECT count(*) FROM  " + tableList + "  " + whereList + "", db, _paras));
+            allct = Convert.ToInt32(ExecuteScalar("SELECT count(*) FROM  " + tableList + "  " + whereList + "", db, paras));
             //object[] pd =
             //{
             //   fieldList, tableList, keyList, orderList, PageStar.ToString() ,
             //              pageSize.ToString(),whereList
             //};
             // _sqlPageById = string.Format(_sqlPageById, pd);
-            return FindDataSet(_sqlPageById, _paras).Tables[0];//ExecuteDataTable(_sqlPageById, conn, _paras);
+            return FindDataSet(_sqlPageById, db, paras).Tables[0];//ExecuteDataTable(_sqlPageById, conn, _paras);
         }
         /// <summary>
         /// 简单分页--适用于少量数据
@@ -1178,7 +1098,8 @@ namespace Common.Net.DbProvider
         /// <param name="allct">总行数</param>
         /// <param name="_paras">参数</param>
         /// <returns></returns>
-        public static DataTable GetPageTable(DataBase db, string fieldList, string tableList, string whereList, string orderList, int pageSize, int pageIndex, ref int allct, params MySqlParameter[] _paras)
+        public static DataTable GetPageTable(string fieldList, string tableList, string whereList, string orderList, int pageSize, int pageIndex,
+            ref int allct, string db = DataBase.ConnStr, params MySqlParameter[] _paras)
         {
             string _sqlPage = "SELECT  {0} FROM {1}  {2} {3} limit {4},{5};";//简单分页
             if (whereList.Trim().Length > 0)
@@ -1192,7 +1113,7 @@ namespace Common.Net.DbProvider
             int PageStar = pageSize * (pageIndex - 1);
             _sqlPage = string.Format(_sqlPage, fieldList, tableList, whereList, orderList, PageStar, pageSize);
             allct = Convert.ToInt32(ExecuteScalar("SELECT count(*) FROM  " + tableList + "  " + whereList, db, _paras));
-            return FindDataSet(_sqlPage, _paras).Tables[0];//ExecuteDataTable(_sqlPage, conn, _paras);
+            return FindDataSet(_sqlPage, db, _paras).Tables[0];//ExecuteDataTable(_sqlPage, conn, _paras);
         }
         #endregion
     }

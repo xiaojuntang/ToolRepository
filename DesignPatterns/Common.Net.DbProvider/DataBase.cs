@@ -1,10 +1,25 @@
-﻿using MySql.Data.MySqlClient;
-using System;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using MySql.Data.MySqlClient;
 
 namespace Common.Net.DbProvider
 {
     /// <summary>
-    /// 命令
+    /// 数据库连接对象项目可继承该类
+    /// </summary>
+    public abstract class DataBase
+    {
+        /// <summary>
+        /// 默认数据连接
+        /// </summary>
+        public const string ConnStr = "ConnStr";
+    }
+
+    /// <summary>
+    /// SQL命令对象
     /// </summary>
     public class CommandInfo
     {
@@ -64,7 +79,7 @@ namespace Common.Net.DbProvider
     }
 
     /// <summary>
-    /// EffentNextType
+    /// 执行SQL语句的类别
     /// </summary>
     public enum EffentNextType
     {
@@ -88,34 +103,5 @@ namespace Common.Net.DbProvider
         /// 引发事件-当前语句必须为"select count(1) from .."格式，如果不存在则继续执行，存在回滚事务
         /// </summary>
         SolicitationEvent
-    }
-
-    /// <summary>
-    /// 数据库连接枚举
-    /// </summary>
-    public enum DataBase
-    {
-        /// <summary>
-        /// 无
-        /// </summary>
-        None,
-        /// <summary>
-        /// 数据库一 192.168.200.103
-        /// </summary>
-        CResource,
-        /// <summary>
-        /// 数据库二 192.168.200.72
-        /// </summary>
-        Jg,
-        /// <summary>
-        /// 数据库三
-        /// </summary>
-        ZYTConnString,
-        /// <summary>
-        /// 资源线下测试数据库 192.168.180.186
-        /// </summary>
-        CResourceKF,
-
-        ZYTConnString68
     }
 }

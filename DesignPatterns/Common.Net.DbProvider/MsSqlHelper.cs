@@ -23,7 +23,6 @@ namespace Common.Net.DbProvider
 {
     /// <summary>
     /// MSSQL数据库访问抽象基础类库
-    /// <remarks>作者：唐晓军 QQ:417281862</remarks>
     /// </summary>
     public abstract class MsSqlHelper : IDisposable
     {
@@ -37,7 +36,7 @@ namespace Common.Net.DbProvider
         /// </summary>
         /// <param name="db">数据库配置</param>
         /// <returns>SqlConnection对象</returns>
-        private static SqlConnection MsSqlConnection(string db = DBConnect.ConnStr)
+        private static SqlConnection MsSqlConnection(string db = DataBase.ConnStr)
         {
             SqlConnection connection = new SqlConnection();
             var conn = ConfigurationManager.ConnectionStrings[db];
@@ -55,7 +54,7 @@ namespace Common.Net.DbProvider
         /// <param name="sql">SQL语句</param>
         /// <param name="db">数据库配置</param>
         /// <returns></returns>
-        public static bool Exists(string sql, string db = DBConnect.ConnStr)
+        public static bool Exists(string sql, string db = DataBase.ConnStr)
         {
             var obj = ExecuteScalar(sql, db);
             int cmdresult;
@@ -77,7 +76,7 @@ namespace Common.Net.DbProvider
         /// <param name="db">数据库配置</param>
         /// <param name="cmdParms">动态参数</param>
         /// <returns></returns>
-        public static bool Exists(string sql, string db = DBConnect.ConnStr, params SqlParameter[] cmdParms)
+        public static bool Exists(string sql, string db = DataBase.ConnStr, params SqlParameter[] cmdParms)
         {
             var obj = ExecuteScalar(sql, db, cmdParms);
             int cmdresult;
@@ -100,7 +99,7 @@ namespace Common.Net.DbProvider
         /// <param name="sql">SQL语句</param>
         /// <param name="db">数据库配置字符</param>
         /// <returns>影响的记录数</returns>
-        public static int ExecuteNonQuery(string sql, string db = DBConnect.ConnStr)
+        public static int ExecuteNonQuery(string sql, string db = DataBase.ConnStr)
         {
             using (SqlConnection connection = MsSqlConnection(db))
             {
@@ -128,7 +127,7 @@ namespace Common.Net.DbProvider
         /// <param name="db"></param>
         /// <param name="cmdParms"></param>
         /// <returns>影响的记录数</returns>
-        public static int ExecuteNonQuery(string sql, string db = DBConnect.ConnStr, params SqlParameter[] cmdParms)
+        public static int ExecuteNonQuery(string sql, string db = DataBase.ConnStr, params SqlParameter[] cmdParms)
         {
             using (SqlConnection connection = MsSqlConnection(db))
             {
@@ -157,7 +156,7 @@ namespace Common.Net.DbProvider
         /// <param name="commandtext">执行类型</param>
         /// <param name="db"></param>
         /// <returns></returns>
-        public static int ExecuteNonQuery(string sql, List<SqlParameter> parameters, string db = DBConnect.ConnStr, CommandType commandtext = CommandType.Text)
+        public static int ExecuteNonQuery(string sql, List<SqlParameter> parameters, string db = DataBase.ConnStr, CommandType commandtext = CommandType.Text)
         {
             int results;
             using (SqlConnection connection = MsSqlConnection(db))
@@ -182,7 +181,7 @@ namespace Common.Net.DbProvider
         /// <param name="sql">计算查询结果语句</param>
         /// <param name="db"></param>
         /// <returns>查询结果（object）</returns>
-        public static object ExecuteScalar(string sql, string db = DBConnect.ConnStr)
+        public static object ExecuteScalar(string sql, string db = DataBase.ConnStr)
         {
             using (SqlConnection connection = MsSqlConnection(db))
             {
@@ -216,7 +215,7 @@ namespace Common.Net.DbProvider
         /// <param name="db">数据库</param>
         /// <param name="cmdParms">参数列表</param>
         /// <returns>返回结果</returns>
-        public static object ExecuteScalar(string sql, string db = DBConnect.ConnStr, params SqlParameter[] cmdParms)
+        public static object ExecuteScalar(string sql, string db = DataBase.ConnStr, params SqlParameter[] cmdParms)
         {
             using (SqlConnection connection = MsSqlConnection(db))
             {
@@ -252,7 +251,7 @@ namespace Common.Net.DbProvider
         /// <param name="sqlList">Sql列表</param>
         /// <param name="db">数据库配置字符</param>
         /// <returns></returns>
-        public static int ExecuteSqlTran(List<string> sqlList, string db = DBConnect.ConnStr)
+        public static int ExecuteSqlTran(List<string> sqlList, string db = DataBase.ConnStr)
         {
             using (SqlConnection connection = MsSqlConnection(db))
             {
@@ -291,7 +290,7 @@ namespace Common.Net.DbProvider
         /// <param name="sqlParameterList">多条SQL参数</param>
         /// <param name="db"></param>
         /// <returns>影响的行数</returns>
-        public static int ExecuteSqlTran(List<string> sqlList, List<SqlParameter[]> sqlParameterList, string db = DBConnect.ConnStr)
+        public static int ExecuteSqlTran(List<string> sqlList, List<SqlParameter[]> sqlParameterList, string db = DataBase.ConnStr)
         {
             using (SqlConnection connection = MsSqlConnection(db))
             {
@@ -333,7 +332,7 @@ namespace Common.Net.DbProvider
         /// <param name="fs">图像字节,数据库的字段类型为image的情况</param>
         /// <param name="db"></param>
         /// <returns>影响的记录数</returns>
-        public static int ExecuteSqlInsertImg(string sql, byte[] fs, string db = DBConnect.ConnStr)
+        public static int ExecuteSqlInsertImg(string sql, byte[] fs, string db = DataBase.ConnStr)
         {
             using (SqlConnection connection = MsSqlConnection(db))
             {
@@ -364,7 +363,7 @@ namespace Common.Net.DbProvider
         /// </summary>
         /// <param name="sqlList">SQL语句的哈希表（key为sql语句，value是该语句的SqlParameter[]）</param>
         /// <param name="db">数据库配置</param>
-        public static void ExecuteSqlTran(Hashtable sqlList, string db = DBConnect.ConnStr)
+        public static void ExecuteSqlTran(Hashtable sqlList, string db = DataBase.ConnStr)
         {
             using (SqlConnection connection = MsSqlConnection(db))
             {
@@ -398,7 +397,7 @@ namespace Common.Net.DbProvider
         /// </summary>
         /// <param name="cmdList">SQL语句的哈希表（key为sql语句，value是该语句的SqlParameter[]）</param>
         /// <param name="db"></param>
-        public static int ExecuteSqlTran(List<CommandInfo> cmdList, string db = DBConnect.ConnStr)
+        public static int ExecuteSqlTran(List<CommandInfo> cmdList, string db = DataBase.ConnStr)
         {
             using (SqlConnection connection = MsSqlConnection(db))
             {
@@ -470,7 +469,7 @@ namespace Common.Net.DbProvider
         /// </summary>
         /// <param name="cmdList">SQL语句的哈希表（key为sql语句，value是该语句的SqlParameter[]）</param>
         /// <param name="db"></param>
-        public static void ExecuteSqlTranWithIndentity(List<CommandInfo> cmdList, string db = DBConnect.ConnStr)
+        public static void ExecuteSqlTranWithIndentity(List<CommandInfo> cmdList, string db = DataBase.ConnStr)
         {
             using (SqlConnection connection = MsSqlConnection(db))
             {
@@ -520,7 +519,7 @@ namespace Common.Net.DbProvider
         /// </summary>
         /// <param name="sqlList">SQL语句的哈希表（key为sql语句，value是该语句的SqlParameter[]）</param>
         /// <param name="db"></param>
-        public static void ExecuteSqlTranWithIndentity(Hashtable sqlList, string db = DBConnect.ConnStr)
+        public static void ExecuteSqlTranWithIndentity(Hashtable sqlList, string db = DataBase.ConnStr)
         {
             using (SqlConnection connection = MsSqlConnection(db))
             {
@@ -572,7 +571,7 @@ namespace Common.Net.DbProvider
         /// <param name="sql">查询语句</param>
         /// <param name="db"></param>
         /// <returns></returns>
-        public static SqlDataReader ExecuteReader(string sql, string db = DBConnect.ConnStr)
+        public static SqlDataReader ExecuteReader(string sql, string db = DataBase.ConnStr)
         {
             using (SqlConnection connection = MsSqlConnection(db))
             {
@@ -629,7 +628,7 @@ namespace Common.Net.DbProvider
         /// <param name="sql">查询语句</param>
         /// <param name="db">数据库连接字符串</param>
         /// <returns></returns>
-        public static DataSet FindDataSet(string sql, string db = DBConnect.ConnStr)
+        public static DataSet FindDataSet(string sql, string db = DataBase.ConnStr)
         {
             using (SqlConnection connection = MsSqlConnection(db))
             {
@@ -656,7 +655,7 @@ namespace Common.Net.DbProvider
         /// <param name="db"></param>
         /// <param name="cmdParms">参数列表</param>
         /// <returns></returns>
-        public static DataSet FindDataSet(string sql, string db = DBConnect.ConnStr, params SqlParameter[] cmdParms)
+        public static DataSet FindDataSet(string sql, string db = DataBase.ConnStr, params SqlParameter[] cmdParms)
         {
             using (SqlConnection connection = MsSqlConnection(db))
             {
@@ -686,7 +685,7 @@ namespace Common.Net.DbProvider
         /// <param name="cmdParms"></param>
         /// <param name="db"></param>
         /// <returns>DataSet</returns>
-        public static DataSet FindDataSet(string sql, List<SqlParameter> cmdParms, string db = DBConnect.ConnStr)
+        public static DataSet FindDataSet(string sql, List<SqlParameter> cmdParms, string db = DataBase.ConnStr)
         {
             using (SqlConnection connection = MsSqlConnection(db))
             {
@@ -722,7 +721,7 @@ namespace Common.Net.DbProvider
         /// <param name="commandtext">执行类型</param>
         /// <param name="db"></param>
         /// <returns></returns>
-        public static List<T> FindList<T>(string sql, Func<SqlDataReader, T> readFunc, List<SqlParameter> parameters, string db = DBConnect.ConnStr, CommandType commandtext = CommandType.Text)
+        public static List<T> FindList<T>(string sql, Func<SqlDataReader, T> readFunc, List<SqlParameter> parameters, string db = DataBase.ConnStr, CommandType commandtext = CommandType.Text)
         {
             List<T> results = new List<T>();
             using (SqlConnection connection = MsSqlConnection(db))
@@ -753,7 +752,7 @@ namespace Common.Net.DbProvider
         /// <param name="commandType">命令类型</param>
         /// <param name="db"></param>
         /// <returns></returns>
-        public static T Find<T>(string sql, Func<SqlDataReader, T> readFunc, List<SqlParameter> parameters, string db = DBConnect.ConnStr, CommandType commandType = CommandType.Text)
+        public static T Find<T>(string sql, Func<SqlDataReader, T> readFunc, List<SqlParameter> parameters, string db = DataBase.ConnStr, CommandType commandType = CommandType.Text)
         {
             T results = default(T);
             using (SqlConnection connection = MsSqlConnection(db))
@@ -781,7 +780,7 @@ namespace Common.Net.DbProvider
         /// <param name="parameters">参数列表</param>
         /// <param name="db">数据库名称</param>
         /// <returns></returns>
-        public static T Find<T>(string sql, Func<SqlDataReader, T> readFunc, List<SqlParameter> parameters, string db = DBConnect.ConnStr)
+        public static T Find<T>(string sql, Func<SqlDataReader, T> readFunc, List<SqlParameter> parameters, string db = DataBase.ConnStr)
         {
             T results = default(T);
             using (SqlConnection connection = MsSqlConnection(db))
@@ -808,7 +807,7 @@ namespace Common.Net.DbProvider
         /// <param name="parameters">参数列表</param>
         /// <param name="commandtext">命令类型</param>
         /// <param name="db"></param>
-        public static void FindList(string sql, Action<SqlDataReader> readFunc, List<SqlParameter> parameters, CommandType commandtext = CommandType.Text, string db = DBConnect.ConnStr)
+        public static void FindList(string sql, Action<SqlDataReader> readFunc, List<SqlParameter> parameters, CommandType commandtext = CommandType.Text, string db = DataBase.ConnStr)
         {
             using (SqlConnection connection = MsSqlConnection(db))
             {
@@ -833,7 +832,7 @@ namespace Common.Net.DbProvider
         /// <param name="readFunc">DataReader</param>
         /// <param name="parameters">参数列表</param>
         /// <param name="db">命令类型</param>
-        public static void FindList(string sql, Action<SqlDataReader> readFunc, List<SqlParameter> parameters, string db = DBConnect.ConnStr)
+        public static void FindList(string sql, Action<SqlDataReader> readFunc, List<SqlParameter> parameters, string db = DataBase.ConnStr)
         {
             using (SqlConnection connection = MsSqlConnection(db))
             {
@@ -906,7 +905,7 @@ namespace Common.Net.DbProvider
         /// <param name="table">数据表</param>
         /// <param name="db"></param>
         /// <returns>返回成功插入行数</returns>
-        public static int BulkInsert(DataTable table, string db = DBConnect.ConnStr)
+        public static int BulkInsert(DataTable table, string db = DataBase.ConnStr)
         {
             if (string.IsNullOrEmpty(table.TableName)) throw new Exception("请给DataTable的TableName属性附上表名称");
             if (table.Rows.Count == 0) return 0;
@@ -982,7 +981,7 @@ namespace Common.Net.DbProvider
         /// </summary>
         /// <param name="table"></param>
         /// <param name="db"></param>
-        public static void BatchUpdate(DataTable table, string db = DBConnect.ConnStr)
+        public static void BatchUpdate(DataTable table, string db = DataBase.ConnStr)
         {
             using (SqlConnection connection = MsSqlConnection(db))
             {
@@ -1028,7 +1027,7 @@ namespace Common.Net.DbProvider
         /// </summary> 
         /// <param name="dt">含有和目标数据库表结构完全一致(所包含的字段名完全一致即可)的DataTable</param>
         /// <param name="db"></param> 
-        public static void BulkCopy(DataTable dt, string db = DBConnect.ConnStr)
+        public static void BulkCopy(DataTable dt, string db = DataBase.ConnStr)
         {
             if (string.IsNullOrEmpty(dt.TableName)) throw new Exception("请给DataTable的TableName属性附上表名称");
             using (SqlConnection connection = MsSqlConnection(db))
@@ -1070,7 +1069,7 @@ namespace Common.Net.DbProvider
         /// </summary> 
         /// <param name="dt"></param>
         /// <param name="db"></param> 
-        public static void BulkUpdate(DataTable dt, string db = DBConnect.ConnStr)
+        public static void BulkUpdate(DataTable dt, string db = DataBase.ConnStr)
         {
             using (SqlConnection connection = MsSqlConnection(db))
             {
