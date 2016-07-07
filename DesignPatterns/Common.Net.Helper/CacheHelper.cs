@@ -1,17 +1,17 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Web.Caching;
 using System.Web.Hosting;
 
 namespace Common.Net.Helper
 {
+    /// <summary>
+    /// IIS进程内的缓存
+    /// </summary>
     public static class CacheHelper
     {
-        private static Cache _cache;
+        private static readonly Cache _cache;
 
         public static double SaveTime
         {

@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Data;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using System.Web.Script.Serialization;
 
 namespace Common.Net.Core
@@ -14,6 +13,7 @@ namespace Common.Net.Core
     /// </summary>
     public class JsonConverter
     {
+        #region Newtonsoft.Json
         /// <summary>
         /// Newtonsoft.Json 对象转Json
         /// </summary>
@@ -34,6 +34,102 @@ namespace Common.Net.Core
         {
             return Newtonsoft.Json.JsonConvert.DeserializeObject<T>(json);
         }
+        #endregion
+
+        #region DataTable转Json
+        /// <summary>   
+        /// DataSet转换为Json
+        /// </summary>   
+        /// <param name="dataSet">DataSet对象</param>   
+        /// <returns>Json字符串</returns>   
+        public static string ToJson(DataSet dataSet)
+        {
+            string jsonString = "{";
+            foreach (DataTable table in dataSet.Tables)
+            {
+                jsonString += "\"" + table.TableName + "\":" + ToJson(table) + ",";
+            }
+            jsonString = jsonString.TrimEnd(',');
+            return jsonString + "}";
+        }
+
+        /// <summary>   
+        /// Datatable转换为Json
+        /// </summary>   
+        /// <param name="dt"></param>
+        /// <returns>Json字符串</returns>   
+        public static string ToJson(DataTable dt)
+        {
+            StringBuilder jsonString = new StringBuilder();
+            jsonString.Append("[");
+            DataRowCollection drc = dt.Rows;
+            for (int i = 0; i < drc.Count; i++)
+            {
+                jsonString.Append("{");
+                for (int j = 0; j < dt.Columns.Count; j++)
+                {
+                    string strKey = dt.Columns[j].ColumnName;
+                    string strValue = drc[i][j].ToString();
+                    Type type = dt.Columns[j].DataType;
+                    jsonString.Append("\"" + strKey + "\":");
+                    strValue = StringFormat(strValue, type);
+                    if (j < dt.Columns.Count - 1)
+                    {
+                        jsonString.Append(strValue + ",");
+                    }
+                    else
+                    {
+                        jsonString.Append(strValue);
+                    }
+                }
+                jsonString.Append("},");
+            }
+            jsonString.Remove(jsonString.Length - 1, 1);
+            jsonString.Append("]");
+            if (jsonString.Length == 1)
+            {
+                return "[]";
+            }
+            return jsonString.ToString();
+        }
+
+        /// <summary>  
+        /// DataTable转成Json
+        /// </summary>  
+        /// <param name="jsonName">名称</param>  
+        /// <param name="dt">数据表</param>  
+        /// <returns></returns>  
+        public static string ToJson(DataTable dt, string jsonName)
+        {
+            StringBuilder Json = new StringBuilder();
+            if (string.IsNullOrEmpty(jsonName))
+                jsonName = dt.TableName;
+            Json.Append("{\"" + jsonName + "\":[");
+            if (dt.Rows.Count > 0)
+            {
+                for (int i = 0; i < dt.Rows.Count; i++)
+                {
+                    Json.Append("{");
+                    for (int j = 0; j < dt.Columns.Count; j++)
+                    {
+                        Type type = dt.Rows[i][j].GetType();
+                        Json.Append("\"" + dt.Columns[j].ColumnName.ToString() + "\":" + StringFormat(dt.Rows[i][j] is DBNull ? string.Empty : dt.Rows[i][j].ToString(), type));
+                        if (j < dt.Columns.Count - 1)
+                        {
+                            Json.Append(",");
+                        }
+                    }
+                    Json.Append("}");
+                    if (i < dt.Rows.Count - 1)
+                    {
+                        Json.Append(",");
+                    }
+                }
+            }
+            Json.Append("]}");
+            return Json.ToString();
+        }
+        #endregion
 
         /// <summary>
         /// 自定义查询对象转换动态类
@@ -128,97 +224,7 @@ namespace Common.Net.Core
                 throw ex;
             }
         }
-        /// <summary>   
-        /// DataSet转换为Json
-        /// </summary>   
-        /// <param name="dataSet">DataSet对象</param>   
-        /// <returns>Json字符串</returns>   
-        public static string ToJson(DataSet dataSet)
-        {
-            string jsonString = "{";
-            foreach (DataTable table in dataSet.Tables)
-            {
-                jsonString += "\"" + table.TableName + "\":" + ToJson(table) + ",";
-            }
-            jsonString = jsonString.TrimEnd(',');
-            return jsonString + "}";
-        }
-        /// <summary>  
-        /// DataTable转成Json
-        /// </summary>  
-        /// <param name="jsonName"></param>  
-        /// <param name="dt"></param>  
-        /// <returns></returns>  
-        public static string ToJson(DataTable dt, string jsonName)
-        {
-            StringBuilder Json = new StringBuilder();
-            if (string.IsNullOrEmpty(jsonName))
-                jsonName = dt.TableName;
-            Json.Append("{\"" + jsonName + "\":[");
-            if (dt.Rows.Count > 0)
-            {
-                for (int i = 0; i < dt.Rows.Count; i++)
-                {
-                    Json.Append("{");
-                    for (int j = 0; j < dt.Columns.Count; j++)
-                    {
-                        Type type = dt.Rows[i][j].GetType();
-                        Json.Append("\"" + dt.Columns[j].ColumnName.ToString() + "\":" + StringFormat(dt.Rows[i][j] is DBNull ? string.Empty : dt.Rows[i][j].ToString(), type));
-                        if (j < dt.Columns.Count - 1)
-                        {
-                            Json.Append(",");
-                        }
-                    }
-                    Json.Append("}");
-                    if (i < dt.Rows.Count - 1)
-                    {
-                        Json.Append(",");
-                    }
-                }
-            }
-            Json.Append("]}");
-            return Json.ToString();
-        }
 
-        /// <summary>   
-        /// Datatable转换为Json
-        /// </summary>   
-        /// <param name="dt"></param>
-        /// <returns>Json字符串</returns>   
-        public static string ToJson(DataTable dt)
-        {
-            StringBuilder jsonString = new StringBuilder();
-            jsonString.Append("[");
-            DataRowCollection drc = dt.Rows;
-            for (int i = 0; i < drc.Count; i++)
-            {
-                jsonString.Append("{");
-                for (int j = 0; j < dt.Columns.Count; j++)
-                {
-                    string strKey = dt.Columns[j].ColumnName;
-                    string strValue = drc[i][j].ToString();
-                    Type type = dt.Columns[j].DataType;
-                    jsonString.Append("\"" + strKey + "\":");
-                    strValue = StringFormat(strValue, type);
-                    if (j < dt.Columns.Count - 1)
-                    {
-                        jsonString.Append(strValue + ",");
-                    }
-                    else
-                    {
-                        jsonString.Append(strValue);
-                    }
-                }
-                jsonString.Append("},");
-            }
-            jsonString.Remove(jsonString.Length - 1, 1);
-            jsonString.Append("]");
-            if (jsonString.Length == 1)
-            {
-                return "[]";
-            }
-            return jsonString.ToString();
-        }
         /// <summary>  
         /// 格式化字符型、日期型、布尔型
         /// </summary>  
@@ -254,6 +260,7 @@ namespace Common.Net.Core
             }
             return str;
         }
+
         /// <summary>  
         /// 过滤特殊字符
         /// </summary>  
@@ -293,6 +300,7 @@ namespace Common.Net.Core
             }
             return sb.ToString();
         }
+
         /// <summary>
         /// 
         /// </summary>
@@ -304,6 +312,7 @@ namespace Common.Net.Core
         {
             return GetDataGridJsonByDataTable(ds.Tables[0], totalProperty, root);
         }
+
         /// <summary>
         /// 
         /// </summary>
@@ -337,6 +346,7 @@ namespace Common.Net.Core
             jsonBuilder.Append("})");
             return jsonBuilder.ToString();
         }
+
         /// <summary>
         /// 
         /// </summary>
@@ -346,6 +356,7 @@ namespace Common.Net.Core
         {
             return GetTreeJsonByDataTable(ds.Tables[0]);
         }
+
         /// <summary>
         /// 
         /// </summary>
@@ -403,14 +414,20 @@ namespace Common.Net.Core
             jsonBuilder.Append("]");
             return jsonBuilder.ToString();
         }
+
+        /// <summary>
+        /// DataTable转Tree
+        /// </summary>
+        /// <param name="dt">数据表格</param>
+        /// <returns></returns>
         private static DataTable FormatDataTableForTree(DataTable dt)
         {
             DataTable dtTree = new DataTable();
             dtTree.Columns.Add("id", typeof(string));
             dtTree.Columns.Add("text", typeof(string));
-            dtTree.Columns.Add("leaf", typeof(string));
+            dtTree.Columns.Add("leaf", typeof(string));//是否叶子
             dtTree.Columns.Add("cls", typeof(string));
-            dtTree.Columns.Add("customUrl", typeof(string));
+            dtTree.Columns.Add("customUrl", typeof(string));//文件类型
             dtTree.AcceptChanges();
 
             for (int i = 0; i < dt.Rows.Count; i++)
@@ -421,11 +438,11 @@ namespace Common.Net.Core
                 if (dt.Rows[i]["leaf"].ToString() == "Y")
                 {
                     drTree["leaf"] = "true";
-                    drTree["cls"] = "file";
+                    drTree["cls"] = "file";//文件
                 }
                 else
                 {
-                    drTree["cls"] = "folder";
+                    drTree["cls"] = "folder";//文件夹
                 }
                 drTree["customUrl"] = dt.Rows[i]["customUrl"].ToString();
                 dtTree.Rows.Add(drTree);

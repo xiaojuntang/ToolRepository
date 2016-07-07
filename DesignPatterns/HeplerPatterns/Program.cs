@@ -77,6 +77,9 @@ namespace HeplerPatterns
         }
         static void Main(string[] args)
         {
+            var aaad = DataConverter.ToDateTime("adda");
+
+
             var aaaa = SmsHelper.SendMessage("13691429153", "你好，我的测试短信！");
 
             for (int i = 0; i < 10; i++)
@@ -84,14 +87,14 @@ namespace HeplerPatterns
                 Console.WriteLine(HashEncode.GetSecurity());
 
             }
-               
+
 
             var s1 = SecurityDES.Encrypt("123", "11111111");
             var s2 = SecurityDES.Decrypt(s1, "11111111");
 
 
 
-            string abc = Http2Helper.OpenReadWithHttps("https://ewt.zxxk.com:800/",string.Empty, "application/x-www-form-urlencoded");
+            string abc = Http2Helper.OpenReadWithHttps("https://ewt.zxxk.com:800/", string.Empty, "application/x-www-form-urlencoded");
 
 
             //Common.Net.Helper.LogHelper.GetLogByName("DebugFileAppender").Debug("1111111111");

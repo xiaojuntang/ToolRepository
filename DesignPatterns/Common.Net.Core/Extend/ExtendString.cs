@@ -26,45 +26,6 @@ namespace Common.Net.Core
 {
     public static class ExtendString
     {
-        /// <summary>
-        /// 为string对象扩充一个把内容以utf8的格式写入到磁盘文件的方法
-        /// </summary>
-        /// <param name="filename">要保存的文件名（物理路径加文件名）</param>
-        /// <param name="content">要保存的字符串内容</param>
-        /// <param name="append">是否追加，否则覆盖文件，是则追加文件</param>
-        /// <returns>成功返回"OK"，失败返回失败的错误描述</returns>
-        public static string SaveToFile(this string content, string fileName, bool append)
-        {
-            StreamWriter sw = null;
-            try
-            {
-                if (!Directory.Exists(Path.GetDirectoryName(fileName)))
-                {
-                    Directory.CreateDirectory(Path.GetDirectoryName(fileName));
-                }
-                sw = new StreamWriter(fileName, append, Encoding.UTF8);
-                try
-                {
-                    sw.Write(content);
-                }
-                catch (Exception err)
-                {
-                    return err.ToString();
-                }
-                return "OK";
-            }
-            catch (Exception err)
-            {
-                return err.Message;
-            }
-            finally
-            {
-                if (sw != null)
-                    sw.Close();
-            }
-
-        }
-  
         #region 得到字符串长度，一个汉字长度为2
 
         /// <summary>
@@ -111,9 +72,7 @@ namespace Common.Net.Core
                     nLength = nLength + 1;
                 }
             }
-            return nLength;
-            //以上代码mxk 2014年10月9日 11:47:14  发现得到结果不正确 不能正确的得到 中文的长度  但是考了到程序可能已被现有逻辑使用暂时先不改动若要 正确代码请 去掉下边注释的代码
-            // return Encoding.Default.GetBytes(stringToSub).Length;
+            return Encoding.Default.GetBytes(stringToSub).Length;
         }
 
         /// <summary>
@@ -121,8 +80,6 @@ namespace Common.Net.Core
         /// </summary>
         /// <param name="stringToSub">要截取的字符串</param>
         /// <param name="length">指定截取的长度，按单字节长度算，如：“小红回家了”，需要的长度为10（如果是9也可以）</param>
-        /// <param name="showF">是否显示“..”,默认显示</param>
-        /// <param name="filterEmoji">是否过滤emoji表情字符,默认过滤</param>
         /// <returns></returns>
         public static string ESubString(this string stringToSub, int length)
         {
@@ -135,7 +92,6 @@ namespace Common.Net.Core
         /// <param name="stringToSub">要截取的字符串</param>
         /// <param name="length">指定截取的长度，按单字节长度算，如：“小红回家了”，需要的长度为10（如果是9也可以）</param>
         /// <param name="showF">是否显示“..”,默认显示</param>
-        /// <param name="filterEmoji">是否过滤emoji表情字符,默认过滤</param>
         /// <returns></returns>
         public static string ESubString(this string stringToSub, int length, bool showF)
         {
@@ -200,7 +156,6 @@ namespace Common.Net.Core
 
         #endregion
 
-
         /// <summary>
         ///  根据 一个 位置 验证一个字符串 第几位 是不是和 验证的字符相同
         /// </summary>
@@ -225,9 +180,7 @@ namespace Common.Net.Core
 
         /// <summary>
         /// 验证 字符串是否是数字
-        /// 验证 字符串是否是数字
         /// </summary>
-        /// careate:mxk data:2012/05/30
         /// <param name="numstr">字符串</param>
         /// <returns>是数字为true 否则为false</returns>
         public static bool IsNumber(this string numstr)
@@ -252,132 +205,25 @@ namespace Common.Net.Core
         }
 
         /// <summary>
-        /// 检查是否符合版本id
+        /// 判断是否是数字类型
         /// </summary>
-        /// <param name="edition">版本id 可以是string.Empty</param>
+        /// <param name="str"></param>
         /// <returns></returns>
-        private static string ChkEditionStr(string edition)
+        public static bool IsNum(string str)
         {
-            if (edition == string.Empty)
-            {
-                return string.Empty;
-            }
-            if (edition.Length > 30)
-            {
-                return FlagConst.PARA_ERROR;
-            }
-            else
-            {
-                if (!edition.IsNumber())
-                {
-                    return FlagConst.PARA_ERROR;
-                }
-                else
-                {
-                    return edition;
-                }
-            }
-        }
-        /// <summary>
-        /// 验证输入是否是时间格式，返回1900-01-01格式字符串,支持空字符串（string.Empty）
-        /// (时间在1900-1-1到5000-12-30之间)
-        /// </summary>
-        /// <param name="time">输入的时间字符串</param>
-        /// <returns></returns>
-        private static string ChkDateTimeStr(string time)
-        {
-            if (time == string.Empty)
-            {
-                return string.Empty;
-            }
-            DateTime mintime = DateTime.MinValue;
-            bool timeflag = DateTime.TryParse(time, out mintime);
-            if (!timeflag || mintime < DateTime.Parse("1900-1-1") || mintime > DateTime.Parse("5000-12-30"))
-            {
-                return FlagConst.PARA_ERROR;
-            }
-            else
-            {
-                return mintime.ToString("yyyy-MM-dd");
-            }
-        }
-
-        public static int ToInt(this string str)
-        {
-            int ret = 0;
-            if (str != null && str.Length > 0)
-            {
-
-                int.TryParse(str, out ret);
-            }
-            return ret;
-        }
-        public static string ToStringDb(this object str)
-        {
-            string res = "";
-            if (str != null && str != DBNull.Value)
-            {
-                return str.ToString();
-            }
-            return res;
-        }
-        public static DateTime ToDateTime(this string str)
-        {
-            DateTime ret = new DateTime();
-            if (str != null && str.Length > 0)
-            {
-                try
-                {
-                    ret = Convert.ToDateTime(str);
-
-                }
-                catch (Exception)
-                {
-
-                }
-            }
-            return ret;
-        }
-        public static int ToInt32(this string str)
-        {
-            int ret = 0;
-            if (str != null && str.Length > 0 && IsNum(str))
-            {
-                try
-                {
-                    ret = Convert.ToInt32(str);
-
-                }
-                catch (Exception)
-                {
-
-                }
-            }
-            return ret;
-        }
-        public static bool IsNum(string Str)
-        {
-            bool bl = false;
             string Rx = @"^[1-9]\d*$";
-            if (Regex.IsMatch(Str, Rx))
-            {
-                bl = true;
-            }
-            else
-            {
-                bl = false;
-            }
+            var bl = Regex.IsMatch(str, Rx);
             return bl;
         }
 
         /// <summary>
         /// 获得字符串的长度,一个汉字的长度为1
         /// </summary>
-        public static int GetStringLength(string s)
+        /// <param name="str"></param>
+        /// <returns></returns>
+        public static int GetStringLength(string str)
         {
-            if (!string.IsNullOrEmpty(s))
-                return Encoding.Default.GetBytes(s).Length;
-            return 0;
+            return !string.IsNullOrEmpty(str) ? Encoding.Default.GetBytes(str).Length : 0;
         }
 
         /// <summary>
@@ -388,15 +234,7 @@ namespace Common.Net.Core
         /// <returns></returns>
         public static int GetCharCount(string s, char c)
         {
-            if (s == null || s.Length == 0)
-                return 0;
-            int count = 0;
-            foreach (char a in s)
-            {
-                if (a == c)
-                    count++;
-            }
-            return count;
+            return string.IsNullOrEmpty(s) ? 0 : s.Count(a => a == c);
         }
 
         /// <summary>
@@ -445,7 +283,7 @@ namespace Common.Net.Core
             if (string.IsNullOrEmpty(sourceStr) || string.IsNullOrEmpty(splitStr))
                 return new string[0] { };
 
-            if (sourceStr.IndexOf(splitStr) == -1)
+            if (sourceStr.IndexOf(splitStr, StringComparison.Ordinal) == -1)
                 return new string[] { sourceStr };
 
             if (splitStr.Length == 1)

@@ -14,10 +14,6 @@ namespace Common.Net.Core
     /// </summary>
     public sealed class FileUtil
     {
-        private FileUtil()
-        {
-        }
-
         /// <summary>
         /// 以utf8格式读取磁盘某个文本文件
         /// </summary>
@@ -29,7 +25,7 @@ namespace Common.Net.Core
                 return string.Empty;
             try
             {
-                var sr = new StreamReader(fileName, System.Text.Encoding.UTF8);
+                var sr = new StreamReader(fileName, Encoding.UTF8);
                 try
                 {
                     return sr.ReadToEnd();
@@ -224,6 +220,45 @@ namespace Common.Net.Core
             }
             else
                 return null;
+        }
+
+        /// <summary>
+        /// 为string对象扩充一个把内容以utf8的格式写入到磁盘文件的方法
+        /// </summary>
+        /// <param name="fileName">要保存的文件名（物理路径加文件名）</param>
+        /// <param name="content">要保存的字符串内容</param>
+        /// <param name="append">是否追加，否则覆盖文件，是则追加文件</param>
+        /// <returns>成功返回"OK"，失败返回失败的错误描述</returns>
+        public static string SaveToFile(string content, string fileName, bool append)
+        {
+            StreamWriter sw = null;
+            try
+            {
+                if (!Directory.Exists(Path.GetDirectoryName(fileName)))
+                {
+                    Directory.CreateDirectory(Path.GetDirectoryName(fileName));
+                }
+                sw = new StreamWriter(fileName, append, Encoding.UTF8);
+                try
+                {
+                    sw.Write(content);
+                }
+                catch (Exception err)
+                {
+                    return err.ToString();
+                }
+                return "OK";
+            }
+            catch (Exception err)
+            {
+                return err.Message;
+            }
+            finally
+            {
+                if (sw != null)
+                    sw.Close();
+            }
+
         }
     }
 }

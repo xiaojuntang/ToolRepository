@@ -29,5 +29,21 @@ namespace Common.Net.Core
         /// 非法字符提示符
         /// </summary>
         public static readonly string PARA_ERROR = "PARA_ERROR";
+
+        #region 特殊字符
+        public static readonly string CHARACTER_KEY0 = "~";
+        public static readonly string CHARACTER_KEY1 = "!";
+        public static readonly string CHARACTER_KEY2 = "@";
+        public static readonly string CHARACTER_KEY3 = "#";
+        public static readonly string CHARACTER_KEY4 = "$";
+        public static readonly string CHARACTER_KEY5 = "%";
+        public static readonly string CHARACTER_KEY6 = "^";
+        public static readonly string CHARACTER_KEY7 = "&";
+        public static readonly string CHARACTER_KEY8 = "*";
+        public static readonly string CHARACTER_STRING_DOT = ",";
+        public static readonly string CHARACTER_TREELINE = "|";
+        public static readonly char CHARACTER_CHAR_DOT = ',';
+        public static readonly char CHARACTER_CHAR_UNDERLINE = '_';
+        #endregion
     }
 }

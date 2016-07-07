@@ -8,7 +8,7 @@ namespace Common.Net.Core
     /// <summary>
     /// 数据转换库
     /// </summary>
-    public class TransForm
+    public static class DataConverter
     {
         #region 基础判别函数
         /// <summary>
@@ -44,11 +44,13 @@ namespace Common.Net.Core
         /// <param name="Object">要判断的对象</param>
         /// <param name="IsRemoveSpace">是否去除空格</param>
         /// <returns>bool值</returns>
-        public static bool IsNull(object Object, bool IsRemoveSpace) {
+        public static bool IsNull(object Object, bool IsRemoveSpace)
+        {
             if (Object == null) return true;
             string Objects = Object.ToString();
             if (Objects == "") return true;
-            if (IsRemoveSpace) {
+            if (IsRemoveSpace)
+            {
                 if (Objects.Replace(" ", "") == "") return true;
                 if (Objects.Replace("　", "") == "") return true;
             }
@@ -66,7 +68,8 @@ namespace Common.Net.Core
         /// <param name="Object">要判断的对象</param>
         /// <param name="Default">默认bool值</param>
         /// <returns>bool值</returns>
-        public static bool IsBool(object Object, bool Default) {
+        public static bool IsBool(object Object, bool Default)
+        {
             if (IsNull(Object)) return Default;
             try { return bool.Parse(Object.ToString()); }
             catch { return Default; }
@@ -89,7 +92,8 @@ namespace Common.Net.Core
         /// <param name="Object">要操作的 string  数据</param>
         /// <param name="MaxLength">最大长度</param>
         /// <returns>string</returns>
-        public static string Left(object Object, int MaxLength) {
+        public static string Left(object Object, int MaxLength)
+        {
             if (IsNull(Object)) return "";
             return Object.ToString().Substring(0, Math.Min(Object.ToString().Length, MaxLength));
         }
@@ -100,7 +104,8 @@ namespace Common.Net.Core
         /// <param name="StarIndex">开始的位置索引</param>
         /// <param name="MaxLength">最大长度</param>
         /// <returns>string</returns>
-        public static string Mid(string Object, int StarIndex, int MaxLength) {
+        public static string Mid(string Object, int StarIndex, int MaxLength)
+        {
             if (IsNull(Object)) return "";
             if (StarIndex >= Object.Length) return "";
             return Object.Substring(StarIndex, MaxLength);
@@ -111,7 +116,8 @@ namespace Common.Net.Core
         /// <param name="Object">要操作的 string  数据</param>
         /// <param name="MaxLength">最大长度</param>
         /// <returns>string</returns>
-        public static string Right(object Object, int MaxLength) {
+        public static string Right(object Object, int MaxLength)
+        {
             if (IsNull(Object)) return "";
             int i = Object.ToString().Length;
             if (i < MaxLength) { MaxLength = i; i = 0; } else { i = i - MaxLength; }
@@ -123,7 +129,8 @@ namespace Common.Net.Core
         /// </summary>
         /// <param name="Object">要操作的对象</param>
         /// <returns>bool</returns>
-        public static bool IsHttpUrl(string Object) {
+        public static bool IsHttpUrl(string Object)
+        {
             if (IsNull(Object)) return false;
             if (Left(Object, 7).ToLower() == "http://") return true;
             return false;
@@ -135,7 +142,8 @@ namespace Common.Net.Core
         /// <param name="Keys">关键字</param>
         /// <param name="Style">样式名称</param>
         /// <returns>string</returns>
-        public static string AddColors(string Object, string Keys, string Style) {
+        public static string AddColors(string Object, string Keys, string Style)
+        {
             StringBuilder Builders = new StringBuilder(Object);
             Builders.Replace(Keys, "<span class=\"" + Style + "\">" + Keys + "</span>");
             return Builders.ToString();
@@ -153,9 +161,11 @@ namespace Common.Net.Core
         /// <param name="Object">要转换的对象</param>
         /// <param name="MaxLength">默认长度不加0</param>
         /// <returns>字符</returns>
-        public static string AddZeros(string Object, int MaxLength) {
+        public static string AddZeros(string Object, int MaxLength)
+        {
             int iLength = Object.Length;
-            if (iLength < MaxLength) {
+            if (iLength < MaxLength)
+            {
                 for (int i = 1; i <= (MaxLength - iLength); i++) Object = "0" + Object;
             }
             return Object;
@@ -165,11 +175,13 @@ namespace Common.Net.Core
         /// </summary>
         /// <param name="Object">要转换的对象</param>
         /// <returns>字符</returns>
-        public static string ToLoadID(string Object) {
+        public static string ToLoadID(string Object)
+        {
             if (IsNull(Object)) return "";
             StringBuilder Builder = new StringBuilder("");
             string[] Atemp = Object.Split(',');
-            for (int i = 0; i < Atemp.Length; i++) {
+            for (int i = 0; i < Atemp.Length; i++)
+            {
                 bool IsTrue = false; int Int = IsInt(Atemp[i].ToString(), out IsTrue);
                 if (IsTrue) Builder.Append(((i != 0) ? "," : "") + Int.ToString());
             }
@@ -194,7 +206,8 @@ namespace Common.Net.Core
         /// </summary>
         /// <param name="Strings">字符 string</param>
         /// <returns>字符 int</returns>
-        public static int StringToInt(string Strings) {
+        public static int StringToInt(string Strings)
+        {
             if (IsNull(Strings)) return -100; char[] chars = Strings.ToCharArray(); return (int)chars[0];
         }
         /// <summary>
@@ -211,7 +224,8 @@ namespace Common.Net.Core
         /// <param name="Object">要判断的对象</param>
         /// <param name="IsTrue">返回是否转换成功</param>
         /// <returns>int值</returns>
-        private static int IsInt(object Object, out bool IsTrue) {
+        private static int IsInt(object Object, out bool IsTrue)
+        {
             try { IsTrue = true; return int.Parse(Object.ToString()); }
             catch { IsTrue = false; return 0; }
         }
@@ -244,7 +258,8 @@ namespace Common.Net.Core
         /// <param name="MinInt"> 下界限定的最小值 , 若超过范围 , 则返回 默认值</param>
         /// <param name="MaxInt">上界限定的最大值 , 若超过范围 , 则返回 默认值</param>
         /// <returns>int 数据</returns>
-        public static int ToInt(object Object, int Default, int MinInt, int MaxInt) {
+        public static int ToInt(object Object, int Default, int MinInt, int MaxInt)
+        {
             bool IsTrue = false;
             int Int = IsInt(Object, out IsTrue);
             if (!IsTrue) return Default;
@@ -259,7 +274,8 @@ namespace Common.Net.Core
         /// <param name="Object">要判断的对象</param>
         /// <param name="IsTrue">返回是否转换成功</param>
         /// <returns>long值</returns>
-        private static long IsLong(object Object, out bool IsTrue) {
+        private static long IsLong(object Object, out bool IsTrue)
+        {
             try { IsTrue = true; return long.Parse(Object.ToString()); }
             catch { IsTrue = false; return 0; }
         }
@@ -292,7 +308,8 @@ namespace Common.Net.Core
         /// <param name="MinLong">下界限定的最小值 , 若超过范围 , 则返回 默认值</param>
         /// <param name="MaxLong">上界限定的最大值 , 若超过范围 , 则返回 默认值</param>
         /// <returns>long 数据</returns>
-        public static long ToLong(object Object, long Default, long MinLong, long MaxLong) {
+        public static long ToLong(object Object, long Default, long MinLong, long MaxLong)
+        {
             bool IsTrue = false;
             long Long = IsLong(Object, out IsTrue);
             if (!IsTrue) return Default;
@@ -307,7 +324,8 @@ namespace Common.Net.Core
         /// <param name="Object">要判断的对象</param>
         /// <param name="IsTrue">返回是否转换成功</param>
         /// <returns>float值</returns>
-        private static float IsFloat(object Object, out bool IsTrue) {
+        private static float IsFloat(object Object, out bool IsTrue)
+        {
             try { IsTrue = true; return float.Parse(Object.ToString()); }
             catch { IsTrue = false; return 0; }
         }
@@ -340,7 +358,8 @@ namespace Common.Net.Core
         /// <param name="MinFloat"> 下界限定的最小值 , 若超过范围 , 则返回 默认值</param>
         /// <param name="MaxFloat"> 上界限定的最大值 , 若超过范围 , 则返回 默认值</param>
         /// <returns>float 数据</returns>
-        public static float ToFloat(object Object, float Default, float MinFloat, float MaxFloat) {
+        public static float ToFloat(object Object, float Default, float MinFloat, float MaxFloat)
+        {
             bool IsTrue = false;
             float Float = IsFloat(Object, out IsTrue);
             if (!IsTrue) return Default;
@@ -355,7 +374,8 @@ namespace Common.Net.Core
         /// <param name="Object">要判断的对象</param>
         /// <param name="IsTrue">返回是否转换成功</param>
         /// <returns>decimal值</returns>
-        private static decimal IsDecimal(object Object, out bool IsTrue) {
+        private static decimal IsDecimal(object Object, out bool IsTrue)
+        {
             try { IsTrue = true; return decimal.Parse(Object.ToString()); }
             catch { IsTrue = false; return 0; }
         }
@@ -389,7 +409,8 @@ namespace Common.Net.Core
         /// <param name="MinDecimal"> 下界限定的最小值 , 若超过范围 , 则返回 默认值</param>
         /// <param name="MaxDecimal"> 上界限定的最大值 , 若超过范围 , 则返回 默认值</param>
         /// <returns>decimal 数据</returns>
-        public static decimal ToDecimal(object Object, decimal Default, decimal MinDecimal, decimal MaxDecimal) {
+        public static decimal ToDecimal(object Object, decimal Default, decimal MinDecimal, decimal MaxDecimal)
+        {
             bool IsTrue = false;
             decimal Decimal = IsDecimal(Object, out IsTrue);
             if (!IsTrue) return Default;
@@ -404,7 +425,8 @@ namespace Common.Net.Core
         /// <param name="Object">要判断的对象</param>
         /// <param name="IsTrue">返回是否转换成功</param>
         /// <returns>DateTime</returns>
-        public static DateTime IsTime(object Object, out bool IsTrue) {
+        public static DateTime IsTime(object Object, out bool IsTrue)
+        {
             IsTrue = false;
             if (IsNull(Object)) return DateTime.Now;
             try { IsTrue = true; return DateTime.Parse(Object.ToString()); }
@@ -422,7 +444,8 @@ namespace Common.Net.Core
         /// <param name="Object">要操作的字符</param>
         /// <param name="Default">默认时间</param>
         /// <returns>DateTime</returns>
-        public static DateTime ToTime(string Object, DateTime Default) {
+        public static DateTime ToTime(string Object, DateTime Default)
+        {
             if (IsNull(Object)) return Default;
             bool IsTrue = false;
             DateTime Time = IsTime(Object, out IsTrue);
@@ -462,7 +485,8 @@ namespace Common.Net.Core
         /// <param name="Default">默认时间</param>
         /// <param name="Style">格式化样式</param>
         /// <returns>string</returns>
-        public static string ToTimes(string Object, DateTime Default, string Style) {
+        public static string ToTimes(string Object, DateTime Default, string Style)
+        {
             if (IsNull(Object)) return Default.ToString(Style);
             bool IsTrue = false;
             DateTime Time = IsTime(Object, out IsTrue);
@@ -477,7 +501,8 @@ namespace Common.Net.Core
         /// <param name="PowerChars">权限数组</param>
         /// <param name="Index">当前权限数组中某个权限的索引</param>
         /// <returns>int</returns>
-        public static int ToPowerValue(char[] PowerChars, int Index) {
+        public static int ToPowerValue(char[] PowerChars, int Index)
+        {
             if (Index < 0) return 1;
             if (PowerChars == null) return 0;
             if (Index >= PowerChars.Length) return 0;
@@ -496,7 +521,8 @@ namespace Common.Net.Core
         /// <param name="Powers">权限字符串 101110000的形式</param>
         /// <param name="Index">当前权限数组中某个权限的索引</param>
         /// <returns>bool</returns>
-        public static bool IsPower(string Powers, int Index) {
+        public static bool IsPower(string Powers, int Index)
+        {
             if (IsNull(Powers)) return false;
             return IsPower(Powers.ToCharArray(), Index);
         }
@@ -514,7 +540,8 @@ namespace Common.Net.Core
         /// <param name="Index">当前权限数组中某个权限的索引</param>
         /// <param name="PowerValue">要更改的值</param>
         /// <returns>新的char[]权限数组</returns>
-        public static char[] GetPower(char[] PowerChars, int Index, string PowerValue) {
+        public static char[] GetPower(char[] PowerChars, int Index, string PowerValue)
+        {
             if (PowerChars == null) return null;
             if (Index < 0) return PowerChars;
             if (Index >= PowerChars.Length) return PowerChars;
@@ -529,7 +556,8 @@ namespace Common.Net.Core
         /// <param name="Index">当前权限数组中某个权限的索引</param>
         /// <param name="PowerValue">要更改的值</param>
         /// <returns>权限字符串</returns>
-        public static string GetPowers(char[] PowerChars, int Index, string PowerValue) {
+        public static string GetPowers(char[] PowerChars, int Index, string PowerValue)
+        {
             char[] Powers = GetPower(PowerChars, Index, PowerValue);
             if (Powers == null) return "";
             return new string(Powers);
@@ -542,7 +570,8 @@ namespace Common.Net.Core
         /// <param name="Index">当前权限数组中某个权限的索引</param>
         /// <param name="PowerValue">要更改的值</param>
         /// <returns>权限字符串</returns>
-        public static string GetPowers(string Powers, int Index, string PowerValue) {
+        public static string GetPowers(string Powers, int Index, string PowerValue)
+        {
             if (IsNull(Powers)) return "";
             return GetPowers(Powers.ToCharArray(), Index, PowerValue);
         }
@@ -555,8 +584,10 @@ namespace Common.Net.Core
         /// <param name="Operator1">string</param>
         /// <param name="Operator2">string</param>
         /// <returns></returns>
-        private static string Precede(string Operator1, string Operator2) {
-            switch (Operator1) {
+        private static string Precede(string Operator1, string Operator2)
+        {
+            switch (Operator1)
+            {
                 case "+":
                 case "-": return ("*/(".IndexOf(Operator2) != -1) ? "<" : ">";
                 case "*":
@@ -574,7 +605,8 @@ namespace Common.Net.Core
         /// <param name="Value1">值1</param>
         /// <param name="Value2">值2</param>
         /// <returns>Double</returns>
-        private static Double Result(char Operator, Double Value1, Double Value2) {
+        private static Double Result(char Operator, Double Value1, Double Value2)
+        {
             if (Operator == '+') return (Value1 + Value2);
             if (Operator == '-') return (Value1 - Value2);
             if (Operator == '*') return (Value1 * Value2);
@@ -586,7 +618,8 @@ namespace Common.Net.Core
         /// </summary>
         /// <param name="Expression">要计算的表达式</param>
         /// <returns>Object</returns>
-        public static Object VcEval(string Expression) {
+        public static Object VcEval(string Expression)
+        {
             //运算符的分析数组
             Stack OperatorArr = new Stack();
             //计算值的分析数组
@@ -605,9 +638,12 @@ namespace Common.Net.Core
 
             OperatorArr.Push('#');
             Text = System.Convert.ToString(ExpArray[i++]);
-            while (!(Text == "#" && System.Convert.ToString(OperatorArr.Peek()) == "#")) {
-                if ("+-*/()#".IndexOf(Text) != -1) {
-                    switch (Precede(OperatorArr.Peek().ToString(), Text)) {
+            while (!(Text == "#" && System.Convert.ToString(OperatorArr.Peek()) == "#"))
+            {
+                if ("+-*/()#".IndexOf(Text) != -1)
+                {
+                    switch (Precede(OperatorArr.Peek().ToString(), Text))
+                    {
                         case "<":
                             OperatorArr.Push(Text);
                             Text = System.Convert.ToString(ExpArray[i++]);
@@ -626,7 +662,8 @@ namespace Common.Net.Core
                             return "Error";
                     }
                 }
-                else {
+                else
+                {
                     ValueArr.Push(Text);
                     Text = System.Convert.ToString(ExpArray[i++]);
                 }
@@ -680,7 +717,8 @@ namespace Common.Net.Core
         /// <param name="MaxLength">最大长度</param>
         /// <param name="IsRemove">是否去掉特殊字符</param>
         /// <returns>string</returns>
-        public static string GetGuid(int MaxLength, bool IsRemove) {
+        public static string GetGuid(int MaxLength, bool IsRemove)
+        {
             string Guids = Guid.NewGuid().ToString();
             if (IsRemove) { Guids = Guids.Replace("{", ""); Guids = Guids.Replace("}", ""); Guids = Guids.Replace("-", ""); }
             Guids = Left(Guids, MaxLength);
@@ -692,7 +730,8 @@ namespace Common.Net.Core
         /// <param name="Enum">产生随机数的枚举类型</param>
         /// <param name="MaxLength">最大长度</param>
         /// <returns>string</returns>
-        public static string GetGuid(RandEnum Enum, int MaxLength) {
+        public static string GetGuid(RandEnum Enum, int MaxLength)
+        {
             return GetGuid(Enum, "GB2312", MaxLength);
         }
         /// <summary>
@@ -702,10 +741,12 @@ namespace Common.Net.Core
         /// <param name="Encode">产生随机中文的编码</param>
         /// <param name="MaxLength">最大长度</param>
         /// <returns>string</returns>
-        public static string GetGuid(RandEnum Enum, string Encode, int MaxLength) {
+        public static string GetGuid(RandEnum Enum, string Encode, int MaxLength)
+        {
             if (Enum == RandEnum.Chinese) return GetGuid(Encode, MaxLength);
             string Guids = "";
-            for (int i = 1; i <= MaxLength; i++) {
+            for (int i = 1; i <= MaxLength; i++)
+            {
                 int MinInt, MaxInt, Num;
                 Random Rand = new Random(GetGuid(9) + i * 1000);
                 Num = (Enum == RandEnum.Blend) ? ((Rand.Next(0, 10) <= 4) ? (int)RandEnum.Numeric : (int)RandEnum.Letter) : (int)Enum;
@@ -722,7 +763,8 @@ namespace Common.Net.Core
         /// <param name="Encode">产生随机中文的编码</param>
         /// <param name="MaxLength">最大长度</param>
         /// <returns>string</returns>
-        public static string GetGuid(string Encode, int MaxLength) {
+        public static string GetGuid(string Encode, int MaxLength)
+        {
             //定义返回的字符串
             string Chinese = "";
             //定义中文编码
@@ -731,7 +773,8 @@ namespace Common.Net.Core
             //int Rint = Rnd.Next(1, 100);
             //定义位码、区码的范围数
             int Wint, Qint;
-            for (int i = 1; i <= MaxLength; i++) {
+            for (int i = 1; i <= MaxLength; i++)
+            {
                 int Rint = 0;
                 //获取汉字区位
                 Rnd = new Random(GetGuid(9) + i * 1000);
@@ -761,7 +804,8 @@ namespace Common.Net.Core
         /// </summary>
         /// <param name="Object">单个字符</param>
         /// <returns>bool</returns>
-        private static bool IsChinese(string Object) {
+        private static bool IsChinese(string Object)
+        {
             int Int = StringToInt(Object);
             if (Int >= 19968 && Int <= 40869) return true;
             return false;
@@ -771,7 +815,8 @@ namespace Common.Net.Core
         /// </summary>
         /// <param name="Object">单个字符 char</param>
         /// <returns>bool</returns>
-        private static bool IsChinese(char Object) {
+        private static bool IsChinese(char Object)
+        {
             int Int = (int)Object;
             if (Int >= 19968 && Int <= 40869) return true;
             return false;
@@ -782,11 +827,13 @@ namespace Common.Net.Core
         /// <param name="Object">要检测的对象</param>
         /// <param name="IsChecked">是否判断汉字</param>
         /// <returns>int</returns>
-        public static int GetLength(string Object, bool IsChecked) {
+        public static int GetLength(string Object, bool IsChecked)
+        {
             if (IsNull(Object)) return 0;
             if (!IsChecked) return Object.Length;
             int iLen = 0;
-            foreach (char c in Object) {
+            foreach (char c in Object)
+            {
                 iLen++;
                 if (IsChinese(c)) iLen++;
             }
@@ -808,7 +855,8 @@ namespace Common.Net.Core
         /// <param name="MaxInt">大于等于 最大长度</param>
         /// <param name="IsChecked">是否判断汉字</param>
         /// <returns>符合?true:false</returns>
-        public static bool CheckLength(string Object, int MinInt, int MaxInt, bool IsChecked) {
+        public static bool CheckLength(string Object, int MinInt, int MaxInt, bool IsChecked)
+        {
             int Int = GetLength(Object, IsChecked);
             if (Int < MinInt || Int > MaxInt) return false;
             return true;
@@ -820,7 +868,8 @@ namespace Common.Net.Core
         /// </summary>
         /// <param name="Object">要转换的对象</param>
         /// <returns>字符</returns>
-        public static string HtmlDecode(string Object) {
+        public static string HtmlDecode(string Object)
+        {
             if (IsNull(Object)) return "";
             StringBuilder Builder = new StringBuilder(Object);
             Builder.Replace("&amp;", "&");
@@ -839,7 +888,8 @@ namespace Common.Net.Core
         /// </summary>
         /// <param name="Object">要转换的对象</param>
         /// <returns>字符</returns>
-        public static string HtmlEncode(string Object) {
+        public static string HtmlEncode(string Object)
+        {
             if (IsNull(Object)) return "";
             StringBuilder Builder = new StringBuilder(Object);
             Builder.Replace("&", "&amp;");
@@ -857,7 +907,8 @@ namespace Common.Net.Core
         /// </summary>
         /// <param name="Object">要转换的对象</param>
         /// <returns>字符</returns>
-        public static string TextDecode(string Object) {
+        public static string TextDecode(string Object)
+        {
             if (IsNull(Object)) return "";
             StringBuilder Builder = new StringBuilder(Object);
             Builder.Replace("&amp;", "&");
@@ -872,7 +923,8 @@ namespace Common.Net.Core
         /// </summary>
         /// <param name="Object">要转换的对象</param>
         /// <returns>字符</returns>
-        public static string TextEncode(string Object) {
+        public static string TextEncode(string Object)
+        {
             if (IsNull(Object)) return "";
             StringBuilder Builder = new StringBuilder(Object);
             Builder.Replace("&", "&amp;");
@@ -892,7 +944,8 @@ namespace Common.Net.Core
         /// </summary>
         /// <param name="Object">单个字符</param>
         /// <returns>int</returns>
-        public static int GetMod(string Object) {
+        public static int GetMod(string Object)
+        {
             //测试为1
             //return 1;
             //
@@ -911,12 +964,14 @@ namespace Common.Net.Core
         /// <param name="starTime">第一个时间</param>
         /// <param name="endTime">第二个时间</param>
         /// <returns>double</returns>
-        public static double DateDiff(DateTime starTime, DateTime endTime) {
-            try {
-                TimeSpan StarTimeSpan = new TimeSpan(starTime.Ticks);
-                TimeSpan EndTimeSpan = new TimeSpan(endTime.Ticks);
-                TimeSpan TotalTimeSpan = StarTimeSpan.Subtract(EndTimeSpan).Duration();
-                return TotalTimeSpan.TotalMilliseconds;
+        public static double DateDiff(DateTime starTime, DateTime endTime)
+        {
+            try
+            {
+                TimeSpan starTimeSpan = new TimeSpan(starTime.Ticks);
+                TimeSpan endTimeSpan = new TimeSpan(endTime.Ticks);
+                TimeSpan totalTimeSpan = starTimeSpan.Subtract(endTimeSpan).Duration();
+                return totalTimeSpan.TotalMilliseconds;
             }
             catch { return -1; }
         }
@@ -926,5 +981,38 @@ namespace Common.Net.Core
         /// <param name="starTime">一个日期和时间</param>
         /// <returns>double</returns>
         private static double DateDiff(DateTime starTime) { return DateDiff(starTime, DateTime.Now); }
+
+        #region 字符串转其它数据类型
+        /// <summary>
+        /// 将字符串转整数
+        /// </summary>
+        /// <param name="str"></param>
+        /// <returns></returns>
+        public static int ToInt(this string str)
+        {
+            int ret = 0;
+            if (!string.IsNullOrEmpty(str))
+            {
+                int.TryParse(str, out ret);
+            }
+            return ret;
+        }
+
+        /// <summary>
+        /// 将字符串转化成日期类型
+        /// </summary>
+        /// <param name="str">日期字符串</param>
+        /// <returns></returns>
+        public static DateTime ToDateTime(this string str)
+        {
+            DateTime ret;
+            DateTime.TryParse(str, out ret);
+            if (ret.Year == 1)
+            {
+                return DateTime.Parse("1900-1-1");
+            }
+            return ret;
+        }
+        #endregion
     };
 }
