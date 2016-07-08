@@ -15,6 +15,23 @@ namespace StrategyPattern
     {
         static void Main(string[] args)
         {
+            List<string> array = new List<string>();
+            array.Add("adf");
+            array.Add("ghdfgh");
+            array.Add("vbf");
+            array.Add("uu");
+            array.Add("ew");
+            array.Add("jhhh");
+
+            #region MyRegion
+            JsonContext ja = new JsonContext(new NewtonsoftJson());
+            var ta = ja.Serialize(array);
+            JsonContext jb = new JsonContext(new NewtonsoftJson());
+            var tb = jb.Deserialize<List<string>>(ta);
+            #endregion
+
+            Console.ReadLine();
+
             #region MyRegion
             // Three contexts following different strategies
             Context c = new Context(new ConcreteStrategyA());
@@ -24,7 +41,7 @@ namespace StrategyPattern
             d.ContextInterface();
 
             Context e = new Context(new ConcreteStrategyC());
-            e.ContextInterface(); 
+            e.ContextInterface();
             #endregion
 
             #region MyRegion
@@ -37,7 +54,7 @@ namespace StrategyPattern
 
             studentRecords.SetSortStrategy(new QuickSort());
             studentRecords.Sort();
-            studentRecords.Display(); 
+            studentRecords.Display();
             #endregion
 
             Console.ReadLine();
