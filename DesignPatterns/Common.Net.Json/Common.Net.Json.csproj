@@ -48,8 +48,12 @@
     <Compile Include="Strategy\FastJson.cs" />
     <Compile Include="IJsonStrategy.cs" />
     <Compile Include="JsonContext.cs" />
+    <Compile Include="Strategy\JavaScriptSerializer.cs" />
+    <Compile Include="Strategy\JsonBuilder.cs" />
     <Compile Include="Strategy\NewtonsoftJson.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Strategy\QuickJsonBuilder.cs" />
+    <Compile Include="Strategy\ServiceStackText.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
