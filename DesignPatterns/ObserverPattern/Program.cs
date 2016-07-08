@@ -15,6 +15,21 @@ namespace ObserverPattern
     {
         static void Main(string[] args)
         {
+            Cat cat = new Cat("Tom");
+            Mouse mouse1 = new Mouse("Jerry");
+            Mouse mouse2 = new Mouse("Jack");
+            Mouse mouse3 = new Mouse("Ma");
+            Mouse mouse4 = new Mouse("Skey");
+            cat.CatShout += mouse1.Run;
+            cat.CatShout += new Cat.CatShoutEventHandler(mouse2.Run);
+            cat.CatShout += new Cat.CatShoutEventHandler(mouse3.Run);
+            cat.CatShout += new Cat.CatShoutEventHandler(mouse4.Run);
+            cat.OnCatShout();
+            //可用于群发短信和邮件
+
+
+            Console.ReadLine();
+
             Customer subject1 = new Customer();
             for (int i = 0; i < 50; i++)
             {
@@ -37,6 +52,5 @@ namespace ObserverPattern
 
             Console.ReadLine();
         }
-
     }
 }
