@@ -1,13 +1,16 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
+using System.Threading.Tasks;
 
-namespace Common.Net.Core
+namespace Common.Net.Security
 {
     /// <summary>
     /// AES算法
     /// </summary>
-    public class AlgorithmicAES
+    public class AES : EncryptStrategy
     {
         private readonly AesCryptoServiceProvider _mAesCryptoServiceProvider;
         public const string RET_ERROR = "x07x07x07x07x07";
@@ -23,7 +26,7 @@ namespace Common.Net.Core
         /// </summary>
         public bool ContainKey { get; set; }
 
-        public AlgorithmicAES()
+        public AES()
         {
             _mAesCryptoServiceProvider = new AesCryptoServiceProvider();
             ContainKey = true;
@@ -35,57 +38,9 @@ namespace Common.Net.Core
         /// False：密文中不包含密钥
         /// </summary>
         /// <param name="containKey"></param>
-        public AlgorithmicAES(bool containKey) : this()
+        public AES(bool containKey) : this()
         {
             this.ContainKey = containKey;
-        }
-
-        private string Encrypt(string cryContent, byte[] key)
-        {
-            string encryped = string.Empty;
-            try
-            {
-                var crypto = string2Byte(cryContent);
-                _mAesCryptoServiceProvider.Key = key;
-                _mAesCryptoServiceProvider.IV = _IV;
-                var ct = _mAesCryptoServiceProvider.CreateEncryptor();
-                var encrypted = ct.TransformFinalBlock(crypto, 0, crypto.Length);
-                if (ContainKey)
-                {
-                    encryped += byte2HexString(key);
-                }
-                encryped += byte2HexString(encrypted);
-                return encryped;
-            }
-            catch (Exception ex)
-            {
-                Message = ex.ToString();
-                return RET_ERROR;
-            }
-        }
-
-        private string Decrypt(string encryContent, byte[] key)
-        {
-            string s_decrypted = string.Empty;
-            byte[] encrypted, decrypted;
-            ICryptoTransform ct;
-
-            try
-            {
-                encrypted = hexString2Byte(encryContent);
-                _mAesCryptoServiceProvider.Key = key;
-                _mAesCryptoServiceProvider.IV = _IV;
-                ct = _mAesCryptoServiceProvider.CreateDecryptor();
-                decrypted = ct.TransformFinalBlock(encrypted, 0, encrypted.Length);
-                s_decrypted += byte2String(decrypted);
-                return s_decrypted;
-            }
-            catch (Exception ex)
-            {
-                Message = ex.ToString();
-                Message = "Decrypt fail.";
-                return RET_ERROR;
-            }
         }
 
         #region 指定密钥对明文进行AES加密、解密
@@ -95,7 +50,7 @@ namespace Common.Net.Core
         /// <param name="content">明文</param>
         /// <param name="strKey">加密密钥</param>
         /// <returns></returns>
-        public string Encrypt(string content, string strKey)
+        public override string Encrypt(string content, string strKey)
         {
             byte[] key = new byte[CRYPTO_KEY_LENGTH];
 
@@ -114,7 +69,7 @@ namespace Common.Net.Core
         /// <param name="content">密文</param>
         /// <param name="strKey">加密密钥</param>
         /// <returns></returns>
-        public string Decrypt(string content, string strKey)
+        public override string Decrypt(string content, string strKey)
         {
             byte[] key = new byte[CRYPTO_KEY_LENGTH];
 
@@ -199,6 +154,52 @@ namespace Common.Net.Core
         private string byte2String(byte[] bytes)
         {
             return Encoding.UTF8.GetString(bytes);
+        }
+        private string Encrypt(string cryContent, byte[] key)
+        {
+            string encryped = string.Empty;
+            try
+            {
+                var crypto = string2Byte(cryContent);
+                _mAesCryptoServiceProvider.Key = key;
+                _mAesCryptoServiceProvider.IV = _IV;
+                var ct = _mAesCryptoServiceProvider.CreateEncryptor();
+                var encrypted = ct.TransformFinalBlock(crypto, 0, crypto.Length);
+                if (ContainKey)
+                {
+                    encryped += byte2HexString(key);
+                }
+                encryped += byte2HexString(encrypted);
+                return encryped;
+            }
+            catch (Exception ex)
+            {
+                Message = ex.ToString();
+                return RET_ERROR;
+            }
+        }
+        private string Decrypt(string encryContent, byte[] key)
+        {
+            string s_decrypted = string.Empty;
+            byte[] encrypted, decrypted;
+            ICryptoTransform ct;
+
+            try
+            {
+                encrypted = hexString2Byte(encryContent);
+                _mAesCryptoServiceProvider.Key = key;
+                _mAesCryptoServiceProvider.IV = _IV;
+                ct = _mAesCryptoServiceProvider.CreateDecryptor();
+                decrypted = ct.TransformFinalBlock(encrypted, 0, encrypted.Length);
+                s_decrypted += byte2String(decrypted);
+                return s_decrypted;
+            }
+            catch (Exception ex)
+            {
+                Message = ex.ToString();
+                Message = "Decrypt fail.";
+                return RET_ERROR;
+            }
         }
         #endregion
     }

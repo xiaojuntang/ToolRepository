@@ -1,5 +1,6 @@
 ﻿using Common.Net.Core;
 using Common.Net.Helper;
+using Common.Net.Security;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -102,13 +103,14 @@ namespace HeplerPatterns
 
         static void Main(string[] args)
         {
-            //var aaasss = InvitationCode();
 
+            EncryptContext context1 = new EncryptContext(new AES(true));
+            var c = context1.Encrypt("dfadfadf", "123rty67");
+            var d = context1.Decrypt(c, "123rty67");
 
-            //var aaad = DataConverter.ToDateTime("adda");
-
-
-            //var aaaa = SmsHelper.SendMessage("13691429153", "你好，我的测试短信！");
+            EncryptContext context = new EncryptContext(new DES());
+            var a = context.Encrypt("dfadfadf", "123rty67");
+            var b = context.Decrypt(a, "123rty67");
 
             for (int i = 0; i < 100; i++)
             {
@@ -117,8 +119,6 @@ namespace HeplerPatterns
             }
 
 
-            var s1 = SecurityDES.Encrypt("123", "11111111");
-            var s2 = SecurityDES.Decrypt(s1, "11111111");
 
 
 
@@ -141,13 +141,7 @@ namespace HeplerPatterns
 
 
 
-            CacheHelper.Add("C:U:001", list);
-
-            if (CacheHelper.IsExist("C:U:001"))
-            {
-                List<TestA> tes = CacheHelper.Get("C:U:001") as List<TestA>;
-            }
-
+     
 
 
 
@@ -177,16 +171,16 @@ namespace HeplerPatterns
     {
 
         /** 自定义进制(0,1没有加入,容易与o,l混淆) */
-        private static  char[] r = new char[] { 'q', 'w', 'e', '8', 'a', 's', '2', 'd', 'z', 'x', '9', 'c', '7', 'p', '5', 'i', 'k', '3', 'm', 'j', 'u', 'f', 'r', '4', 'v', 'y', 'l', 't', 'n', '6', 'b', 'g', 'h' };
+        private static char[] r = new char[] { 'q', 'w', 'e', '8', 'a', 's', '2', 'd', 'z', 'x', '9', 'c', '7', 'p', '5', 'i', 'k', '3', 'm', 'j', 'u', 'f', 'r', '4', 'v', 'y', 'l', 't', 'n', '6', 'b', 'g', 'h' };
 
         /** (不能与自定义进制有重复) */
-        private static  char b = 'o';
+        private static char b = 'o';
 
         /** 进制长度 */
         private static int binLen = r.Length;
 
         /** 序列最小长度 */
-        private static  int s = 6;
+        private static int s = 6;
 
         /**
          * 根据ID生成六位随机码
