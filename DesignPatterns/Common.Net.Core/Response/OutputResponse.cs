@@ -9,8 +9,7 @@ namespace Common.Net.Core
     /// <summary>
     /// 泛型输出响应类
     /// </summary>
-    /// <typeparam name="T">对象</typeparam>
-    public class OutputResponse<T> where T : class
+    public class OutputResponse
     {
         /// <summary>
         /// 返回代码.具体见方法返回值说明
@@ -25,7 +24,7 @@ namespace Common.Net.Core
         /// <summary>
         /// 返回数据
         /// </summary>
-        public List<T> Data { get; set; }
+        public dynamic Data { get; set; }
 
         /// <summary>
         /// 构造函数

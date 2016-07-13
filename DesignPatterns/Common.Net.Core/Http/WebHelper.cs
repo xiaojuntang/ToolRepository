@@ -1,11 +1,13 @@
 ﻿using Common.Net.Core;
 using System;
+using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
 using System.Net;
 using System.Net.Cache;
+using System.Reflection;
 using System.Security;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -926,6 +928,43 @@ namespace Common.Net.Core
 
         }
 
-        #endregion  
+        #endregion
+
+        /// <summary>
+        /// 对参数进行格式化
+        /// </summary>
+        /// <param name="param">签名参数</param>
+        /// <returns></returns>
+        public static string ParamCreate<T>(ParamBase param) where T : class
+        {
+            T entity = param as T;
+            Dictionary<string, object> papramters = new Dictionary<string, object>();
+            Type type = entity.GetType();
+            PropertyInfo[] ps = type.GetProperties();
+            foreach (PropertyInfo i in ps)
+            {
+                object obj = i.GetValue(entity, null);
+                string name = i.Name;
+                papramters.Add(name, obj);
+            }
+            IDictionary<string, object> sortedParams = new Dictionary<string, object>(papramters);//SortedDictionary
+            IEnumerator<KeyValuePair<string, object>> dem = sortedParams.GetEnumerator();
+            StringBuilder query = new StringBuilder();
+            while (dem.MoveNext())
+            {
+                string key = dem.Current.Key;
+                object value = dem.Current.Value;
+                if (!string.IsNullOrWhiteSpace(key))
+                {
+                    query.Append(key).Append("=").Append(value).Append("&");
+                }
+            }
+            string strSig = query.ToString().TrimEnd('&');
+            return strSig;
+            //sendParam = strSig;
+            //return Utils.MD5(strSig + Coste.APPKEY).ToLower();
+        }
     }
+
+    public class ParamBase { }
 }
