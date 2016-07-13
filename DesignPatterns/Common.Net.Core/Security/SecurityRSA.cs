@@ -225,6 +225,9 @@ namespace Common.Net.Core
         #endregion
     }
 
+    /// <summary>
+    /// BigInteger
+    /// </summary>
     public class BigInteger
     {
         // maximum length of the BigInteger in uint (4 bytes)

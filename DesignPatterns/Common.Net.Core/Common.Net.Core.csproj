@@ -84,11 +84,9 @@
     <Compile Include="Response\Paging.cs" />
     <Compile Include="Response\DataResponse.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Security\AlgorithmicAES.cs" />
     <Compile Include="Security\HashCode.cs" />
     <Compile Include="Security\AlgorithmicRSA.cs" />
     <Compile Include="Security\EncryptUtils.cs" />
-    <Compile Include="Security\SecurityDES.cs" />
     <Compile Include="Security\SecurityRSA.cs" />
     <Compile Include="Serialize\BinarySerialize.cs" />
     <Compile Include="Serialize\XmlSerialize.cs" />

@@ -92,13 +92,9 @@
       <Project>{fa52bb9e-8bdc-4f1c-ab80-0c640be5c7ca}</Project>
       <Name>Common.Net.Core</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Common.Net.Helper\Common.Net.Helper.csproj">
-      <Project>{00a88bdb-dd25-4ae0-b7f3-a9acc7ceb4a8}</Project>
-      <Name>Common.Net.Helper</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Common.Net.Utility\Common.Net.Utility.csproj">
-      <Project>{0f4bb0e9-1a2b-4097-bc2e-7795e09b8531}</Project>
-      <Name>Common.Net.Utility</Name>
+    <ProjectReference Include="..\Common.Net.Security\Common.Net.Security.csproj">
+      <Project>{fcdf5f9d-0120-4338-8907-810eada41ece}</Project>
+      <Name>Common.Net.Security</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
