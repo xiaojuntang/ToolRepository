@@ -25,7 +25,20 @@ namespace MvcPatterns.Handler
                     , filterContext.RouteData.GetRequiredString("controller")
                     , filterContext.RouteData.GetRequiredString("action"));
             //VLog.VLogFactory.CreateVLog().ErrorLog(message); //TODO:将 ex 错误对象记录到系统日志模块
+            DtoResponse response = new DtoResponse();
+            response.Code =1;
+            response.Message = filterContext.Exception.Message;
+            JsonResult errorJson = new JsonResult() { JsonRequestBehavior = JsonRequestBehavior.AllowGet };
+            errorJson.Data = response;
+            filterContext.Result = errorJson;
+
             base.OnException(filterContext);
         }
     }
+
+    public class DtoResponse {
+        public int Code { get; set; }
+        public string Message { get; set; }
+    }
+
 }

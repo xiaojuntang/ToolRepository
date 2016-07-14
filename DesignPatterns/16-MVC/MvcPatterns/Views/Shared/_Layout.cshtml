@@ -1,7 +1,7 @@
 ﻿<!DOCTYPE html>
 <html>
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@ViewBag.Title - 我的 ASP.NET 应用程序</title>
@@ -43,3 +43,82 @@
     @RenderSection("scripts", required: false)
 </body>
 </html>
+
+<script type="text/javascript">
+    function Service(url) {
+        this.rootUrl = url;
+        this.errorHandler = function (jqXHR) {
+            var response = jqXHR.statusText;
+            alert(response);
+            //if (response != null) {
+            //    if (!response.success && response.errCode == '') {
+            //        alert('eee');
+            //        $(".close").click();
+            //        window.location.href = "index.html";
+            //    } else {
+            //        if (respond.msg != null) {
+            //            //response.errCode,response.msg
+            //        } else {
+            //            //服务器异常
+            //            alert("服务器异常 1" + response.errCode);
+            //        }
+            //    }
+            //} else {
+            //    alert("服务器异常2");
+            //}
+        };
+    }
+
+    Service.prototype = {
+        constructor: Service,
+        getPost: function (param, callback) {
+            $.post(this.rootUrl, param, callback);
+        },
+        getAsyncPost: function (param, callback) {
+            $.ajax({
+                type: 'POST',
+                url: this.rootUrl,
+                data: param,
+                success: callback,
+                error: this.errorHandler
+            });
+        },
+        getAjax: function (param, callback) {
+            $.ajax({
+                cache: false,
+                type: 'GET',
+                url: this.rootUrl + '?' + $.param(param),
+                dataType: 'json',
+                success: callback,
+                error: this.errorHandler
+            });
+        },
+        getAllAsync: function (param, callback) {
+            $.ajax({
+                cache: false,
+                type: 'GET',
+                url: this.rootUrl + '?' + $.param(param),
+                dataType: 'json',
+                success: callback,
+                async: false,
+                error: this.errorHandler
+            });
+        }
+    };
+
+    function test() {
+        var entService = new Service("/Home/Login");
+        var userdata = {};
+        userdata.username = "admin";
+        userdata.pwd = "你的测试";
+        var successCallback = function (data) {
+            console.log(data + "------");
+        }
+
+        entService.getAsyncPost(userdata, successCallback);
+    }
+
+    $(function () {
+        test();
+    });
+</script>
