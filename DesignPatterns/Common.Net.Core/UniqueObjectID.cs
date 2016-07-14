@@ -20,7 +20,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 
-namespace Common.Net.Func
+namespace Common.Net.Core
 {
     /// <summary>
     /// 生成唯一ID，由MongoDB.Bson.BsonObjectId提取而来
@@ -195,6 +195,15 @@ namespace Common.Net.Func
         public static UniqueObjectID GenerateNewId()
         {
             return GenerateNewId(GetTimestampFromDateTime(DateTime.UtcNow));
+        }
+
+        /// <summary>
+        /// 获取字符串ID
+        /// </summary>
+        /// <returns></returns>
+        public static string GenerateNewStrId()
+        {
+            return GenerateNewId(GetTimestampFromDateTime(DateTime.UtcNow)).ToString();
         }
 
         /// <summary>

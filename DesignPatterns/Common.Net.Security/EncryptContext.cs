@@ -14,7 +14,7 @@ namespace Common.Net.Security
         private EncryptStrategy strategy;
         public EncryptContext()
         {
-            this.strategy = new DES();
+            this.strategy = new DESCryptoService();
         }
 
         /// <summary>

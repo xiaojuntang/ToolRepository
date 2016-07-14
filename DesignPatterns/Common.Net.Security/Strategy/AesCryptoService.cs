@@ -10,7 +10,7 @@ namespace Common.Net.Security
     /// <summary>
     /// AES算法
     /// </summary>
-    public class AES : EncryptStrategy
+    public class AesCryptoService : EncryptStrategy
     {
         private readonly AesCryptoServiceProvider _mAesCryptoServiceProvider;
         public const string RET_ERROR = "x07x07x07x07x07";
@@ -26,7 +26,7 @@ namespace Common.Net.Security
         /// </summary>
         public bool ContainKey { get; set; }
 
-        public AES()
+        public AesCryptoService()
         {
             _mAesCryptoServiceProvider = new AesCryptoServiceProvider();
             ContainKey = true;
@@ -38,7 +38,7 @@ namespace Common.Net.Security
         /// False：密文中不包含密钥
         /// </summary>
         /// <param name="containKey"></param>
-        public AES(bool containKey) : this()
+        public AesCryptoService(bool containKey) : this()
         {
             this.ContainKey = containKey;
         }
