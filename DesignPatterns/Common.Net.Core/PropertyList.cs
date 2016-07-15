@@ -26,6 +26,11 @@ namespace Common.Net.Core
     /// </summary>
     public static class PropertyList
     {
+        /// <summary>
+        /// 获取对象的属性名称列表
+        /// </summary>
+        /// <param name="obj">对象</param>
+        /// <returns></returns>
         public static List<string> GetPropertyList(object obj)
         {
             var propertyList = new List<string>();
@@ -33,7 +38,7 @@ namespace Common.Net.Core
             foreach (var property in properties)
             {
                 object o = property.GetValue(obj, null);
-                propertyList.Add(o == null ? "" : o.ToString());
+                propertyList.Add(o?.ToString() ?? "");
             }
             return propertyList;
         }

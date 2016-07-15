@@ -12,7 +12,7 @@ namespace Common.Net.Core
     public class PageBar
     {
         /// <summary>
-        /// NewB分页栏
+        /// 分页栏HTML代码
         /// </summary>
         /// <param name="pageSize">页大小</param>
         /// <param name="pageIndex">当前页</param>
@@ -28,7 +28,7 @@ namespace Common.Net.Core
             {
                 if (pageIndex == 1) //第一页
                 {
-                    //  output.Append(" <a disabled='disabled'>&lt;&lt;</a> ");//首页
+                    // output.Append(" <a disabled='disabled'>&lt;&lt;</a> ");//首页
                     // output.Append(" <a disabled='disabled'>&lt;</a> ");//上一页
                     output.Append(" <a disabled='disabled' class='colH'>上一页</a> ");//上一页
                 }
@@ -49,8 +49,7 @@ namespace Common.Net.Core
                         {
                             if (pageIndex == i + 1)
                             {
-                                //  output.AppendFormat(" <a class='show'>{0}</a> ", currentPage);
-
+                                // output.AppendFormat(" <a class='show'>{0}</a> ", currentPage);
                                 output.AppendFormat(" <a class='cur'>{0}</a> ", pageIndex);
                             }
                             else
@@ -106,7 +105,7 @@ namespace Common.Net.Core
                             {
                                 if (totalPages - 6 + i == pageIndex)
                                 {
-                                    //  output.AppendFormat(" <a class='show'>{0}</a> ", currentPage);
+                                    // output.AppendFormat(" <a class='show'>{0}</a> ", currentPage);
                                     output.AppendFormat(" <a class='cur'>{0}</a> ", pageIndex);
                                 }
                                 else
@@ -123,7 +122,7 @@ namespace Common.Net.Core
                     {
                         if (pageIndex == i + 1)
                         {
-                            //  output.AppendFormat(" <a class='show'>{0}</a> ", currentPage);
+                            // output.AppendFormat(" <a class='show'>{0}</a> ", currentPage);
                             output.AppendFormat(" <a class='cur'>{0}</a> ", pageIndex);
                         }
                         else
@@ -135,7 +134,7 @@ namespace Common.Net.Core
                 if (pageIndex == totalPages) //最后一页
                 {
                     //处理下一页和尾页的链接
-                    //  output.Append(" <a disabled='disabled'>&gt;</a> ");
+                    // output.Append(" <a disabled='disabled'>&gt;</a> ");
                     // output.Append(" <a disabled='disabled'>&gt;&gt;</a> ");
                     output.Append(" <a disabled='disabled' class='colH'>下一页</a> ");
                 }
@@ -145,7 +144,6 @@ namespace Common.Net.Core
                     // output.AppendFormat(" <a data-pageindex='{0}' class='pageLink'>&gt;</a> ", currentPage + 1);
                     // output.AppendFormat(" <a data-pageindex='{0}' class='pageLink'>&gt;&gt;</a> ", totalPages);
                     output.AppendFormat(" <a data-pageindex='{0}' class='pageLink'>下一页</a> ", pageIndex + 1);
-
                 }
             }
             return output.ToString();
