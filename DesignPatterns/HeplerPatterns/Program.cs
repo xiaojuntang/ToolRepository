@@ -103,6 +103,8 @@ namespace HeplerPatterns
 
         static void Main(string[] args)
         {
+            HttpHelper
+
             //Console.Write("请输入要加密的字符串：");   //提示输入字符串      
             //Console.WriteLine();                  //换行输入   
             //string str = Console.ReadLine();     //记录输入的字符串      
