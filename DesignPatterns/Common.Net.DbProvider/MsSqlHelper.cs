@@ -23,6 +23,7 @@ namespace Common.Net.DbProvider
 {
     /// <summary>
     /// MSSQL数据库访问抽象基础类库
+    /// 作者：T.X.Jun
     /// </summary>
     public abstract class MsSqlHelper : IDisposable
     {
@@ -605,7 +606,7 @@ namespace Common.Net.DbProvider
             cmd.CommandText = cmdText;
             if (trans != null)
                 cmd.Transaction = trans;
-            cmd.CommandType = CommandType.Text;//cmdType;
+            cmd.CommandType = CommandType.Text;
             if (cmdParms != null)
             {
                 foreach (SqlParameter parameter in cmdParms)
@@ -900,55 +901,11 @@ namespace Common.Net.DbProvider
         public static int CommandTimeOut = 600;
 
         /// <summary>
-        /// 大批量数据插入,返回成功插入行数
-        /// </summary>
-        /// <param name="table">数据表</param>
-        /// <param name="db"></param>
-        /// <returns>返回成功插入行数</returns>
-        public static int BulkInsert(DataTable table, string db = DataBase.ConnStr)
-        {
-            if (string.IsNullOrEmpty(table.TableName)) throw new Exception("请给DataTable的TableName属性附上表名称");
-            if (table.Rows.Count == 0) return 0;
-            int insertCount = 0;
-            //string tmpPath = Path.GetTempFileName();
-            //string csv = DataTableToCsv(table);
-            //File.WriteAllText(tmpPath, csv);
-            //using (SqlConnection conn = (db == DataBase.None) ? new SqlConnection(connectionString) : MySelfSqlConnection(db))
-            //{
-            //    SqlTransaction tran = null;
-            //    try
-            //    {
-            //        conn.Open();
-            //        tran = conn.BeginTransaction();
-            //        SqlBulkLoader bulk = new SqlBulkLoader(conn)
-            //        {
-            //            FieldTerminator = ",",
-            //            FieldQuotationCharacter = '"',
-            //            EscapeCharacter = '"',
-            //            LineTerminator = "\n",
-            //            FileName = tmpPath,
-            //            NumberOfLinesToSkip = 0,
-            //            TableName = table.TableName,
-            //        };
-            //        bulk.Columns.AddRange(table.Columns.Cast<DataColumn>().Select(colum => colum.ColumnName).ToList());
-            //        insertCount = bulk.Load();
-            //        tran.Commit();
-            //    }
-            //    catch (SqlException ex)
-            //    {
-            //        if (tran != null) tran.Rollback();
-            //        throw ex;
-            //    }
-            //}
-            //File.Delete(tmpPath);
-            return insertCount;
-        }
-        /// <summary>
         ///将DataTable转换为标准的CSV
         /// </summary>
         /// <param name="table">数据表</param>
         /// <returns>返回标准的CSV</returns>
-        private static string DataTableToCsv(DataTable table)
+        public static string DataTableToCsv(DataTable table)
         {
             //以半角逗号（即,）作分隔符，列为空也要表达其存在。
             //列内容如存在半角逗号（即,）则用半角引号（即""）将该字段值包含起来。
@@ -1023,7 +980,7 @@ namespace Common.Net.DbProvider
         }
 
         /// <summary> 
-        /// 大批量插入数据(2000每批次) 已采用整体事物控制 
+        /// 大批量插入数据(50000每批次)
         /// </summary> 
         /// <param name="dt">含有和目标数据库表结构完全一致(所包含的字段名完全一致即可)的DataTable</param>
         /// <param name="db"></param> 
@@ -1033,11 +990,47 @@ namespace Common.Net.DbProvider
             using (SqlConnection connection = MsSqlConnection(db))
             {
                 connection.Open();
+                using (SqlBulkCopy bulkCopy = new SqlBulkCopy(connection))
+                {
+                    bulkCopy.BatchSize = 50000;
+                    bulkCopy.BulkCopyTimeout = 120;
+                    bulkCopy.DestinationTableName = dt.TableName;
+                    try
+                    {
+                        foreach (DataColumn col in dt.Columns)
+                        {
+                            bulkCopy.ColumnMappings.Add(col.ColumnName, col.ColumnName);
+                        }
+                        bulkCopy.WriteToServer(dt);
+                    }
+                    catch (Exception ex)
+                    {
+                        throw ex;
+                    }
+                    finally
+                    {
+                        connection.Close();
+                    }
+                }
+            }
+        }
+
+        /// <summary> 
+        /// 大批量插入数据(50000每批次) 已采用整体事物控制 
+        /// </summary> 
+        /// <param name="dt">含有和目标数据库表结构完全一致(所包含的字段名完全一致即可)的DataTable</param>
+        /// <param name="db"></param> 
+        public static void BulkInsert(DataTable dt, string db = DataBase.ConnStr)
+        {
+            if (string.IsNullOrEmpty(dt.TableName)) throw new Exception("请给DataTable的TableName属性附上表名称");
+            using (SqlConnection connection = MsSqlConnection(db))
+            {
+                connection.Open();
                 using (SqlTransaction transaction = connection.BeginTransaction())
                 {
                     using (SqlBulkCopy bulkCopy = new SqlBulkCopy(connection, SqlBulkCopyOptions.Default, transaction))
                     {
-                        bulkCopy.BatchSize = 2000;
+                        bulkCopy.BatchSize = 50000;
                         bulkCopy.BulkCopyTimeout = 120;
                         bulkCopy.DestinationTableName = dt.TableName;
                         try
@@ -1064,11 +1057,11 @@ namespace Common.Net.DbProvider
         }
 
         /// <summary> 
-        /// 批量更新数据(每批次5000) 
+        /// 批量更新数据(每批次10000) 
         /// 若只是需要大批量插入数据使用bcp是最好的，若同时需要插入、删除、更新建议使用SqlDataAdapter我测试过有很高的效率，一般情况下这两种就满足需求了 
         /// </summary> 
         /// <param name="dt"></param>
-        /// <param name="db"></param> 
+        /// <param name="db">数据库配置Key</param> 
         public static void BulkUpdate(DataTable dt, string db = DataBase.ConnStr)
         {
             using (SqlConnection connection = MsSqlConnection(db))
@@ -1083,7 +1076,7 @@ namespace Common.Net.DbProvider
                 {
                     connection.Open();
                     //设置批量更新的每次处理条数 
-                    adapter.UpdateBatchSize = 5000;
+                    adapter.UpdateBatchSize = 10000;
                     adapter.SelectCommand.Transaction = connection.BeginTransaction();
                     if (dt.ExtendedProperties["SQL"] != null)
                     {
