@@ -1,7 +1,10 @@
 ﻿using Common.Net.Core;
+using Common.Net.DbProvider;
 using Common.Net.Helper;
 using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
@@ -103,41 +106,133 @@ namespace HeplerPatterns
 
         static void Main(string[] args)
         {
-            HttpHelper
-
-            //Console.Write("请输入要加密的字符串：");   //提示输入字符串      
-            //Console.WriteLine();                  //换行输入   
-            //string str = Console.ReadLine();     //记录输入的字符串      
-            //string strNew = Encrypt(str);              //加密字符串      
-            //Console.WriteLine("加密后的字符串：" + strNew);  //输出加密后的字符串      
-            //Console.WriteLine("解密后的字符串：" + Decrypt(strNew)); //解密字符串并输出     
-            //Console.ReadLine();
-
-            for (int i = 0; i < 100; i++)
-            {
-                string a1 = UniqueObjectID.GenerateNewStrId();
-                var a2=new UniqueObjectID(a1);
-                System.Diagnostics.Debug.WriteLine(a1);
-                //Console.WriteLine(UniqueObjectID.GenerateNewId());
-            }
+            GetTeacherStatisticsUserList2(0);
             Console.ReadLine();
         }
+
+
+        private static void S_1()
+        {
+
+        }
+
+        public static List<HS_TeacherStatistics> GetTeacherStatisticsUserList(int schoolid)
+        {
+            Stopwatch t1 = new Stopwatch();
+            t1.Start();
+
+            List<HS_TeacherStatistics> list = new List<HS_TeacherStatistics>();
+            List<SqlParameter> parameters = new List<SqlParameter>(){
+                new SqlParameter("@schoolid", schoolid)
+            };
+            StringBuilder sql = new StringBuilder(1000);
+            sql.Append(@"SELECT UserID as Userid,TrueName FROM dbo.HS_User WHERE IsStudent=0 Order By TrueName Asc;");
+            MsSqlHelper.FindList(sql.ToString(), (a) =>
+            {
+                if (!a.HasRows) return;
+                t1.Stop();
+                System.Diagnostics.Debug.WriteLine("******************   " + t1.ElapsedMilliseconds);
+
+                t1.Start();
+                while (a.Read())
+                {
+                    HS_TeacherStatistics obj = new HS_TeacherStatistics
+                    {
+                        Userid = a.GetInt32(0),
+                        TrueName = a.GetString(1)
+                    };
+                    list.Add(obj);
+                }
+                t1.Stop();
+                System.Diagnostics.Debug.WriteLine("------------  " + t1.ElapsedMilliseconds);
+            }, parameters, "ZYTConnString");
+
+            return list;
+        }
+
+        public static List<HS_TeacherStatistics> GetTeacherStatisticsUserList2(int schoolid)
+        {
+            Stopwatch t1 = new Stopwatch();
+            t1.Start();
+
+            List<HS_TeacherStatistics> list = new List<HS_TeacherStatistics>();
+            List<SqlParameter> parameters = new List<SqlParameter>(){
+                new SqlParameter("@schoolid", schoolid)
+            };
+            StringBuilder sql = new StringBuilder(1000);
+            sql.Append(@"SELECT UserID as Userid,TrueName FROM dbo.HS_User WHERE IsStudent=0 Order By TrueName Asc;");
+            MsSqlHelper.FindList(sql.ToString(), (a) =>
+            {
+                if (!a.HasRows) return;
+                t1.Stop();
+                System.Diagnostics.Debug.WriteLine("******************   " + t1.ElapsedMilliseconds);
+
+                t1.Start();
+                //while (a.Read())
+                //{
+                //    HS_TeacherStatistics obj = new HS_TeacherStatistics
+                //    {
+                //        Userid = a.GetInt32(0),
+                //        TrueName = a.GetString(1)
+                //    };
+                //    list.Add(obj);
+                //} 
+                list = TransformationData.ConvertDataReaderToEntityList<HS_TeacherStatistics>(a).ToList();
+
+
+                t1.Stop();
+                System.Diagnostics.Debug.WriteLine("------------  " + t1.ElapsedMilliseconds);
+            }, parameters, "ZYTConnString");
+
+            return list;
+        }
+    }
+
+    /// <summary>
+    /// 管理员-教师统计
+    /// </summary>
+    public class HS_TeacherStatistics
+    {
+        /// <summary>
+        /// 教师id
+        /// </summary>
+        public int Userid { get; set; }
+        /// <summary>
+        /// 教师姓名
+        /// </summary>
+        public string TrueName { get; set; }
+        /// <summary>
+        /// 登陆次数
+        /// </summary>
+        public int dlNumber { get; set; }
+        /// <summary>
+        /// 批改次数
+        /// </summary>
+        public int PGNumber { get; set; }
+        /// <summary>
+        /// 回答疑问次数
+        /// </summary>
+        public int hdywNumber { get; set; }
+        /// <summary>
+        /// 评价次数
+        /// </summary>
+        public int PJNumber { get; set; }
     }
 
     public class ShareCodeUtil
     {
 
         /** 自定义进制(0,1没有加入,容易与o,l混淆) */
-        private static  char[] r = new char[] { 'q', 'w', 'e', '8', 'a', 's', '2', 'd', 'z', 'x', '9', 'c', '7', 'p', '5', 'i', 'k', '3', 'm', 'j', 'u', 'f', 'r', '4', 'v', 'y', 'l', 't', 'n', '6', 'b', 'g', 'h' };
+        private static char[] r = new char[] { 'q', 'w', 'e', '8', 'a', 's', '2', 'd', 'z', 'x', '9', 'c', '7', 'p', '5', 'i', 'k', '3', 'm', 'j', 'u', 'f', 'r', '4', 'v', 'y', 'l', 't', 'n', '6', 'b', 'g', 'h' };
 
         /** (不能与自定义进制有重复) */
-        private static  char b = 'o';
+        private static char b = 'o';
 
         /** 进制长度 */
         private static int binLen = r.Length;
 
         /** 序列最小长度 */
-        private static  int s = 6;
+        private static int s = 6;
 
         /**
          * 根据ID生成六位随机码

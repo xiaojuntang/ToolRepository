@@ -65,7 +65,6 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <DependentUpon>Settings.settings</DependentUpon>
     </Compile>
-    <Compile Include="TTransportTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -80,6 +79,7 @@
     <None Include="HomeWrok_Offline.xss">
       <DependentUpon>HomeWrok_Offline.xsd</DependentUpon>
     </None>
+    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -93,6 +93,10 @@
     <ProjectReference Include="..\Common.Net.Core\Common.Net.Core.csproj">
       <Project>{fa52bb9e-8bdc-4f1c-ab80-0c640be5c7ca}</Project>
       <Name>Common.Net.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Common.Net.DbProvider\Common.Net.DbProvider.csproj">
+      <Project>{0ae55d16-5a0e-487a-b0c8-51ff0012d57d}</Project>
+      <Name>Common.Net.DbProvider</Name>
     </ProjectReference>
     <ProjectReference Include="..\Common.Net.Security\Common.Net.Security.csproj">
       <Project>{fcdf5f9d-0120-4338-8907-810eada41ece}</Project>
