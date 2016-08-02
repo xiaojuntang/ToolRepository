@@ -111,11 +111,6 @@ namespace HeplerPatterns
         }
 
 
-        private static void S_1()
-        {
-
-        }
-
         public static List<HS_TeacherStatistics> GetTeacherStatisticsUserList(int schoolid)
         {
             Stopwatch t1 = new Stopwatch();
@@ -160,7 +155,7 @@ namespace HeplerPatterns
                 new SqlParameter("@schoolid", schoolid)
             };
             StringBuilder sql = new StringBuilder(1000);
-            sql.Append(@"SELECT UserID as Userid,TrueName FROM dbo.HS_User WHERE IsStudent=0 Order By TrueName Asc;");
+            sql.Append(@"SELECT UserID as Userid,TrueName,null as Te FROM dbo.HS_User WHERE IsStudent=0 Order By TrueName Asc;");
             MsSqlHelper.FindList(sql.ToString(), (a) =>
             {
                 if (!a.HasRows) return;
@@ -177,7 +172,7 @@ namespace HeplerPatterns
                 //    };
                 //    list.Add(obj);
                 //} 
-                list = TransformationData.ConvertDataReaderToEntityList<HS_TeacherStatistics>(a).ToList();
+                list = TransformationData.DataReader2List<HS_TeacherStatistics>(a).ToList();
 
 
                 t1.Stop();
@@ -217,6 +212,8 @@ namespace HeplerPatterns
         /// 评价次数
         /// </summary>
         public int PJNumber { get; set; }
+
+        public int Te { get; set; }
     }
 
     public class ShareCodeUtil

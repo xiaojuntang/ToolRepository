@@ -279,6 +279,68 @@ namespace Common.Net.Core
             }
             return dt;
         }
+
+
+        /// <summary>  
+        /// DataReader转换为obj list  
+        /// </summary>  
+        /// <typeparam name="T">泛型</typeparam>  
+        /// <param name="rdr">datareader</param>  
+        /// <returns>返回泛型类型</returns>  
+        public static IList<T> DataReader2List<T>(SqlDataReader rdr)
+        {
+            IList<T> list = new List<T>();
+            while (rdr.Read())
+            {
+                T t = System.Activator.CreateInstance<T>();
+                Type obj = t.GetType();
+                for (int i = 0; i < rdr.FieldCount; i++)
+                {
+                    object tempValue = null;
+                    if (rdr.IsDBNull(i))
+                    {
+                        string typeFullName = obj.GetProperty(rdr.GetName(i)).PropertyType.FullName;
+                        tempValue = GetDBNullValue(typeFullName);
+                    }
+                    else
+                    {
+                        tempValue = rdr.GetValue(i);
+                    }
+                    obj.GetProperty(rdr.GetName(i)).SetValue(t, tempValue, null);
+                }
+                list.Add(t);
+            }
+            return list;
+        }
+
+        /// <summary>  
+        /// 返回值为DBnull的默认值  
+        /// </summary>  
+        /// <param name="typeFullName">数据类型的全称，类如：system.int32</param>  
+        /// <returns>返回的默认值</returns>  
+        private static object GetDBNullValue(string typeFullName)
+        {
+            //typeFullName = typeFullName.ToLower();
+
+            if (typeFullName == "System.String")
+            {
+                return String.Empty;
+            }
+
+            if (typeFullName == "System.Int32")
+            {
+                return 0;
+            }
+            if (typeFullName == "System.DateTime")
+            {
+                return DateTime.MinValue;
+            }
+            if (typeFullName == "System.Boolean")
+            {
+                return false;
+            }
+            return null;
+        }
         #endregion
     }
 }
