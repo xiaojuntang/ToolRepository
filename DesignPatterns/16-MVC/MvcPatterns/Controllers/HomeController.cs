@@ -552,6 +552,51 @@ namespace MvcPatterns.Controllers
             ms.Close();
             ms.Dispose();
         }
+
+        /// <summary> 
+        /// 将一组对象导出成EXCEL 
+        /// </summary> 
+        /// <typeparam name="T">要导出对象的类型</typeparam> 
+        /// <param name="objList">一组对象</param> 
+        /// <param name="fileName">导出后的文件名</param> 
+        /// <param name="columnInfo">列名信息</param> 
+        public static void ExExcel<T>(List<T> objList, string fileName, Dictionary<string, string> columnInfo)
+        {
+            if (columnInfo.Count == 0) { return; }
+            if (objList.Count == 0) { return; }
+            //生成EXCEL的HTML 
+            string excelStr = "";
+            Type myType = objList[0].GetType();
+            //根据反射从传递进来的属性名信息得到要显示的属性 
+            List<System.Reflection.PropertyInfo> myPro = new List<System.Reflection.PropertyInfo>();
+            foreach (string cName in columnInfo.Keys)
+            {
+                System.Reflection.PropertyInfo p = myType.GetProperty(cName);
+                if (p != null)
+                {
+                    myPro.Add(p);
+                    excelStr += columnInfo[cName] + "\t";
+                }
+            }
+            //如果没有找到可用的属性则结束 
+            if (myPro.Count == 0) { return; }
+            excelStr += "\n";
+            foreach (T obj in objList)
+            {
+                foreach (System.Reflection.PropertyInfo p in myPro)
+                {
+                    excelStr += p.GetValue(obj, null) + "\t";
+                }
+                excelStr += "\n";
+            }
+            //输出EXCEL 
+            HttpResponse rs = System.Web.HttpContext.Current.Response;
+            rs.ContentEncoding = System.Text.Encoding.GetEncoding("GB2312");
+            rs.AppendHeader("Content-Disposition", "attachment;filename=" + fileName);
+            rs.ContentType = "application/ms-excel";
+            rs.Write(excelStr);
+            rs.End();
+        }
     }
 
     public class message
