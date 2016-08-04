@@ -274,6 +274,10 @@
       <Project>{fa52bb9e-8bdc-4f1c-ab80-0c640be5c7ca}</Project>
       <Name>Common.Net.Core</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Common.Net.Excel\Common.Net.Excel.csproj">
+      <Project>{e51ee8bd-713c-4ea3-b02a-2fab5f010b44}</Project>
+      <Name>Common.Net.Excel</Name>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
