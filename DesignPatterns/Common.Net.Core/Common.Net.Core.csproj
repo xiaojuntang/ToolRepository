@@ -66,6 +66,8 @@
     <Compile Include="Http\Http2Helper.cs" />
     <Compile Include="Http\Http3Helper.cs" />
     <Compile Include="PageBar.cs" />
+    <Compile Include="Response\Codes.cs" />
+    <Compile Include="Response\DtoCommon.cs" />
     <Compile Include="Response\OutputResponse.cs" />
     <Compile Include="Response\PagingResponse.cs" />
     <Compile Include="PropertyList.cs" />

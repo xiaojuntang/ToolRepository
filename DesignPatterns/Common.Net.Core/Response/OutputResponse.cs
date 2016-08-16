@@ -9,6 +9,7 @@ namespace Common.Net.Core
     /// <summary>
     /// 泛型输出响应类
     /// </summary>
+    [Serializable]
     public class OutputResponse
     {
         /// <summary>
@@ -32,6 +33,7 @@ namespace Common.Net.Core
         public OutputResponse()
         {
             Code = Codes.Success;
+            Message = string.Empty;
         }
     }
 }

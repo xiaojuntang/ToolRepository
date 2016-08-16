@@ -33,35 +33,7 @@ namespace Common.Net.Core
         public DataResponse()
         {
             Code = Codes.Success;
+            Message = string.Empty;
         }
-    }
-
-    /// <summary>
-    /// 代码说明
-    /// </summary>
-    [Flags]
-    [Serializable]
-    public enum Codes : int
-    {
-        /// <summary>
-        /// 成功
-        /// </summary>
-        Success = 0,
-        /// <summary>
-        /// 无数据
-        /// </summary>
-        Empty = 10001,
-        /// <summary>
-        /// 参数错误
-        /// </summary>
-        ParamError = 20001,
-        /// <summary>
-        /// 异常
-        /// </summary>
-        Error = 30001,
-        /// <summary>
-        /// 失败
-        /// </summary>
-        Failure
     }
 }
