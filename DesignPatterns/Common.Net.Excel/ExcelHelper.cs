@@ -72,7 +72,7 @@ namespace Common.Net.Excel
             foreach (DataRow row in dtSource.Rows)
             {
                 #region 新建表，填充表头，填充列头，样式
-                if (rowIndex == 65535 || rowIndex == 0)
+                if (rowIndex == 1048576 || rowIndex == 0) //65535
                 {
                     if (rowIndex != 0)
                     {
@@ -113,24 +113,19 @@ namespace Common.Net.Excel
                             headerRow.GetCell(column.Ordinal).CellStyle = headStyle;
                             //设置列宽
                             sheet.SetColumnWidth(column.Ordinal, (arrColWidth[column.Ordinal] + 1) * 256);
-
-                        }
-                        //headerRow.Dispose();
+                        }                      
                     }
                     #endregion
                     rowIndex = 2;
                 }
                 #endregion
 
-
                 #region 填充内容
                 IRow dataRow = sheet.CreateRow(rowIndex);
                 foreach (DataColumn column in dtSource.Columns)
                 {
                     ICell newCell = dataRow.CreateCell(column.Ordinal);
-
                     string drValue = row[column].ToString();
-
                     switch (column.DataType.ToString())
                     {
                         case "System.String"://字符串类型
@@ -140,7 +135,6 @@ namespace Common.Net.Excel
                             DateTime dateV;
                             DateTime.TryParse(drValue, out dateV);
                             newCell.SetCellValue(dateV);
-
                             newCell.CellStyle = dateStyle;//格式化显示
                             break;
                         case "System.Boolean"://布尔型
@@ -171,13 +165,11 @@ namespace Common.Net.Excel
                     }
                 }
                 #endregion
-
                 rowIndex++;
             }
-
             MemoryStream ms = new MemoryStream();
             workbook.Write(ms);
-            HttpContext.Current.Response.AddHeader("Content-Disposition", string.Format("attachment; filename={0}.xls", HttpUtility.UrlEncode(headerText + "_" + DateTime.Now.ToString("yyyy-MM-dd"), System.Text.Encoding.UTF8)));
+            HttpContext.Current.Response.AddHeader("Content-Disposition", string.Format("attachment; filename={0}.xlsx", HttpUtility.UrlEncode(headerText + "_" + DateTime.Now.ToString("yyyy-MM-dd"), System.Text.Encoding.UTF8)));
             HttpContext.Current.Response.BinaryWrite(ms.ToArray());
             HttpContext.Current.Response.End();
             workbook = null;
@@ -303,7 +295,7 @@ namespace Common.Net.Excel
                 rowIndex++;
             }
             workbook.Write(ms);
-            var value = string.Format("attachment; filename={0}.xls",
+            var value = string.Format("attachment; filename={0}.xlsx",
                 HttpUtility.UrlEncode(headerText + "_" + DateTime.Now.ToString("yyyy-MM-dd"), Encoding.UTF8));
             HttpContext.Current.Response.AddHeader("Content-Disposition", value);
             HttpContext.Current.Response.BinaryWrite(ms.ToArray());
@@ -314,7 +306,7 @@ namespace Common.Net.Excel
         }
 
         /// <summary> 
-        /// 将一组对象导出成EXCEL 
+        /// 将对象导出成EXCEL 非真正Excel
         /// </summary> 
         /// <typeparam name="T">要导出对象的类型</typeparam> 
         /// <param name="datas">一组对象</param> 

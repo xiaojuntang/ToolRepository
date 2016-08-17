@@ -7,9 +7,11 @@ using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Common.Net.Core.Data
+namespace Common.Net.Core
 {
-
+    /// <summary>
+    /// DataTable扩展类
+    /// </summary>
     public static class DataTableExtensions
     {
         /// <summary>    
@@ -42,7 +44,7 @@ namespace Common.Net.Core.Data
         /// <summary>    
         /// DataTable 转换为List 集合    
         /// </summary>    
-        /// <typeparam name="TResult">类型</typeparam>    
+        /// <typeparam name="T">类型</typeparam>    
         /// <param name="dt">DataTable</param>    
         /// <returns></returns>    
         public static List<T> ToList<T>(this DataTable dt) where T : class, new()

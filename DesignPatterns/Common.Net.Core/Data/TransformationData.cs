@@ -3,10 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Data.SqlClient;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Common.Net.Core
 {
@@ -55,44 +52,79 @@ namespace Common.Net.Core
         /// 将数据表转换为实体类。
         /// </summary>
         /// <typeparam name="T">类型</typeparam>
-        /// <param name="dt">数据表</param>
+        /// <param name="dr">数据表</param>
         /// <returns></returns>
         public static IList<T> ConvertDataReaderToEntityList<T>(SqlDataReader dr) where T : new()
         {
-            var type = typeof(T);
-            var list = new List<T>();
-            if (!dr.HasRows)
-            {
-                return list;
-            }
+            //var type = typeof(T);
+            //var list = new List<T>();
+            //if (!dr.HasRows)
+            //{
+            //    return list;
+            //}
 
-            var pros = type.GetProperties(BindingFlags.Instance | BindingFlags.Public);
+            //var pros = type.GetProperties(BindingFlags.Instance | BindingFlags.Public);
+            //while (dr.Read())
+            //{
+            //    var t = new T();
+            //    foreach (var p in pros)
+            //    {
+            //        try
+            //        {
+            //            //dr.GetOrdinal(p.Name)如果字段不存在会抛异常
+            //            if (p.CanWrite)
+            //            {
+            //                if (dr.GetOrdinal(p.Name) != -1 && !Convert.IsDBNull(dr[p.Name]))
+            //                {
+            //                    p.SetValue(t, dr[p.Name], null);
+            //                }
+            //            }
+            //        }
+            //        catch (Exception ex)
+            //        {
+            //            continue;
+            //        }
+            //    }
+            //    list.Add(t);
+            //}
+            //return list;
+            IList<T> list = new List<T>();
             while (dr.Read())
             {
-                var t = new T();
-                foreach (var p in pros)
+                T t = Activator.CreateInstance<T>();
+                Type obj = t.GetType();
+                for (int i = 0; i < dr.FieldCount; i++)
                 {
-                    try
+                    object tempValue = null;
+                    if (dr.IsDBNull(i))
                     {
-                        //dr.GetOrdinal(p.Name)如果字段不存在会抛异常
-                        if (p.CanWrite)
+                        if (obj.GetProperty(dr.GetName(i)) != null)
                         {
-                            if (dr.GetOrdinal(p.Name) != -1 && !Convert.IsDBNull(dr[p.Name]))
-                            {
-                                p.SetValue(t, dr[p.Name], null);
-                            }
+                            string typeFullName = obj.GetProperty(dr.GetName(i)).PropertyType.FullName;
+                            tempValue = GetDbNullValue(typeFullName);
                         }
                     }
-                    catch (Exception ex)
+                    else
                     {
-                        continue;
+                        tempValue = dr.GetValue(i);
                     }
+                    if (obj.GetProperty(dr.GetName(i)) != null)
+                    {
+                        obj.GetProperty(dr.GetName(i)).SetValue(t, tempValue, null);
+                    }
+
                 }
                 list.Add(t);
             }
             return list;
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="reader"></param>
+        /// <returns></returns>
         public static List<T> QueryList<T>(IDataReader reader) where T : class, new()
         {
             List<T> list = new List<T>();
@@ -300,7 +332,7 @@ namespace Common.Net.Core
                     if (rdr.IsDBNull(i))
                     {
                         string typeFullName = obj.GetProperty(rdr.GetName(i)).PropertyType.FullName;
-                        tempValue = GetDBNullValue(typeFullName);
+                        tempValue = GetDbNullValue(typeFullName);
                     }
                     else
                     {
@@ -311,14 +343,14 @@ namespace Common.Net.Core
                 list.Add(t);
             }
             return list;
-        }
+        }       
 
         /// <summary>  
         /// 返回值为DBnull的默认值  
         /// </summary>  
         /// <param name="typeFullName">数据类型的全称，类如：system.int32</param>  
         /// <returns>返回的默认值</returns>  
-        private static object GetDBNullValue(string typeFullName)
+        private static object GetDbNullValue(string typeFullName)
         {
             //typeFullName = typeFullName.ToLower();
 
@@ -341,6 +373,7 @@ namespace Common.Net.Core
             }
             return null;
         }
+
         #endregion
     }
 }
