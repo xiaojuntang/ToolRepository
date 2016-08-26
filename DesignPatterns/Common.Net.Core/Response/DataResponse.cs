@@ -36,4 +36,47 @@ namespace Common.Net.Core
             Message = string.Empty;
         }
     }
+
+    public class DataResponse2<T> where T : class
+    {
+        /// <summary>
+        /// 返回代码
+        /// </summary>
+        private int _ret;
+        /// <summary>
+        /// 返回消息
+        /// </summary>
+        private string _msg;
+        /// <summary>
+        /// 消息体
+        /// </summary>
+        private T _body;
+
+        /// <summary>
+        /// 返回代码
+        /// </summary>
+        public int Ret
+        {
+            get { return _ret; }
+            set { _ret = value; }
+        }
+
+        /// <summary>
+        /// 返回消息
+        /// </summary>
+        public string Msg
+        {
+            get { return _msg; }
+            set { _msg = value; }
+        }
+
+        /// <summary>
+        /// 消息体
+        /// </summary>
+        public T Body
+        {
+            get { return _body; }
+            set { _body = value; }
+        }
+    }
 }

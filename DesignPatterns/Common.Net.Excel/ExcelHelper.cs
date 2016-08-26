@@ -305,6 +305,117 @@ namespace Common.Net.Excel
             ms.Dispose();
         }
 
+        /// <summary>
+        /// Asp.Net导出Excel
+        /// </summary>
+        /// <typeparam name="T">导出对象</typeparam>
+        /// <param name="datas">导出数据</param>
+        /// <param name="columnInfo">表头字典</param>
+        /// <param name="headerText">表头</param>
+        public static void RenderToExcel2<T>(List<T> datas, Dictionary<string, string> columnInfo, string headerText)
+        {
+            MemoryStream ms = new MemoryStream();
+            HSSFWorkbook workbook = new HSSFWorkbook();
+            ISheet sheet = workbook.CreateSheet();
+
+            #region 右击文件 属性信息
+            {
+                DocumentSummaryInformation dsi = PropertySetFactory.CreateDocumentSummaryInformation();
+                dsi.Company = "百里登风";
+                workbook.DocumentSummaryInformation = dsi;
+                SummaryInformation si = PropertySetFactory.CreateSummaryInformation();
+                si.Author = "百里登风"; //填加xls文件作者信息
+                si.ApplicationName = "百里登风"; //填加xls文件创建程序信息
+                si.LastAuthor = "craneexporter"; //填加xls文件最后保存者信息
+                si.Comments = "百里登风"; //填加xls文件作者信息
+                si.Title = "inquiry info of craneexporter"; //填加xls文件标题信息
+                si.Subject = "inquiry infolist";//填加文件主题信息
+                si.CreateDateTime = DateTime.Now;
+                si.RevNumber = "Beta V1.0";
+                workbook.SummaryInformation = si;
+            }
+            #endregion
+
+            #region 表头及样式
+            {
+                IRow headRow = sheet.CreateRow(0);
+                headRow.HeightInPoints = 25;
+                headRow.CreateCell(0).SetCellValue(headerText);
+                ICellStyle headStyle = workbook.CreateCellStyle();
+                headStyle.Alignment = HorizontalAlignment.Center;
+                IFont font = workbook.CreateFont();
+                font.FontHeightInPoints = 16;
+                font.Boldweight = 500;
+                headStyle.SetFont(font);
+                headRow.GetCell(0).CellStyle = headStyle;
+                CellRangeAddress region = new CellRangeAddress(0, 0, 0, columnInfo.Count - 1);
+                //Region rg = new Region(0, 0, 0, dtSource.Columns.Count - 1);
+                sheet.AddMergedRegion(region);
+                //headerRow.Dispose();
+            }
+            #endregion
+
+            IRow headerRow = sheet.CreateRow(1);
+            int rowIndex = 2, piIndex = 0;
+            Type type = typeof(T);
+            PropertyInfo[] pis = type.GetProperties();
+            int pisLen = pis.Length;//减2是多了2个外键引用  
+            PropertyInfo pi = null;
+
+            #region 列头及样式
+            {
+                ICellStyle headStyle2 = workbook.CreateCellStyle();
+                headStyle2.Alignment = HorizontalAlignment.Center;
+                IFont font2 = workbook.CreateFont();
+                font2.FontHeightInPoints = 10;
+                font2.Boldweight = 700;
+                headStyle2.SetFont(font2);
+                int cindex = 0;
+                foreach (var column in columnInfo)
+                {
+                    headerRow.CreateCell(cindex).SetCellValue(column.Value);
+                    headerRow.GetCell(cindex).CellStyle = headStyle2;
+                    cindex++;
+                }
+            }
+            #endregion
+
+            foreach (T data in datas)//遍历数据
+            {
+                piIndex = 0;
+                int subindex = 0;
+                IRow dataRow = sheet.CreateRow(rowIndex);//创建一行数据
+
+                #region
+
+                foreach (var column in columnInfo)
+                {
+                    try
+                    {
+                        PropertyInfo property = type.GetProperty(column.Key);
+                        dataRow.CreateCell(subindex)
+                            .SetCellValue(property?.GetValue(data, null).ToString() ?? string.Empty);
+                    }
+                    catch (Exception)
+                    {
+                        dataRow.CreateCell(subindex).SetCellValue(string.Empty);
+                    }
+                    subindex++;
+                }
+                rowIndex++;
+                #endregion
+            }
+            workbook.Write(ms);
+            var value = string.Format("attachment; filename={0}.xls",
+                HttpUtility.UrlEncode(headerText + "_" + DateTime.Now.ToString("yyyy-MM-dd"), Encoding.UTF8));
+            HttpContext.Current.Response.AddHeader("Content-Disposition", value);
+            HttpContext.Current.Response.BinaryWrite(ms.ToArray());
+            HttpContext.Current.Response.End();
+            workbook = null;
+            ms.Close();
+            ms.Dispose();
+        }
+
         /// <summary> 
         /// 将对象导出成EXCEL 非真正Excel
         /// </summary> 
