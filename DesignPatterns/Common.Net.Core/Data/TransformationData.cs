@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Data.SqlClient;
+using System.Linq;
 using System.Reflection;
+using ServiceStack;
 
 namespace Common.Net.Core
 {
@@ -12,8 +14,34 @@ namespace Common.Net.Core
     /// </summary>
     public class TransformationData
     {
-        #region 将DataTable的数据转换为实体类集合
+        #region DataTable转对象
 
+        /// <summary>
+        /// 将List转换成DataTable
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="data"></param>
+        /// <returns></returns>
+        public static DataTable ConvertListToDataTable<T>(IList<T> data)
+        {
+            PropertyDescriptorCollection properties = TypeDescriptor.GetProperties(typeof(T));
+            DataTable dt = new DataTable();
+            for (int i = 0; i < properties.Count; i++)
+            {
+                PropertyDescriptor property = properties[i];
+                dt.Columns.Add(property.Name, property.PropertyType);
+            }
+            object[] values = new object[properties.Count];
+            foreach (T item in data)
+            {
+                for (int i = 0; i < values.Length; i++)
+                {
+                    values[i] = properties[i].GetValue(item);
+                }
+                dt.Rows.Add(values);
+            }
+            return dt;
+        }
         /// <summary>
         /// 将数据表转换为实体类。
         /// </summary>
@@ -48,6 +76,96 @@ namespace Common.Net.Core
             return list;
         }
 
+        /// <summary>
+        /// 将数据某条记录转换为实体类。
+        /// </summary>
+        /// <typeparam name="T">类型</typeparam>
+        /// <param name="dt">数据某条记录</param>
+        /// <returns></returns>
+        public static T ConvertDataTableToEntitySingle<T>(DataTable dt) where T : new()
+        {
+            var type = typeof(T);
+            var list = new T();
+            if (dt.Rows.Count == 0)
+            {
+                return list;
+            }
+
+            var pros = type.GetProperties(BindingFlags.Instance | BindingFlags.Public);
+            foreach (DataRow dr in dt.Rows)
+            {
+                var t = new T();
+                foreach (var p in pros)
+                {
+                    if (p.CanWrite)
+                    {
+                        if (dt.Columns.Contains(p.Name) && !Convert.IsDBNull(dr[p.Name]))
+                        {
+                            p.SetValue(t, dr[p.Name], null);
+                        }
+                    }
+                }
+
+                list = t;
+            }
+            return list;
+        }
+
+        /// <summary>
+        /// DataTable 转换成泛型List
+        /// </summary>
+        /// <typeparam name="T">实体对象类</typeparam>
+        /// <param name="table">数据DatatTable</param>
+        /// <returns> List<实体对象></returns>
+        public static List<T> ConvertDataTableToList<T>(DataTable table)
+        {
+            if (table == null)
+            {
+                return null;
+            }
+            List<T> list = new List<T>();
+            T t = default(T);
+            PropertyInfo[] propertypes = null;
+            string tempName = string.Empty;
+            foreach (DataRow row in table.Rows)
+            {
+                t = Activator.CreateInstance<T>();
+                propertypes = t.GetType().GetProperties();
+                foreach (PropertyInfo pro in propertypes)
+                {
+                    if (!pro.CanWrite)
+                    {
+                        continue;
+                    }
+                    tempName = pro.Name;
+                    if (table.Columns.Contains(tempName.ToUpper()))
+                    {
+                        object value = row[tempName];
+                        if (value is System.DBNull)
+                        {
+                            value = null;
+                            if (pro.PropertyType.FullName == "System.String")
+                            {
+                                value = string.Empty;
+                            }
+                        }
+                        if (pro.PropertyType.IsGenericType && pro.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>) && value != null)
+                        {
+                            pro.SetValue(t, Convert.ChangeType(value, Nullable.GetUnderlyingType(pro.PropertyType)), null);
+                        }
+                        else
+                        {
+                            pro.SetValue(t, value, null);
+                        }
+                    }
+                }
+                list.Add(t);
+            }
+            return list;
+        }
+        #endregion
+
+        #region DataReader转对象
         /// <summary>
         /// 将数据表转换为实体类。
         /// </summary>
@@ -154,40 +272,7 @@ namespace Common.Net.Core
             return list;
         }
 
-        /// <summary>
-        /// 将数据某条记录转换为实体类。
-        /// </summary>
-        /// <typeparam name="T">类型</typeparam>
-        /// <param name="dt">数据某条记录</param>
-        /// <returns></returns>
-        public static T ConvertDataTableToEntitySingle<T>(DataTable dt) where T : new()
-        {
-            var type = typeof(T);
-            var list = new T();
-            if (dt.Rows.Count == 0)
-            {
-                return list;
-            }
 
-            var pros = type.GetProperties(BindingFlags.Instance | BindingFlags.Public);
-            foreach (DataRow dr in dt.Rows)
-            {
-                var t = new T();
-                foreach (var p in pros)
-                {
-                    if (p.CanWrite)
-                    {
-                        if (dt.Columns.Contains(p.Name) && !Convert.IsDBNull(dr[p.Name]))
-                        {
-                            p.SetValue(t, dr[p.Name], null);
-                        }
-                    }
-                }
-
-                list = t;
-            }
-            return list;
-        }
 
         /// <summary>
         /// 将数据某条记录转换为实体类。
@@ -232,85 +317,10 @@ namespace Common.Net.Core
             return list;
         }
 
-        /// <summary>
-        /// DataTable 转换成泛型List
-        /// </summary>
-        /// <typeparam name="T">实体对象类</typeparam>
-        /// <param name="table">数据DatatTable</param>
-        /// <returns> List<实体对象></returns>
-        public static List<T> ConvertDataTableToList<T>(DataTable table)
-        {
-            if (table == null)
-            {
-                return null;
-            }
-            List<T> list = new List<T>();
-            T t = default(T);
-            PropertyInfo[] propertypes = null;
-            string tempName = string.Empty;
-            foreach (DataRow row in table.Rows)
-            {
-                t = Activator.CreateInstance<T>();
-                propertypes = t.GetType().GetProperties();
-                foreach (PropertyInfo pro in propertypes)
-                {
-                    if (!pro.CanWrite)
-                    {
-                        continue;
-                    }
-                    tempName = pro.Name;
-                    if (table.Columns.Contains(tempName.ToUpper()))
-                    {
-                        object value = row[tempName];
-                        if (value is System.DBNull)
-                        {
-                            value = null;
-                            if (pro.PropertyType.FullName == "System.String")
-                            {
-                                value = string.Empty;
-                            }
-                        }
-                        if (pro.PropertyType.IsGenericType && pro.PropertyType.GetGenericTypeDefinition() == typeof(Nullable<>) && value != null)
-                        {
-                            pro.SetValue(t, Convert.ChangeType(value, Nullable.GetUnderlyingType(pro.PropertyType)), null);
-                        }
-                        else
-                        {
-                            pro.SetValue(t, value, null);
-                        }
-                    }
-                }
-                list.Add(t);
-            }
-            return list;
-        }
 
-        /// <summary>
-        /// 将List转换成DataTable
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="data"></param>
-        /// <returns></returns>
-        public static DataTable ConvertListToDataTable<T>(IList<T> data)
-        {
-            PropertyDescriptorCollection properties = TypeDescriptor.GetProperties(typeof(T));
-            DataTable dt = new DataTable();
-            for (int i = 0; i < properties.Count; i++)
-            {
-                PropertyDescriptor property = properties[i];
-                dt.Columns.Add(property.Name, property.PropertyType);
-            }
-            object[] values = new object[properties.Count];
-            foreach (T item in data)
-            {
-                for (int i = 0; i < values.Length; i++)
-                {
-                    values[i] = properties[i].GetValue(item);
-                }
-                dt.Rows.Add(values);
-            }
-            return dt;
-        }
+
+
+
 
 
         /// <summary>  
@@ -343,7 +353,7 @@ namespace Common.Net.Core
                 list.Add(t);
             }
             return list;
-        }       
+        }
 
         /// <summary>  
         /// 返回值为DBnull的默认值  
@@ -373,7 +383,40 @@ namespace Common.Net.Core
             }
             return null;
         }
+        #endregion
 
+        #region 字典与对象转换
+
+        /// <summary>
+        /// 字典转换对象
+        /// </summary>
+        /// <param name="dictionary">字典</param>
+        /// <typeparam name="T">对象</typeparam>
+        /// <returns></returns>
+        public static T DicToEntity<T>(Dictionary<string, string> dictionary) where T : new()
+        {
+            if (dictionary == null)
+                return default(T);
+            else
+            {
+                return dictionary.ToJson().FromJson<T>();
+            }
+        }
+
+        /// <summary>
+        /// 字典列表转对象列表
+        /// </summary>
+        /// <typeparam name="T">对象</typeparam>
+        /// <param name="dictionarys">字典</param>
+        /// <returns></returns>
+        public static List<T> DicToList<T>(List<Dictionary<string, string>> dictionarys) where T : new()
+        {
+            if (dictionarys == null)
+            {
+                return new List<T>();
+            }
+            return dictionarys.Select(d => DicToEntity<T>(d)).ToList();
+        }
         #endregion
     }
 }
