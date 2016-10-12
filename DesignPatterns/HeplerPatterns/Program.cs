@@ -106,7 +106,19 @@ namespace HeplerPatterns
 
         static void Main(string[] args)
         {
-            GetTeacherStatisticsUserList2(0);
+            //string a = "aaa";
+            //string b = new String("aaa");
+
+            DateTime a=DateTime.Now;
+            Console.WriteLine("ToLongDateString:{0}", a.ToLongDateString());
+            Console.WriteLine("ToLongTimeString:{0}", a.ToLongTimeString());
+            Console.WriteLine("ToShortDateString:{0}", a.ToShortDateString());
+            Console.WriteLine("ToShortTimeString:{0}", a.ToShortTimeString());
+
+            Console.WriteLine("ToString:{0}", a.ToString());
+            Console.WriteLine("ToString:{0}", a.ToString("yyyy MMMM dd"));
+
+            //GetTeacherStatisticsUserList2(0);
             Console.ReadLine();
         }
 

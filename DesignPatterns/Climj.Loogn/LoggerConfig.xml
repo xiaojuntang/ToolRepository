@@ -1,0 +1,123 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<LoggerConfig>
+  <style>
+    p span{
+    margin:2px 5px;
+    padding:2px;
+    }
+    .fatal{
+    background-color:red
+    }
+    .error{
+    background-color:purple;
+    }
+    .warn{
+    background-color:#FF34B3;
+    }
+    .info{
+    background-color:green;
+    }
+    .debug{
+    background-color:#B23AEE;
+    }
+    .myinfo{
+    font-size:15px;
+    }
+  </style>
+
+  <tpls>
+    <tpl name="fatal">
+      <![CDATA[
+        <p>
+          [{date}]
+          <span class="fatal">{type}</span>:{message}<br/>          
+        </p>
+      ]]>
+    </tpl>
+    <tpl name="error" >
+      <![CDATA[
+        <p>
+          [{date}]
+          <span class="error">{type}</span>:{message}<br/>
+        </p>
+      ]]>
+    </tpl>
+    <tpl name="warn">
+      <![CDATA[
+        <p>
+          [{date}]
+          <span class="warn">{type}</span>:{message}<br/>
+        </p>
+      ]]>
+    </tpl>
+    <tpl name="info">
+      <![CDATA[
+        <p>
+          [{date}]
+          <span class="info">{type}</span>:{message}<br/>        
+        </p>
+      ]]>
+    </tpl>
+    <tpl name="debug">
+      <![CDATA[
+        <p>
+          [{date}]
+          <span class="debug">{type}</span>:{message}<br/>
+        </p>
+      ]]>
+    </tpl>
+  </tpls>
+
+  <logs>
+    <log name="default" path="D:\abc" types="all" dateFmt="yyyy-MM-dd HH:mm:ss">
+      <tpl name="info">
+        <![CDATA[
+        <p>
+          [{date}]<br/><span class="info myinfo">{type}</span>:{message}<br/>
+        </p>
+      ]]>
+      </tpl>
+    </log>
+
+    <log name="video" path="E:\T.X.Jun\VideoDemo\Zxxk.TranVideo.ConsoleTest\bin\Debug\log" types="all" dateFmt="yyyy-MM-dd HH:mm:ss">
+      <tpl name="info">
+      <![CDATA[
+        <p>          
+          <span class="info myinfo">{date} {type}</span>:{message}<br/>
+        </p>
+      ]]>
+      </tpl>
+      <tpl name="error">
+        <![CDATA[
+        <p>        
+          <span class="error myinfo">{date} {type}</span>:{message}<br/>
+        </p>
+      ]]>
+      </tpl>
+      <tpl name="debug">
+        <![CDATA[
+        <p>        
+          <span class="debug myinfo">{date} {type}</span>:{message}<br/>
+        </p>
+      ]]>
+      </tpl>
+      <tpl name="fatal">
+        <![CDATA[
+        <p>
+          <span class="fatal myinfo">{date} {type}</span>:{message}<br/>
+        </p>
+      ]]>
+      </tpl>
+      <tpl name="warn">
+        <![CDATA[
+        <p>
+          <span class="warn myinfo">{date} {type}</span>:{message}<br/>
+        </p>
+      ]]>
+      </tpl>
+    </log>
+
+    <log name="log2" path="D:\a.html" types="fatal,error,warn,info,debug" dateFmt="yyyy年MM月dd日 HH:mm:ss">
+    </log>
+  </logs>
+</LoggerConfig>
