@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
+using Common.Net.Core;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
@@ -12,7 +14,7 @@ using MvcPatterns.Models;
 
 namespace MvcPatterns.Controllers
 {
-    [Authorize]
+    //[Authorize]
     public class AccountController : Controller
     {
         private ApplicationSignInManager _signInManager;
@@ -22,7 +24,33 @@ namespace MvcPatterns.Controllers
         {
         }
 
-        public AccountController(ApplicationUserManager userManager, ApplicationSignInManager signInManager )
+        public ActionResult UpLoad()
+        {
+            return View();
+        }
+
+        public JsonResult UP(int a,string b)
+        {
+            HttpFileCollection files = System.Web.HttpContext.Current.Request.Files;
+            if (files.Count > 0)
+            {
+                HttpPostedFile file = files[0];
+                string FileName = file.FileName;
+                string Pattern = FileName.Substring(FileName.LastIndexOf(".") + 1);
+                string AliasName = "zyt_" + UniqueObjectID.GenerateNewId().ToString();
+                string path = AppDomain.CurrentDomain.BaseDirectory + "UploadDocumentFile\\";
+                string fileToUpload = path + AliasName + "." + Pattern;
+                if (!Directory.Exists(path))    //判断给定的路径上是否存在该目录
+                {
+                    Directory.CreateDirectory(path);    //不存在则创建该目录
+                }
+                file.SaveAs(fileToUpload);
+            }
+
+            return Json("");
+        }
+
+        public AccountController(ApplicationUserManager userManager, ApplicationSignInManager signInManager)
         {
             UserManager = userManager;
             SignInManager = signInManager;
@@ -34,9 +62,9 @@ namespace MvcPatterns.Controllers
             {
                 return _signInManager ?? HttpContext.GetOwinContext().Get<ApplicationSignInManager>();
             }
-            private set 
-            { 
-                _signInManager = value; 
+            private set
+            {
+                _signInManager = value;
             }
         }
 
@@ -120,7 +148,7 @@ namespace MvcPatterns.Controllers
             // 如果用户输入错误代码的次数达到指定的次数，则会将
             // 该用户帐户锁定指定的时间。
             // 可以在 IdentityConfig 中配置帐户锁定设置
-            var result = await SignInManager.TwoFactorSignInAsync(model.Provider, model.Code, isPersistent:  model.RememberMe, rememberBrowser: model.RememberBrowser);
+            var result = await SignInManager.TwoFactorSignInAsync(model.Provider, model.Code, isPersistent: model.RememberMe, rememberBrowser: model.RememberBrowser);
             switch (result)
             {
                 case SignInStatus.Success:
@@ -155,8 +183,8 @@ namespace MvcPatterns.Controllers
                 var result = await UserManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
-                    await SignInManager.SignInAsync(user, isPersistent:false, rememberBrowser:false);
-                    
+                    await SignInManager.SignInAsync(user, isPersistent: false, rememberBrowser: false);
+
                     // 有关如何启用帐户确认和密码重置的详细信息，请访问 http://go.microsoft.com/fwlink/?LinkID=320771
                     // 发送包含此链接的电子邮件
                     // string code = await UserManager.GenerateEmailConfirmationTokenAsync(user.Id);
