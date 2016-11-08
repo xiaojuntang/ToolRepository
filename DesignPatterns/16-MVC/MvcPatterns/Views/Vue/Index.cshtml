@@ -1,0 +1,100 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = null;
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="https://unpkg.com/vue/dist/vue.js"></script>
+    <script src="http://lib.sinaapp.com/js/jquery/1.9.1/jquery-1.9.1.min.js"></script>
+</head>
+<body>
+    <div id="app">
+        {{message}}
+    </div>
+
+    <div id="app-5">
+        <p>{{ message }}</p>
+        <button v-on:click="reverseMessage">Reverse Message</button>
+    </div>
+
+
+
+    <div id="app3">
+        <button v-on:click="nameSearch()">查询</button><br><br>
+        <table>
+            <thead>
+                <tr>
+                    <th style='width:3%; text-align: left'>ID</th>
+                    <th style='width:5%; text-align: left'>名称</th>
+                    <th style='width:10%; text-align: left'>条形码</th>
+                    <th style='width:10%; text-align: left'>简称</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for="goods in goodsList5" track-by="$index">
+                    <td>{{goods.Id}}</td>
+                    <td>{{goods.Name}}</td>
+                    <td>{{goods.Barcode}}</td>
+                    <td>{{goods.ShortName}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+</body>
+</html>
+<script type="text/javascript">
+    var app = new Vue({
+        el: "#app",
+        data: {
+            message: '你好吗？'
+        }
+    });
+
+    var app5 = new Vue({
+        el: '#app-5',
+        data: {
+            message: 'Hello Vue.js!'
+        },
+        methods: {
+            reverseMessage: function () {
+                this.message = this.message.split('').reverse().join('')
+            }
+        }
+    });
+
+
+    //$.post('/Vue/GetData', null, function (data) {
+    //    BindData(data);
+    //    console.log(data);
+    //});
+
+    //var BindData = function (data) {
+    //    var app3 = new Vue({
+    //        el: '#app3',
+    //        data: data
+    //    });
+    //}
+
+
+    var goodsVue = new Vue({
+        el: '#app3',
+        data: {
+            goodsList5: ''
+        },
+        methods: {
+            nameSearch: function () {
+                var _self = this;
+                $.ajax({
+                    type: 'GET',
+                    url: '/Vue/GetData',
+                    success: function (data) {
+                        _self.goodsList5 = data;
+                    }
+                });
+            }
+        }
+    });
+
+</script>
