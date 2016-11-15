@@ -8,11 +8,14 @@ using System.Reflection;
 using System.Text;
 using System.Web;
 using System.Web.Mvc;
+using Aspose.Slides;
 using Common.Net.Excel;
 using NPOI.HPSF;
 using NPOI.HSSF.UserModel;
 using NPOI.SS.UserModel;
 using NPOI.SS.Util;
+using ICell = NPOI.SS.UserModel.ICell;
+using IRow = NPOI.SS.UserModel.IRow;
 using Region = System.Drawing.Region;
 
 namespace MvcPatterns.Controllers
@@ -22,6 +25,29 @@ namespace MvcPatterns.Controllers
     {
         public ActionResult Index()
         {
+            #region 分割PPT
+            string pptName = "D:\\测试质控部十一月份第一周周报-高燕.pptx";
+            AsposeLicenseHelper.SetSlidesLicense();
+            using (Presentation pres = new Presentation(pptName))
+            {
+                for (int m = 0; m < pres.Slides.Count; m++)
+                {
+                    using (Presentation pes = new Presentation())
+                    {
+                        pes.SlideSize.Size = pres.SlideSize.Size;
+                        pes.Slides.RemoveAt(0);
+                        pes.Slides.AddClone(pres.Slides[m]);
+                        pes.Save("D:\\" + m + ".pptx", Aspose.Slides.Export.SaveFormat.Pptx);
+                    }
+                }
+            } 
+            #endregion
+
+
+            IImageConverter img = new Ppt2ImageConverter();
+            img.ConvertToImage("D:\\构建三步五段模式.ppt", "D:/t");
+
+
             DataTable schoolTable = new DataTable("HS_SchoolStatistic");
             DataColumn dc = new DataColumn("ID", typeof(int));
             schoolTable.Columns.Add(dc);

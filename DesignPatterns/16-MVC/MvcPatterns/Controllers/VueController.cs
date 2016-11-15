@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Web;
 using System.Web.Http.Cors;
 using System.Web.Mvc;
 using Newtonsoft.Json;
+using Spire.Presentation;
 
 namespace MvcPatterns.Controllers
 {
@@ -24,6 +26,26 @@ namespace MvcPatterns.Controllers
         // GET: Vue
         public ActionResult Index()
         {
+            FreeSpireHelper.PPT2PDF();
+
+            //Presentation presentation = new Presentation();
+
+            //presentation.LoadFromFile("D:\\测试质控部十一月份第一周周报-高燕.pptx");
+
+            ////traverse the slides of PPT files
+            //for (int i = 0; i < presentation.Slides.Count; i++)
+            //{
+            //    //save the slide to Image
+            //    Image image = presentation.Slides[i].SaveAsImage();
+
+            //    String fileName = String.Format("result-img-{0}.png", i);
+            //    image.Save(fileName, System.Drawing.Imaging.ImageFormat.Png);
+
+            //    //view the image
+            //    System.Diagnostics.Process.Start(fileName);
+            //}
+
+
             return View();
         }
         //Nuget  Microsoft.AspNet.WebApi.Cors
