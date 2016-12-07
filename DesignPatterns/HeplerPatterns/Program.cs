@@ -11,6 +11,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Common.Net.Request;
 
 namespace HeplerPatterns
 {
@@ -106,6 +107,15 @@ namespace HeplerPatterns
 
         static void Main(string[] args)
         {
+            SortedDictionary<string,string> dic=new SortedDictionary<string, string>();
+            dic.Add("username","admin");
+            dic.Add("key", "2");
+            UserService.Login(dic);
+
+
+
+
+
             //string a = "aaa";
             //string b = new String("aaa");
 

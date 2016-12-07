@@ -25,10 +25,10 @@
         <table>
             <thead>
                 <tr>
-                    <th style='width:3%; text-align: left'>ID</th>
-                    <th style='width:5%; text-align: left'>名称</th>
-                    <th style='width:10%; text-align: left'>条形码</th>
-                    <th style='width:10%; text-align: left'>简称</th>
+                    <th style='width: 3%; text-align: left'>ID</th>
+                    <th style='width: 5%; text-align: left'>名称</th>
+                    <th style='width: 10%; text-align: left'>条形码</th>
+                    <th style='width: 10%; text-align: left'>简称</th>
                 </tr>
             </thead>
             <tbody>
@@ -42,6 +42,33 @@
         </table>
     </div>
 
+    <div id="form1">
+        <select data-field='Person.Job'>
+            <option value="">--职位--</option>
+            <option value="java工程师">java工程师</option>
+            <option value="net工程师">.net工程师</option>
+            <option value="python工程师">python工程师</option>
+        </select>
+        <input data-field='Person.Desc' type="text" />
+    </div>
+
+
+    <div>-------------------------------------------------------------------</div>
+
+    <div id="form2">
+        <select data-field='select1'>
+            <option value="">--请选择--</option>
+            <option value="1">--1--</option>
+            <option value="2">--2--</option>
+            <option value="3">--3--</option>
+        </select>
+        <input data-field='check1' type="checkbox"/>
+        <input name="a" data-field='radio1' type="radio"/>是
+        <input name="a" data-field='radio1' type="radio" />否
+        <input data-field='text1' type="text" />
+        <textarea data-field='textArea1'></textarea>
+    </div>
+    <input value="aaaaaaaaa" id="a" type="button" />
 </body>
 </html>
 <script type="text/javascript">
@@ -64,6 +91,12 @@
         }
     });
 
+    $(function () {
+        $('#a').click(function () {
+            getEntity('#form2');
+        });
+
+    });
 
     //$.post('/Vue/GetData', null, function (data) {
     //    BindData(data);
@@ -97,4 +130,63 @@
         }
     });
 
+
+    function getEntity(form) {
+        var result = {};
+        $(form).find("[data-field]").each(function () {
+            var field = $(this).attr("data-field");
+            var val;
+            if ($(this).attr('type') === 'checkbox') {
+                //val = $(this).prop('checked');
+                val = $(this).prop('checked');
+            } else if ($(this).attr('type') === 'radio') {
+                val = $(this).prop('checked');
+            } else if ($(this).attr('type') === 'select') {
+
+            } else {
+                val = $(this).val();
+            }
+            // 获取单个属性的值,并扩展到result对象里面
+            getField(field.split('.'), val, result);
+        });
+        console.log(result);
+        return result;
+    }
+
+    function getField(fieldNames, value, result) {
+        if (fieldNames.length > 1) {
+            for (var i = 0; i < fieldNames.length - 1; i++) {
+                if (result[fieldNames[i]] == undefined) {
+                    result[fieldNames[i]] = {}
+                }
+                result = result[fieldNames[i]];
+            }
+            result[fieldNames[fieldNames.length - 1]] = value;
+        } else {
+            result[fieldNames[0]] = value;
+        }
+    }
+
+    function setEntity(form, entity) {
+        $(form).find("[data-field]").each(function () {
+            var field = $(this).attr("data-field");
+            fieldNames = field.split('.');
+            var value = JSON.parse(JSON.stringify(entity));
+            for (var index = 0; index < fieldNames.length; index++) {
+                value = value[fieldNames[index]];
+                if (!value) {
+                    break;
+                }
+            }
+            if ($(this).attr("type") === "checkbox" || $(this).attr("type") === "radio") {
+                $(this).attr('checked', Boolean(value));
+            } else {
+                if (value) {
+                    $(this).val(value);
+                } else {
+                    $(this).val("");
+                }
+            }
+        });
+    }
 </script>

@@ -98,6 +98,10 @@
       <Project>{0ae55d16-5a0e-487a-b0c8-51ff0012d57d}</Project>
       <Name>Common.Net.DbProvider</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Common.Net.Request\Common.Net.Request.csproj">
+      <Project>{5c47aab7-e5a4-4aaa-bdd8-ca229a60eb4b}</Project>
+      <Name>Common.Net.Request</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Common.Net.Security\Common.Net.Security.csproj">
       <Project>{fcdf5f9d-0120-4338-8907-810eada41ece}</Project>
       <Name>Common.Net.Security</Name>
