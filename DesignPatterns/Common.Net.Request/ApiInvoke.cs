@@ -46,7 +46,8 @@ namespace Common.Net.Request
             {
                 builder.Append(p.Key).Append("=").Append(p.Value).Append("&");
             }
-            return SendRequest.SendWebRequest(ApiInvoke.Url+ ApiInvoke.Operation, builder.ToString().Trim('&'), "post", Encoding.UTF8, Encoding.UTF8);
+            //return SendRequest.SendWebRequest(ApiInvoke.Url+ ApiInvoke.Operation, builder.ToString().Trim('&'), "post", Encoding.UTF8, Encoding.UTF8);
+            return SendRequest.SendWebRequest(ApiInvoke.Url + ApiInvoke.Operation, builder.ToString().Trim('&'), "post");
         }
 
         /// <summary>
