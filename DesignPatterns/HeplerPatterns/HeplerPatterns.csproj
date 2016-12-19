@@ -58,6 +58,7 @@
       <DependentUpon>HomeWrok_Offline.xsd</DependentUpon>
     </Compile>
     <Compile Include="HttpUtils.cs" />
+    <Compile Include="OutRef.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
