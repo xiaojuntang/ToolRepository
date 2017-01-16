@@ -5,13 +5,14 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web;
 
 namespace Common.Net.Request
 {
     /// <summary>
     /// 发送请求
     /// </summary>
-    internal static class SendRequest
+    public static class SendRequest
     {
         /// <summary>
         /// 发送到Http请求
@@ -22,7 +23,7 @@ namespace Common.Net.Request
         /// <param name="wEnc">Encoding.UTF8</param>
         /// <param name="rEnc">Encoding.UTF8</param>
         /// <returns></returns>
-        internal static string SendWebRequest(string url, string data, string method, Encoding wEnc, Encoding rEnc)
+        public static string SendWebRequest(string url, string data, string method, Encoding wEnc, Encoding rEnc)
         {
             WebRequest webRequest = WebRequest.Create(url);
             webRequest.Method = String.Compare(method, "GET", StringComparison.OrdinalIgnoreCase) == 0 ? "GET" : "POST";
@@ -66,7 +67,7 @@ namespace Common.Net.Request
         /// <param name="method"></param>
         /// <param name="contenttype"></param>
         /// <returns></returns>
-        internal static string SendWebRequest(string url, string data, string method, string contenttype = "application/x-www-form-urlencoded")
+        public static string SendWebRequest(string url, string data, string method, string contenttype = "application/x-www-form-urlencoded")
         {
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
             request.Method = String.Compare(method, "GET", StringComparison.OrdinalIgnoreCase) == 0 ? "GET" : "POST";
@@ -134,5 +135,82 @@ namespace Common.Net.Request
             }
             return responseDatas;
         }
+        /// <summary>
+        /// Get请求方法
+        /// </summary>
+        /// <param name="url"></param>
+        /// <returns></returns>
+        public static string SendWebRequest2(string url)
+        {
+            HttpWebRequest httpWebRequest = (HttpWebRequest)WebRequest.Create(url);
+            httpWebRequest.ContentType = "application/json";
+            httpWebRequest.Method = "GET";
+            httpWebRequest.Timeout = 20000;
+            //byte[] btBodys = Encoding.UTF8.GetBytes(body);
+            //httpWebRequest.ContentLength = btBodys.Length;
+            //httpWebRequest.GetRequestStream().Write(btBodys, 0, btBodys.Length);
+            HttpWebResponse httpWebResponse = (HttpWebResponse)httpWebRequest.GetResponse();
+            StreamReader streamReader = new StreamReader(httpWebResponse.GetResponseStream());
+            string responseContent = streamReader.ReadToEnd();
+            httpWebResponse.Close();
+            streamReader.Close();
+            return responseContent;
+        }
+
+
+        private static CookieContainer GetCookies()
+        {
+            CookieContainer myCookieContainer = new CookieContainer();
+
+            HttpCookie requestCookie;
+            //int requestCookiesCount = HttpContext.Current.Request.Cookies.Count;
+            //for (int i = 0; i < requestCookiesCount; i++)
+            //{
+            //    requestCookie = HttpContext.Current.Request.Cookies[i];
+            //    Cookie clientCookie = new Cookie(requestCookie.Name, requestCookie.Value, requestCookie.Path, requestCookie.Domain == null ? HttpContext.Current.Request.Url.Host : requestCookie.Domain);
+            //    myCookieContainer.Add(clientCookie);
+            //}
+            Cookie clientCookie = new Cookie("zxxk.y4account", "287502639C363E74734EEF88DA08A678776985C58A9E435C03AF4FE34D96EE443CDAE6533D787445",
+                "/",
+                "account.zxxk.com");
+            myCookieContainer.Add(clientCookie);
+            return myCookieContainer;
+        }
+
+        public static string CallPage(string url)
+        {
+            WebResponse response = null;
+            Stream stream = null;
+            StreamReader reader = null;
+
+            try
+            {
+                CookieContainer myCookieContainer = GetCookies();
+                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
+                request.Method = "Get";
+                request.CookieContainer = myCookieContainer;
+                response = request.GetResponse();
+                if (!request.HaveResponse)
+                {
+                    response.Close();
+                    return string.Empty;
+                }
+                stream = response.GetResponseStream();
+                reader = new StreamReader(stream, Encoding.Default);
+                return reader.ReadToEnd();
+            }
+            catch (Exception exception)
+            {
+                //var handled = ExceptionManager.HandleException(exception, "Global");
+                throw exception;//TODO
+            }
+            finally
+            {
+                if (reader != null) reader.Close();
+                if (stream != null) stream.Close();
+                if (response != null) response.Close();
+            }
+        }
+
     }
 }

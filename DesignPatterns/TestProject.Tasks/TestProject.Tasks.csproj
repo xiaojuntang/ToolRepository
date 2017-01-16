@@ -44,12 +44,19 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ChangeFileName.cs" />
+    <Compile Include="DownLoad2.cs" />
     <Compile Include="DownloadFile.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Common.Net.Request\Common.Net.Request.csproj">
+      <Project>{5c47aab7-e5a4-4aaa-bdd8-ca229a60eb4b}</Project>
+      <Name>Common.Net.Request</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
