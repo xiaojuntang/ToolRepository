@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RootLoacl>
+  <Version No="1.0.0.1"  Remark="服务器版本号"></Version>
+  <ServerDownUrl Url="http://192.1.1.1/homepage" Remark="升级地址"></ServerDownUrl>
+  <AppName Name="HZ.BidSystem" Remark="应用程序名称"></AppName>
+</RootLoacl>
