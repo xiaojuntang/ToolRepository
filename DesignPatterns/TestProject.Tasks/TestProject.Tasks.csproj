@@ -46,17 +46,76 @@
     <Compile Include="ChangeFileName.cs" />
     <Compile Include="DownLoad2.cs" />
     <Compile Include="DownloadFile.cs" />
+    <Compile Include="Generated\ApiDoc.cs" />
+    <Compile Include="Generated\ApiDocExtensions.cs" />
+    <Compile Include="Generated\Apijqzyzxxkcom.cs" />
+    <Compile Include="Generated\Classes.cs" />
+    <Compile Include="Generated\ClassesExtensions.cs" />
+    <Compile Include="Generated\IApiDoc.cs" />
+    <Compile Include="Generated\IApijqzyzxxkcom.cs" />
+    <Compile Include="Generated\IClasses.cs" />
+    <Compile Include="Generated\ISchool.cs" />
+    <Compile Include="Generated\IStudentOperations.cs" />
+    <Compile Include="Generated\ITeacher.cs" />
+    <Compile Include="Generated\IUser.cs" />
+    <Compile Include="Generated\Models\ApiBankInfo.cs" />
+    <Compile Include="Generated\Models\ApiClassInfo.cs" />
+    <Compile Include="Generated\Models\ClassInfo.cs" />
+    <Compile Include="Generated\Models\DtoTeachingData.cs" />
+    <Compile Include="Generated\Models\EDemo.cs" />
+    <Compile Include="Generated\Models\EDemoChild.cs" />
+    <Compile Include="Generated\Models\HeadMaster.cs" />
+    <Compile Include="Generated\Models\PageResponseEntityListTGrade.cs" />
+    <Compile Include="Generated\Models\PageResponseEntityListTStudent.cs" />
+    <Compile Include="Generated\Models\PageResponseEntityListTSubject.cs" />
+    <Compile Include="Generated\Models\PageResponseEntityListTTeacher.cs" />
+    <Compile Include="Generated\Models\ResponseEntityBoolean.cs" />
+    <Compile Include="Generated\Models\ResponseEntityClassInfo.cs" />
+    <Compile Include="Generated\Models\ResponseEntityEDemo.cs" />
+    <Compile Include="Generated\Models\ResponseEntityListApiBankInfo.cs" />
+    <Compile Include="Generated\Models\ResponseEntityListApiClassInfo.cs" />
+    <Compile Include="Generated\Models\ResponseEntityListClassInfo.cs" />
+    <Compile Include="Generated\Models\ResponseEntityListDtoTeachingData.cs" />
+    <Compile Include="Generated\Models\ResponseEntityListTGrade.cs" />
+    <Compile Include="Generated\Models\ResponseEntityListTSchool.cs" />
+    <Compile Include="Generated\Models\ResponseEntityListTTeacher.cs" />
+    <Compile Include="Generated\Models\ResponseEntityStudent.cs" />
+    <Compile Include="Generated\Models\ResponseEntityTSchool.cs" />
+    <Compile Include="Generated\Models\ResponseEntityTTeacher.cs" />
+    <Compile Include="Generated\Models\ResponseEntityUserEntity.cs" />
+    <Compile Include="Generated\Models\Student.cs" />
+    <Compile Include="Generated\Models\SubjectDirector.cs" />
+    <Compile Include="Generated\Models\Teach.cs" />
+    <Compile Include="Generated\Models\TeacherPostJson.cs" />
+    <Compile Include="Generated\Models\TGrade.cs" />
+    <Compile Include="Generated\Models\TSchool.cs" />
+    <Compile Include="Generated\Models\TStudent.cs" />
+    <Compile Include="Generated\Models\TSubject.cs" />
+    <Compile Include="Generated\Models\TTeacher.cs" />
+    <Compile Include="Generated\Models\UserEntity.cs" />
+    <Compile Include="Generated\School.cs" />
+    <Compile Include="Generated\SchoolExtensions.cs" />
+    <Compile Include="Generated\StudentOperations.cs" />
+    <Compile Include="Generated\StudentOperationsExtensions.cs" />
+    <Compile Include="Generated\Teacher.cs" />
+    <Compile Include="Generated\TeacherExtensions.cs" />
+    <Compile Include="Generated\User.cs" />
+    <Compile Include="Generated\UserExtensions.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Common.Net.Request\Common.Net.Request.csproj">
       <Project>{5c47aab7-e5a4-4aaa-bdd8-ca229a60eb4b}</Project>
       <Name>Common.Net.Request</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="AutoRest.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
