@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RootServer>
+  <Version No="1.0.0.1"  Remark="服务器版本号"></Version>
+  <ServerDownUrl Url="http://192.1.1.1/homepage" Remark="升级地址"></ServerDownUrl>
+  <FileZip FileName="down.zip" Hash="" Remark="服务器端升级包名称及哈希值"></FileZip>
+</RootServer>

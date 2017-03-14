@@ -170,6 +170,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Zxxk.OpenApiClient", "Zxxk.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Common.Net.Request", "Common.Net.Request\Common.Net.Request.csproj", "{5C47AAB7-E5A4-4AAA-BDD8-CA229A60EB4B}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "21-自动更新", "21-自动更新", "{1360EDC0-07C8-49E0-87EC-67ABD098D85C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoUpdate", "AutoUpdate\AutoUpdate.csproj", "{0CA4D9C4-F089-46BA-B5A3-D07ECEBFF913}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ApiPatterns", "ApiPatterns\ApiPatterns.csproj", "{D5DEEA40-FC59-49B2-BDFB-F51D35EDD003}"
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PostSharpTest", "PostSharpTest\PostSharpTest.csproj", "{DFA7C3B9-451E-4109-9327-87D93BFE6BBE}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WebApiDemo", "WebApiDemo\WebApiDemo.csproj", "{82678AEF-0D7B-476D-9769-BC886129F4D6}"
@@ -416,6 +422,14 @@ Global
 		{5C47AAB7-E5A4-4AAA-BDD8-CA229A60EB4B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5C47AAB7-E5A4-4AAA-BDD8-CA229A60EB4B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5C47AAB7-E5A4-4AAA-BDD8-CA229A60EB4B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0CA4D9C4-F089-46BA-B5A3-D07ECEBFF913}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0CA4D9C4-F089-46BA-B5A3-D07ECEBFF913}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0CA4D9C4-F089-46BA-B5A3-D07ECEBFF913}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0CA4D9C4-F089-46BA-B5A3-D07ECEBFF913}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D5DEEA40-FC59-49B2-BDFB-F51D35EDD003}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D5DEEA40-FC59-49B2-BDFB-F51D35EDD003}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D5DEEA40-FC59-49B2-BDFB-F51D35EDD003}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D5DEEA40-FC59-49B2-BDFB-F51D35EDD003}.Release|Any CPU.Build.0 = Release|Any CPU
 		{DFA7C3B9-451E-4109-9327-87D93BFE6BBE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{DFA7C3B9-451E-4109-9327-87D93BFE6BBE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DFA7C3B9-451E-4109-9327-87D93BFE6BBE}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -487,10 +501,5 @@ Global
 		{E226971D-8F14-45BB-AA8C-8CB4BB4FA671} = {2BB11AE2-D56F-4C51-A855-786C1EE6A5BD}
 		{70998424-3BE6-4E15-B75C-2F512C64DAC2} = {DE448DD8-D645-4209-A465-75AA7BDEEC92}
 		{5C47AAB7-E5A4-4AAA-BDD8-CA229A60EB4B} = {2BB11AE2-D56F-4C51-A855-786C1EE6A5BD}
-		{DFA7C3B9-451E-4109-9327-87D93BFE6BBE} = {9E72FF51-803F-470B-9AC9-B0821990CA9F}
-		{82678AEF-0D7B-476D-9769-BC886129F4D6} = {047DA998-D0D4-42F1-A0B2-2C3F847CC206}
-	EndGlobalSection
-	GlobalSection(ExtensibilityGlobals) = postSolution
-		EnterpriseLibraryConfigurationToolBinariesPathV6 = packages\EnterpriseLibrary.Common.6.0.1304.0\lib\NET45;packages\EnterpriseLibrary.Data.6.0.1304.0\lib\NET45;packages\EnterpriseLibrary.ExceptionHandling.6.0.1304.0\lib\NET45;packages\EnterpriseLibrary.Logging.6.0.1304.0\lib\NET45;packages\EnterpriseLibrary.ExceptionHandling.Logging.6.0.1304.0\lib\NET45;packages\EnterpriseLibrary.PolicyInjection.6.0.1304.0\lib\NET45
 	EndGlobalSection
 EndGlobal

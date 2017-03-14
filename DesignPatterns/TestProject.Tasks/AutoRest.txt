@@ -1,0 +1,1 @@
+﻿AutoRest.exe -CodeGenerator CSharp -Modeler Swagger -Input http://10.1.1.49:8035/swagger/docs/v1 -Namespace UserServiceClient
