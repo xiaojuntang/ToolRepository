@@ -9,8 +9,11 @@ namespace AdapterPattern
     {
         static void Main(string[] args)
         {
-            ITarget t = new Adapter();
-            t.Request("test");
+            DataContent dataContent = new DataContent();
+            var aa = dataContent.DBConnectString();
+
+            //ITarget t = new Adapter();
+            //t.Request("test");
         }
     }
 
@@ -22,7 +25,7 @@ namespace AdapterPattern
     /// <summary>
     /// 需要适配的类接口
     /// </summary>
-    public class Adaptee
+    public class Cdaptee
     {
         public string SpecificRequest()
         {
@@ -31,7 +34,7 @@ namespace AdapterPattern
         }
     }
 
-    public class Adapter : Adaptee, ITarget
+    public class Adapter : Cdaptee, ITarget
     {
         public string Request(string param)
         {
