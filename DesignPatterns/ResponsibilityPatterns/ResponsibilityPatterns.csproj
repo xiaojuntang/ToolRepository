@@ -44,6 +44,7 @@
   <ItemGroup>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="建造者模式.cs" />
     <Compile Include="过渡器模式.cs" />
   </ItemGroup>
   <ItemGroup>
