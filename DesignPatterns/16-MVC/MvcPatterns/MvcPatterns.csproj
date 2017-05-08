@@ -235,6 +235,7 @@
     <Compile Include="HttpModulDemo\JpgHandler.cs" />
     <Compile Include="HttpModulDemo\JsonpModule.cs" />
     <Compile Include="HttpModulDemo\SiteStatModule.cs" />
+    <Compile Include="HttpModulDemo\SqlHttpModule.cs" />
     <Compile Include="HttpModulDemo\SystemModuleAuthorizationModule.cs" />
     <Compile Include="HttpModulDemo\TimerHttpModule.cs" />
     <Compile Include="HttpModulDemo\UserAuthorizationModule.cs" />
