@@ -231,6 +231,14 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="HttpModulDemo\ImageHandler.cs" />
+    <Compile Include="HttpModulDemo\JpgHandler.cs" />
+    <Compile Include="HttpModulDemo\JsonpModule.cs" />
+    <Compile Include="HttpModulDemo\SiteStatModule.cs" />
+    <Compile Include="HttpModulDemo\SystemModuleAuthorizationModule.cs" />
+    <Compile Include="HttpModulDemo\TimerHttpModule.cs" />
+    <Compile Include="HttpModulDemo\UserAuthorizationModule.cs" />
+    <Compile Include="HttpModulDemo\UserControlModule.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\IdentityModels.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
