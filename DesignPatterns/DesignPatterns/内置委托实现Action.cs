@@ -33,6 +33,7 @@ namespace DesignPatterns
 
     public class Test
     {
+        private static string ccc = "d";
         static void M()
         {
             string s = "123";
@@ -52,6 +53,11 @@ namespace DesignPatterns
         static void DelegateEvent2(int a)
         {
             Console.WriteLine(a);
+        }
+
+        public void dddd()
+        {
+            string abc = ccc;
         }
     }
 }
