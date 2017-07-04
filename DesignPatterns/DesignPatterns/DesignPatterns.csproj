@@ -48,6 +48,9 @@
     <Compile Include="FinalizeAndDispose.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="内置委托实现Action.cs" />
+    <Compile Include="计算器.cs" />
+    <Compile Include="计算器委托.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
