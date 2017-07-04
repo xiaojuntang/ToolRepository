@@ -7,10 +7,17 @@ using System.Threading.Tasks;
 
 namespace SingletonPatterns
 {
+    public class Tst {
+        public string A()
+        {
+            return "";
+        }
+    }
     class Program
     {
         static void Main(string[] args)
         {
+            GenericSingleton<Tst>.GetInstance().A();
         }
     }
 
@@ -73,7 +80,7 @@ namespace SingletonPatterns
         /// <summary>
         /// Lock对象 线程安全使用
         /// </summary>
-        public static object syncObject = new object();
+        public static readonly object syncObject = new object();
 
         private Singleton3() { }
 
@@ -85,6 +92,7 @@ namespace SingletonPatterns
                 {
                     lock (syncObject)
                     {
+                        //Double-Check Locking 双重检查锁定
                         if (_instance == null)
                             _instance = new Singleton3();
                     }
@@ -123,15 +131,44 @@ namespace SingletonPatterns
     }
     #endregion
 
-    #region 单例模式版本---5
+    #region 泛型单例模式的实现---5
+    public class GenericSingleton<T> where T : class //,new
+    {
+        private static T instance;
+        private static readonly object locker = new object();
 
-    #endregion
+        public static T GetInstance()
+        {
+            //没有第一重 instance == null 的话，每一次有线程进入 GetInstance()时，
+            //均会执行锁定操作来实现线程同步，
+            //非常耗费性能 增加第一重instance ==null 
+            //成立时的情况下执行一次锁定以实现线程同步
+            if (instance == null)
+            {
+                //Double-Check Locking 双重检查锁定
+                lock (locker)
+                {
+                    if (instance == null)
+                    {
+                        //instance = new T();
+                        //需要非公共的无参构造函数，不能使用new T() ,
+                        //new不支持非公共的无参构造函数
+                        instance = Activator.CreateInstance(typeof(T), true) as T;
+                        //第二个参数防止异常：“没有为该对象定义无参数的构造函数。”
+                    }
+                }
+            }
+            return instance;
+        }
+        #endregion
+    }
 
     #region 单例模式版本---6
 
     #endregion
 
-    public class AnotherResource {
+    public class AnotherResource
+    {
         public void Dispose() { }
     }
 
@@ -199,4 +236,49 @@ namespace SingletonPatterns
             disposed = true;
         }
     }
+
+
+    /// <summary>
+    /// 单例模式
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    public class Singleton<T> where T : class, new()
+    {
+        static object lockt = new object();
+        static T t = null;
+        /// <summary>
+        /// 加锁单例
+        /// </summary>
+        public static T Current
+        {
+            get
+            {
+                if (t == null)
+                {
+                    lock (lockt)
+                    {
+                        t = t ?? new T();
+                    }
+                }
+                return t;
+            }
+        }
+
+        /// <summary>
+        /// 不加锁单例
+        /// </summary>
+        public static T CurrentUnLock
+        {
+            get
+            {
+                if (t == null)
+                {
+                    t = t ?? new T();
+                }
+                return t;
+            }
+        }
+    }
 }
+}
+
