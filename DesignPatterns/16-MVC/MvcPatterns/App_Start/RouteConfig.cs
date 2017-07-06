@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using System.Web.Routing;
+using MvcPatterns.RouteSpace;
 
 namespace MvcPatterns
 {
@@ -18,6 +19,14 @@ namespace MvcPatterns
                 url: "{controller}/{action}/{id}",
                 defaults: new { controller = "Vue", action = "Index", id = UrlParameter.Optional }
             );
+
+            //http://localhost:7449/archive/1988/9/10
+            routes.MapRoute(
+            "Archive",
+            "archive/{year}/{month}/{day}",
+            new { controller = "Archive", action = "Set", year = "", month = "", day = "" }, 
+            new { year = new YearRouteConstraint(), month = new MonthRouteConstraint(), day = new DayRouteConstraint() }
+        );
         }
     }
 }

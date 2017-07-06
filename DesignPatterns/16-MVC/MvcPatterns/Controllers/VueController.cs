@@ -6,7 +6,6 @@ using System.Web;
 using System.Web.Http.Cors;
 using System.Web.Mvc;
 using Newtonsoft.Json;
-using Spire.Presentation;
 
 namespace MvcPatterns.Controllers
 {

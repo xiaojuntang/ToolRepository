@@ -23,6 +23,13 @@ namespace MvcPatterns.Controllers
     [TimingFilter]
     public class HomeController : Controller
     {
+
+        public ActionResult Index2()
+        {
+
+            return View();
+        }
+
         public ActionResult Index()
         {
             #region 分割PPT
