@@ -1,0 +1,6 @@
+﻿[nuget.org] “https://www.nuget.org/api/v2/Search()?$filter=IsAbsoluteLatestVersion&searchTerm=''&targetFramework='net45'&includePrerelease=true&$skip=0&$top=26&semVerLevel=2.0.0”处的 V2 源返回了意外的状态代码“400 Bad Request”。
+[nuget.org] “https://www.nuget.org/api/v2/Search()?$filter=IsAbsoluteLatestVersion&searchTerm='Autofac'&targetFramework='net45'&includePrerelease=true&$skip=0&$top=26&semVerLevel=2.0.0”处的 V2 源返回了意外的状态代码“400 Bad Request”。
+[nuget.org] “https://www.nuget.org/api/v2/Search()?$filter=IsAbsoluteLatestVersion&searchTerm='Autofac'&targetFramework='net45'&includePrerelease=true&$skip=0&$top=26&semVerLevel=2.0.0”处的 V2 源返回了意外的状态代码“400 Bad Request”。
+[nuget.org] “https://www.nuget.org/api/v2/Search()?$filter=IsAbsoluteLatestVersion&searchTerm='Autofac'&targetFramework='net45'&includePrerelease=true&$skip=0&$top=26&semVerLevel=2.0.0”处的 V2 源返回了意外的状态代码“400 Bad Request”。
+[nuget.org] “https://www.nuget.org/api/v2/Search()?$filter=IsLatestVersion&searchTerm='Autofac'&targetFramework='net45'&includePrerelease=false&$skip=0&$top=26&semVerLevel=2.0.0”处的 V2 源返回了意外的状态代码“400 Bad Request”。
+[nuget.org] “https://www.nuget.org/api/v2/Search()?$filter=IsAbsoluteLatestVersion&searchTerm='Autofac'&targetFramework='net45'&includePrerelease=true&$skip=0&$top=26&semVerLevel=2.0.0”处的 V2 源返回了意外的状态代码“400 Bad Request”。

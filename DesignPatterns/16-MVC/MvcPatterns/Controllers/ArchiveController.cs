@@ -6,6 +6,7 @@ using System.Web.Mvc;
 
 namespace MvcPatterns.Controllers
 {
+    [RoutePrefix("Archivetest")]
     public class ArchiveController : Controller
     {
         // GET: Archive

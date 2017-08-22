@@ -23,7 +23,7 @@ namespace MvcPatterns
             //http://localhost:7449/archive/1988/9/10
             routes.MapRoute(
             "Archive",
-            "archive/{year}/{month}/{day}",
+            "archivetest/{year}/{month}/{day}",
             new { controller = "Archive", action = "Set", year = "", month = "", day = "" }, 
             new { year = new YearRouteConstraint(), month = new MonthRouteConstraint(), day = new DayRouteConstraint() }
         );
