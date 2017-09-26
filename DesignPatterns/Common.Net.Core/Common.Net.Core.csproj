@@ -55,6 +55,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="CheckArgument.cs" />
     <Compile Include="Data\DataTableExtensions.cs" />
     <Compile Include="Data\JsonConverter.cs" />
     <Compile Include="File\IPSearch.cs" />

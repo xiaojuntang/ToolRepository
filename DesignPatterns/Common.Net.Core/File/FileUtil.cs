@@ -260,5 +260,17 @@ namespace Common.Net.Core
             }
 
         }
+
+        /// <summary>
+        /// 获取文件扩展名
+        /// </summary>
+        /// <param name="fileName"></param>
+        /// <returns></returns>
+        public static string GetExtension(string fileName)
+        {
+            int i = fileName.LastIndexOf(".") + 1;
+            string Name = fileName.Substring(i);
+            return Name;
+        }
     }
 }

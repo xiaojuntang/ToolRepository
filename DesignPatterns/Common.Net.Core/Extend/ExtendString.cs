@@ -13,17 +13,16 @@
 *        创建年份:           2016 
 /*****************************************************************************/
 using System;
-using System.Collections.Generic;
 using System.Globalization;
-using System.IO;
 using System.Linq;
-using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace Common.Net.Core
 {
+    /// <summary>
+    /// 字符串扩展
+    /// </summary>
     public static class ExtendString
     {
         #region 得到字符串长度，一个汉字长度为2
