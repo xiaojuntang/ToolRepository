@@ -23,13 +23,13 @@ namespace Common.UnitTest
             button1.Click += (a, b) => LoadDll("Zxxk.Task.ClassRank.dll", "Zxxk.Task.ClassRank.MRankJob", "Domain1");
 
             FileSystemHelper fileSystemHelper = new FileSystemHelper(Environment.CurrentDirectory.ToString(), "Zxxk.*");
-            fileSystemHelper.WatcherStrat(Action(OnDeleted), () =>
-            {
+            //fileSystemHelper.WatcherStrat(Action(OnDeleted), () =>
+            //{
 
-            }, () =>
-            {
+            //}, () =>
+            //{
 
-            });
+            //});
 
         }
 

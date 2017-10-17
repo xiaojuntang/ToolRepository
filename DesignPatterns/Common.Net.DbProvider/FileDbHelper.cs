@@ -60,7 +60,7 @@ namespace Common.Net.DbProvider
             }
             catch (Exception ex)
             {
-                throw new Exception("未加载组件 AccessDatabaseEngine.exe");
+                throw new Exception("未加载组件 AccessDatabaseEngine.exe" + ex.Message);
             }
 
             OleDbDataAdapter myCommand = null;

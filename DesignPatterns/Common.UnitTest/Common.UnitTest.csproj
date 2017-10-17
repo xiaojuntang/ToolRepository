@@ -78,6 +78,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Common.Net.Core\Common.Net.Core.csproj">
+      <Project>{fa52bb9e-8bdc-4f1c-ab80-0c640be5c7ca}</Project>
+      <Name>Common.Net.Core</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Common.Net.Utility\Common.Net.Utility.csproj">
       <Project>{0f4bb0e9-1a2b-4097-bc2e-7795e09b8531}</Project>
       <Name>Common.Net.Utility</Name>
