@@ -55,8 +55,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Attribute\ArgumentValidationAttribute.cs" />
     <Compile Include="Attribute\CallTraceAttribute.cs" />
     <Compile Include="Attribute\CodeReviewAttribute.cs" />
+    <Compile Include="Attribute\InterceptorAttribute.cs" />
     <Compile Include="CheckArgument.cs" />
     <Compile Include="Data\DataTableExtensions.cs" />
     <Compile Include="Data\JsonConverter.cs" />

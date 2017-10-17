@@ -15,11 +15,27 @@ namespace Common.UnitTest
         [STAThread]
         static void Main()
         {
-            Order order1 = new Order(100);
-            order1.Submit("Item1", 150);
+            //Order order1 = new Order(100);
+            //order1.Submit("Item1", 150);
 
-            Order order2 = new Order(101);
-            order2.Submit("Item2", 150);
+            //Order order2 = new Order(101);
+            //order2.Submit("Item2", 150);
+
+
+            MyTes a = new MyTes();
+            try
+            {
+                a.A("a1", 101, "c1");
+                a.B("a1", 101, "c1");
+
+                a.A("a2", 2, "c2");
+            }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
+
 
 
             Application.EnableVisualStyles();
@@ -29,13 +45,26 @@ namespace Common.UnitTest
     }
 
 
-    [CodeReview("tangxiaojun", "20171017", "需求改进行的地方")]
-    public class MyTes
+    //[CodeReview("tangxiaojun", "20171017", "需求改进行的地方")]
+    [Interceptor]
+    public class MyTes : ContextBoundObject
     {
 
         public MyTes()
         {
 
+        }
+
+        [InterceptorMethod]
+        public string A(string a, [InRange(100, 200)]int b, string c)
+        {
+            return a + c;
+        }
+
+
+        public string B(string a, [InRange(100, 200)]int b, string c)
+        {
+            return a + c;
         }
     }
 }
