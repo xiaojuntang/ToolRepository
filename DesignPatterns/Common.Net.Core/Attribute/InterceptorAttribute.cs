@@ -105,6 +105,9 @@ namespace Common.Net.Core
             else
             {
                 //如果打了InterceptorMethodAttribute标签
+
+
+                #region 参数验证
                 string typeName = msg.Properties["__TypeName"].ToString();
                 Type objType = null;
                 if (!dictionary.TryGetValue(typeName, out objType))
@@ -132,6 +135,10 @@ namespace Common.Net.Core
                         }
                     }
                 }
+                #endregion
+
+                //string m = (msg)._MethodName;
+
                 //MessageBox.Show("执行之前");
                 retMsg = nextSink.SyncProcessMessage(msg);
                 //MessageBox.Show("执行之后");

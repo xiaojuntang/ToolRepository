@@ -66,6 +66,7 @@
     <Compile Include="GeneralHelper.cs" />
     <Compile Include="JsonHelper.cs" />
     <Compile Include="LogHelper.cs" />
+    <Compile Include="NPOIHelper.cs" />
     <Compile Include="OfficeHelper.cs" />
     <Compile Include="PageHelper.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

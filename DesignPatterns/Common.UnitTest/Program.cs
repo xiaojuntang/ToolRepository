@@ -22,6 +22,19 @@ namespace Common.UnitTest
             //order2.Submit("Item2", 150);
 
 
+            //System.Reflection.MemberInfo info = typeof(MyTes); //通过反射得到MyClass类的信息
+
+            ////得到施加在MyClass类上的定制Attribute 
+            //CodeReviewAttribute att =
+            //           (CodeReviewAttribute)Attribute.GetCustomAttribute(info, typeof(CodeReviewAttribute));
+            //if (att != null)
+            //{
+            //    Console.WriteLine("代码检查人:{0}", att.Reviewer);
+            //    Console.WriteLine("检查时间:{0}", att.Date);
+            //    Console.WriteLine("注释:{0}", att.Comment);
+            //}
+
+
             MyTes a = new MyTes();
             try
             {

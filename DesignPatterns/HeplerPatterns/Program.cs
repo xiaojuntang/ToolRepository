@@ -85,6 +85,10 @@ namespace HeplerPatterns
 
         public static string InvitationCode()
         {
+            SecurityRSA.GetRASKey();
+
+
+
             string key = "8%3H9*)!";
             string iv = "8%3H9*)!";
             string t = DateTime.Now.ToString("yyyyMMddHHmmss");
@@ -107,8 +111,14 @@ namespace HeplerPatterns
 
         static void Main(string[] args)
         {
-            SortedDictionary<string,string> dic=new SortedDictionary<string, string>();
-            dic.Add("username","admin");
+
+
+            var aa = SecurityRSA.GetRASKey();
+
+
+
+            SortedDictionary<string, string> dic = new SortedDictionary<string, string>();
+            dic.Add("username", "admin");
             dic.Add("key", "2");
             UserService.Login(dic);
 
@@ -119,7 +129,7 @@ namespace HeplerPatterns
             //string a = "aaa";
             //string b = new String("aaa");
 
-            DateTime a=DateTime.Now;
+            DateTime a = DateTime.Now;
             Console.WriteLine("ToLongDateString:{0}", a.ToLongDateString());
             Console.WriteLine("ToLongTimeString:{0}", a.ToLongTimeString());
             Console.WriteLine("ToShortDateString:{0}", a.ToShortDateString());
